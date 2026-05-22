@@ -738,6 +738,11 @@
                 <h3 style="color: #d4d0d0; margin-bottom: 10px; font-size: 24px;">💪 Exercise Ratings</h3>
                 <p style="color: #666; margin-bottom: 25px; font-size: 14px;">How did each exercise feel? Drag the slider to rate from 😞 to 🤩</p>
                 
+                <div class="form-group" style="margin-bottom: 25px;">
+                    <label for="exerciseDate">Date *</label>
+                    <input type="date" id="exerciseDate" name="exerciseDate" data-fs-field required>
+                </div>
+                
                 <div id="exercisesList">
                     <!-- Exercises will be added here dynamically -->
                 </div>
@@ -818,7 +823,7 @@
             exerciseItem.innerHTML = `
                 <div class="exercise-name">💪 Exercise ${exerciseCount}</div>
                 <div class="exercise-rating">
-                    <input type="range" class="rating-slider" name="exercise_${exerciseCount}_rating" min="0" max="5" value="0" onchange="updateRatingValue(${exerciseCount})" oninput="updateRatingValue(${exerciseCount})">
+                    <input type="range" class="rating-slider" name="exercise_${exerciseCount}_rating" min="0" max="5" value="1" onchange="updateRatingValue(${exerciseCount})" oninput="updateRatingValue(${exerciseCount})">
                     <div class="rating-value" id="rating-value-${exerciseCount}">-</div>
                 </div>
                 <button type="button" class="exercise-remove" onclick="removeExercise(${exerciseCount})" style="flex: 0 0 auto;">✕</button>
@@ -907,6 +912,12 @@
                     return true;
 
                 case 2:
+                    if (!getFieldValue('exerciseDate')) {
+                        errorMsg.textContent = '✗ Please select a date';
+                        errorMsg.classList.add('show');
+                        return false;
+                    }
+                    
                     const exerciseRatings = document.querySelectorAll('input[name^="exercise_"][name$="_rating"]');
                     if (exerciseRatings.length === 0) {
                         errorMsg.textContent = '✗ Please add at least one exercise with a rating';
