@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Step Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 650px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 35px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #667eea;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        /* Steps Indicator */
+        .steps-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: #e0e0e0;
+            z-index: -1;
+        }
+
+        .step.active:not(:last-child)::after {
+            background: #667eea;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            color: #999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+        }
+
+        .step.active .step-circle {
+            background: #667eea;
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .step.completed .step-circle {
+            background: #4caf50;
+            color: white;
+        }
+
+        .step-label {
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .step.active .step-label {
+            color: #667eea;
+        }
+
+        .step.completed .step-label {
+            color: #4caf50;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="number"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        input[type="number"]:focus,
+        input[type="date"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            color: #333;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .step-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 35px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-next:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-prev {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-prev:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-next:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-prev:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            display: none;
+            background: #f44336;
+            color: white;
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Summary Section */
+        .summary-section {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .summary-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .summary-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .summary-label {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 13px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .summary-value {
+            color: #333;
+            font-size: 15px;
+        }
+
+        .success-message {
+            display: none;
+            background: #4caf50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        /* Exercise List Styles */
+        .exercise-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 18px;
+            padding: 18px;
+            background: linear-gradient(135deg, #f5f7ff 0%, #fff4f8 100%);
+            border-radius: 12px;
+            border: 2px solid #e8eaf6;
+            transition: all 0.3s;
+        }
+
+        .exercise-item:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.15);
+            border-color: #667eea;
+        }
+
+        .exercise-name {
+            font-weight: 700;
+            color: #333;
+            min-width: 90px;
+            font-size: 15px;
+        }
+
+        .exercise-rating {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .rating-slider {
+            flex: 1;
+            height: 6px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #ff6b6b, #ffd93d, #6bcf7f);
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .rating-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            border: 2px solid #667eea;
+            transition: all 0.2s;
+        }
+
+        .rating-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+        }
+
+        .rating-slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            border: 2px solid #667eea;
+            transition: all 0.2s;
+        }
+
+        .rating-value {
+            min-width: 45px;
+            text-align: center;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .exercise-remove {
+            flex: 0 0 auto;
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .exercise-remove:hover {
+            background: linear-gradient(135deg, #ff5252 0%, #ff1744 100%);
+            transform: scale(1.15);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+        }
+
+        .add-exercise-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin-top: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .add-exercise-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .add-exercise-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .step-label {
+                font-size: 10px;
+            }
+
+            .steps-indicator {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Data Collection</h1>
+            <p>Complete all steps to submit your information</p>
+            <p>Everything is totally anonymous and secure.</p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="progress-text"><span id="currentStep">1</span> of <span id="totalSteps">5</span> completed</div>
+        </div>
+
+        <!-- Steps Indicator -->
+        <div class="steps-indicator">
+            <div class="step active" data-step="1">
+                <div class="step-circle">1</div>
+                <div class="step-label">Personal</div>
+            </div>
+            <div class="step" data-step="2">
+                <div class="step-circle">2</div>
+                <div class="step-label">Exercises</div>
+            </div>
+            <div class="step" data-step="3">
+                <div class="step-circle">3</div>
+                <div class="step-label">Notes</div>
+            </div>
+        </div>
+
+        <div id="errorMessage" class="error-message" data-fs-error></div>
+        <div id="successMessage" class="success-message" data-fs-success>
+            ✓ Form submitted successfully!
+        </div>
+
+        <form id="dataForm">
+            <!-- STEP 1: Personal Information -->
+            <div class="step-content active" data-step="1">
+                <h3 style="color: #333; margin-bottom: 20px;">Personal Information</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name *</label>
+                        <input type="text" id="firstName" name="firstName" data-fs-field required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name *</label>
+                        <input type="text" id="lastName" name="lastName" data-fs-field required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: Exercise Ratings -->
+            <div class="step-content" data-step="2">
+                <h3 style="color: #333; margin-bottom: 10px; font-size: 24px;">💪 Exercise Ratings</h3>
+                <p style="color: #666; margin-bottom: 25px; font-size: 14px;">How did each exercise feel? Drag the slider to rate from 😞 to 🤩</p>
+                
+                <div id="exercisesList">
+                    <!-- Exercises will be added here dynamically -->
+                </div>
+
+                <button type="button" class="add-exercise-btn" id="addExerciseBtn" onclick="addExercise()">➕ Add Another Exercise</button>
+            </div>
+
+            <!-- STEP 3: Notes -->
+            <div class="step-content" data-step="3">
+                <h3 style="color: #333; margin-bottom: 20px;">📝 Notes</h3>
+                <p style="color: #666; margin-bottom: 20px; font-size: 14px;">Write anything you'd want the others to know. (everything is totally anonymous and secure.)</p>
+                
+                <div class="form-group">
+                    <label for="notes">Your Notes</label>
+                    <textarea id="notes" name="notes" placeholder="Write your thoughts, feedback, or any additional information..."></textarea>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="button-group">
+                <button type="button" class="btn-prev" id="prevBtn" onclick="previousStep()" disabled>← Previous</button>
+                <button type="button" class="btn-next" id="nextBtn" onclick="nextStep()">Next →</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 3;
+
+        // Update progress and UI
+        function updateProgress() {
+            const progressPercent = (currentStep / totalSteps) * 100;
+            document.querySelector('.progress-fill').style.width = progressPercent + '%';
+            document.getElementById('currentStep').textContent = currentStep;
+
+            // Update step indicators
+            document.querySelectorAll('.step').forEach((step, index) => {
+                const stepNum = index + 1;
+                step.classList.remove('active', 'completed');
+                if (stepNum === currentStep) {
+                    step.classList.add('active');
+                } else if (stepNum < currentStep) {
+                    step.classList.add('completed');
+                }
+            });
+
+            // Update button states
+            document.getElementById('prevBtn').disabled = currentStep === 1;
+            
+            if (currentStep === totalSteps) {
+                document.getElementById('nextBtn').textContent = 'Submit';
+                document.getElementById('nextBtn').style.background = '#4caf50';
+            } else {
+                document.getElementById('nextBtn').textContent = 'Next →';
+                document.getElementById('nextBtn').style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            }
+        }
+
+        // Show/hide step content
+        function showStep(step) {
+            document.querySelectorAll('.step-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelector(`.step-content[data-step="${step}"]`).classList.add('active');
+        }
+
+        let exerciseCount = 0;
+
+        // Add exercise item
+        function addExercise() {
+            exerciseCount++;
+            const exercisesList = document.getElementById('exercisesList');
+            
+            const exerciseItem = document.createElement('div');
+            exerciseItem.className = 'exercise-item';
+            exerciseItem.id = `exercise-${exerciseCount}`;
+            exerciseItem.innerHTML = `
+                <div class="exercise-name">💪 Exercise ${exerciseCount}</div>
+                <div class="exercise-rating">
+                    <input type="range" class="rating-slider" name="exercise_${exerciseCount}_rating" min="0" max="5" value="0" onchange="updateRatingValue(${exerciseCount})" oninput="updateRatingValue(${exerciseCount})">
+                    <div class="rating-value" id="rating-value-${exerciseCount}">-</div>
+                </div>
+                <button type="button" class="exercise-remove" onclick="removeExercise(${exerciseCount})" style="flex: 0 0 auto;">✕</button>
+            `;
+            
+            exercisesList.appendChild(exerciseItem);
+            updateRatingValue(exerciseCount);
+            
+            // Disable add button if we have 10 exercises
+            if (exerciseCount >= 10) {
+                document.getElementById('addExerciseBtn').disabled = true;
+            }
+        }
+
+        // Update rating value display
+        function updateRatingValue(exerciseNum) {
+            const slider = document.querySelector(`input[name="exercise_${exerciseNum}_rating"]`);
+            const valueDisplay = document.getElementById(`rating-value-${exerciseNum}`);
+            const rating = slider.value;
+            
+            const ratingLabels = ['-', '😞', '😐', '😊', '😄', '🤩'];
+            valueDisplay.textContent = ratingLabels[rating];
+        }
+
+        // Remove exercise
+        function removeExercise(exerciseNum) {
+            document.getElementById(`exercise-${exerciseNum}`).remove();
+            
+            // Enable add button if we removed one
+            if (exerciseCount <= 10) {
+                document.getElementById('addExerciseBtn').disabled = false;
+            }
+        }
+
+        // Validate current step
+        function validateStep(step) {
+            const errorMsg = document.getElementById('errorMessage');
+            errorMsg.classList.remove('show');
+            errorMsg.textContent = '';
+
+            const getFieldValue = (id) => document.getElementById(id)?.value?.trim() || '';
+            const getFieldCheck = (id) => document.getElementById(id)?.checked || false;
+
+            switch(step) {
+                case 1:
+                    if (!getFieldValue('firstName')) {
+                        errorMsg.textContent = '✗ First Name is required';
+                        errorMsg.classList.add('show');
+                        return false;
+                    }
+                    if (!getFieldValue('lastName')) {
+                        errorMsg.textContent = '✗ Last Name is required';
+                        errorMsg.classList.add('show');
+                        return false;
+                    }
+                    return true;
+
+                case 2:
+                    const exerciseRatings = document.querySelectorAll('input[name^="exercise_"][name$="_rating"]');
+                    if (exerciseRatings.length === 0) {
+                        errorMsg.textContent = '✗ Please add at least one exercise with a rating';
+                        errorMsg.classList.add('show');
+                        return false;
+                    }
+                    
+                    let hasUnrated = false;
+                    exerciseRatings.forEach(input => {
+                        if (input.value === '0' || input.value === '') {
+                            hasUnrated = true;
+                        }
+                    });
+                    
+                    if (hasUnrated) {
+                        errorMsg.textContent = '✗ Please rate all exercises';
+                        errorMsg.classList.add('show');
+                        return false;
+                    }
+                    return true;
+
+                case 3:
+                    return true;
+
+                default:
+                    return true;
+            }
+        }
+
+        // Generate summary
+        function generateSummary() {
+            const getFieldValue = (id) => document.getElementById(id)?.value || '';
+            const getFieldsValues = (name) => {
+                const elements = document.querySelectorAll(`input[name="${name}"]:checked`);
+                return Array.from(elements).map(el => el.value).join(', ') || 'None';
+            };
+
+            // Build exercises summary
+            let exercisesSummary = '';
+            const exerciseRatings = document.querySelectorAll('input[name^="exercise_"][name$="_rating"]');
+            const ratingLabels = ['-', '😞', '😐', '😊', '😄', '🤩'];
+            exerciseRatings.forEach((input, index) => {
+                const exerciseNum = index + 1;
+                const rating = input.value;
+                const emoji = ratingLabels[rating];
+                exercisesSummary += `
+                    <div class="summary-item">
+                        <div class="summary-label">Exercise ${exerciseNum}</div>
+                        <div class="summary-value">${emoji} (${rating}/5)</div>
+                    </div>
+                `;
+            });
+
+            const summary = `
+                <div class="summary-section">
+                    <div class="summary-item">
+                        <div class="summary-label">Full Name</div>
+                        <div class="summary-value">${getFieldValue('firstName')} ${getFieldValue('lastName')}</div>
+                    </div>
+                </div>
+
+                <div class="summary-section">
+                    ${exercisesSummary}
+                </div>
+
+                <div class="summary-section">
+                    <div class="summary-item">
+                        <div class="summary-label">Notes</div>
+                        <div class="summary-value">${getFieldValue('notes') || 'No notes'}</div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('summaryContainer').innerHTML = summary;
+        }
+
+        // Next step
+        function nextStep() {
+            const errorMsg = document.getElementById('errorMessage');
+
+            if (currentStep < totalSteps) {
+                if (!validateStep(currentStep)) {
+                    return;
+                }
+                errorMsg.classList.remove('show');
+                currentStep++;
+                
+                showStep(currentStep);
+                updateProgress();
+                window.scrollTo(0, 0);
+            } else if (currentStep === totalSteps) {
+                // Submit form
+                if (!validateStep(currentStep)) {
+                    return;
+                }
+                submitForm();
+            }
+        }
+
+        // Previous step
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                document.getElementById('errorMessage').classList.remove('show');
+                showStep(currentStep);
+                updateProgress();
+                window.scrollTo(0, 0);
+            }
+        }
+
+        // Submit form
+        function submitForm() {
+            const form = document.getElementById('dataForm');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+            
+            console.log('Form Data Submitted:', data);
+            
+            // Submit to Formspree
+            fetch('https://formspree.io/f/mojbwadw', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json'
+                },
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Show success message
+                    document.getElementById('successMessage').classList.add('show');
+                    
+                    // Reset after 2 seconds
+                    setTimeout(() => {
+                        currentStep = 1;
+                        form.reset();
+                        document.getElementById('successMessage').classList.remove('show');
+                        showStep(1);
+                        updateProgress();
+                    }, 2000);
+                } else {
+                    alert('Error submitting form. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error submitting form. Please try again.');
+            });
+        }
+
+        // Initialize
+        updateProgress();
+        addExercise(); // Add first exercise by default
+    </script>
+
+    <!-- Formspree integration -->
+    <script>
+        window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+        formspree('initForm', { formElement: '#dataForm', formId: 'mojbwadw' });
+    </script>
+    <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
+</body>
+</html>
