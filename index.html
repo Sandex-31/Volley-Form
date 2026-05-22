@@ -823,8 +823,8 @@
             exerciseItem.innerHTML = `
                 <div class="exercise-name">💪 Exercise ${exerciseCount}</div>
                 <div class="exercise-rating">
-                    <input type="range" class="rating-slider" name="exercise_${exerciseCount}_rating" min="0" max="5" value="1" onchange="updateRatingValue(${exerciseCount})" oninput="updateRatingValue(${exerciseCount})">
-                    <div class="rating-value" id="rating-value-${exerciseCount}">-</div>
+                    <input type="range" class="rating-slider" name="exercise_${exerciseCount}_rating" min="0" max="4" value="0" onchange="updateRatingValue(${exerciseCount})" oninput="updateRatingValue(${exerciseCount})">
+                    <div class="rating-value" id="rating-value-${exerciseCount}">😞</div>
                 </div>
                 <button type="button" class="exercise-remove" onclick="removeExercise(${exerciseCount})" style="flex: 0 0 auto;">✕</button>
             `;
@@ -844,7 +844,7 @@
             const valueDisplay = document.getElementById(`rating-value-${exerciseNum}`);
             const rating = slider.value;
             
-            const ratingLabels = ['-', '😞', '😐', '😊', '😄', '🤩'];
+            const ratingLabels = ['😞', '😐', '😊', '😄', '🤩'];
             valueDisplay.textContent = ratingLabels[rating];
         }
 
@@ -927,7 +927,7 @@
                     
                     let hasUnrated = false;
                     exerciseRatings.forEach(input => {
-                        if (input.value === '0' || input.value === '') {
+                        if (input.value === '') {
                             hasUnrated = true;
                         }
                     });
