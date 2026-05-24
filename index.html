@@ -358,7 +358,7 @@
         /* Exercise List Styles */
         .exercise-item {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: 15px;
             margin-bottom: 18px;
             padding: 18px;
@@ -379,6 +379,63 @@
             color: #d0d9e8;
             min-width: 90px;
             font-size: 15px;
+        }
+
+        .exercise-name-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #3a4560;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+            background: #2d3854;
+            color: #d0d9e8;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .exercise-name-select:focus {
+            outline: none;
+            border-color: #5b7cfa;
+            box-shadow: 0 0 0 3px rgba(91, 124, 250, 0.15);
+            background: #323d54;
+        }
+
+        .exercise-name-select option {
+            background: #2d3854;
+            color: #d0d9e8;
+        }
+
+        .exercise-top-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .exercise-notes {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .exercise-notes textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #3a4560;
+            border-radius: 5px;
+            font-size: 13px;
+            font-family: inherit;
+            background: #242d47;
+            color: #d0d9e8;
+            min-height: 60px;
+            resize: vertical;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .exercise-notes textarea:focus {
+            outline: none;
+            border-color: #5b7cfa;
+            box-shadow: 0 0 0 3px rgba(91, 124, 250, 0.15);
+            background: #2d3854;
         }
 
         .exercise-rating {
@@ -577,9 +634,14 @@
                 flex-wrap: wrap;
             }
 
-            .exercise-name {
-                font-size: 14px;
-                min-width: 100%;
+            .exercise-name-select {
+                font-size: 13px;
+                padding: 10px 12px;
+            }
+
+            .exercise-top-row {
+                width: 100%;
+                gap: 8px;
             }
 
             .exercise-rating {
@@ -601,6 +663,15 @@
                 width: 38px;
                 height: 38px;
                 font-size: 20px;
+            }
+
+            .exercise-notes {
+                width: 100%;
+            }
+
+            .exercise-notes textarea {
+                min-height: 80px;
+                font-size: 14px;
             }
 
             .add-exercise-btn {
@@ -675,6 +746,12 @@
                 width: 35px;
                 height: 35px;
                 font-size: 16px;
+            }
+
+            .exercise-notes textarea {
+                min-height: 70px;
+                font-size: 13px;
+                padding: 8px 10px;
             }
         }
     </style>
@@ -811,22 +888,63 @@
         }
 
         let exerciseCount = 0;
+        const presetExercises = [
+            'Warm-up (giri di campo)',
+            'Preparazione atletica (addome/dorso/gambe)',
+            'Esplosività (salti, sprint, balzi)',
+            'Difesa (1, 6, 5 con 2 schiacciatori)',
+            'Difesa (4 ruoli autogestita, 1 schiacciatore a giro)',
+            'Ricezione (4 in rice, opposti/centrali servizio)',
+            'Ricezione (liberi in rice, il resto in servizio)',
+            'Situazione di gioco (6 vs 6, con muro a 2 o 3)',
+            'Attacchi (uno o entrambi i campi, bande/opposti/centrali)',
+            'Attacchi (un campo, bande/opposti, centrali a muro)',
+            'Attacchi (bande/opposti, approccio e salto con blocco della palla)',
+            'Attacchi (approccio, con il minimo di passi, senza toccare la rete con la mano)',
+            'Attacchi (tecnica diagonali/parallele/pallonetti con pallina da tennis)',
+            'Attacchi (approccio con tappetino per staccare il primo passo)',
+            'Bande (approccio a muro e rotazione in posizione di attacco)',
+            'Bande (movimento delle braccia con palla da tennis)',
+            'Liberi (rinforzo gambe e posizione squat con spostamento/affondi/hip trust/ single leg reach)',
+            'Liberi (scatti con cinesini)',
+            'Liberi (bagher a chiamata partento di spalle)',
+            'Liberi (bagher con elastico alle spalliere)',
+            'Liberi (difesa palla corta/palla lunga)',
+            'Opposti (attacco con muro)',
+            'Opposti (approccio per attacco da prima)',
+            'Opposti (approccio per attacco da seconda)',
+            'Centrali (approccio ad attacco in prima)',
+            'Centrali (muro a 2 entrambi i lati)',
+            'Centrali (muro singolo con spostamento laterale doppio tramite cinesini)',
+            'Centrali (situazione di gioco con muro e approccio)',
+            'Centrali (muro con lettura del palleggio)'
+        ];
 
         // Add exercise item
         function addExercise() {
             exerciseCount++;
             const exercisesList = document.getElementById('exercisesList');
             
+            const exerciseOptions = presetExercises.map(exercise => `<option value="${exercise}">${exercise}</option>`).join('');
+            
             const exerciseItem = document.createElement('div');
             exerciseItem.className = 'exercise-item';
             exerciseItem.id = `exercise-${exerciseCount}`;
             exerciseItem.innerHTML = `
-                <div class="exercise-name">💪 Exercise ${exerciseCount}</div>
-                <div class="exercise-rating">
-                    <input type="range" class="rating-slider" name="exercise_${exerciseCount}_rating" min="0" max="4" value="0" onchange="updateRatingValue(${exerciseCount})" oninput="updateRatingValue(${exerciseCount})">
-                    <div class="rating-value" id="rating-value-${exerciseCount}">😞</div>
+                <select name="exercise_${exerciseCount}_name" class="exercise-name-select exercise-name-dropdown" onchange="updateExerciseName(${exerciseCount})">
+                    <option value="">Select an exercise...</option>
+                    ${exerciseOptions}
+                </select>
+                <div class="exercise-top-row">
+                    <div class="exercise-rating">
+                        <input type="range" class="rating-slider" name="exercise_${exerciseCount}_rating" min="0" max="4" value="0" onchange="updateRatingValue(${exerciseCount})" oninput="updateRatingValue(${exerciseCount})">
+                        <div class="rating-value" id="rating-value-${exerciseCount}">😞</div>
+                    </div>
+                    <button type="button" class="exercise-remove" onclick="removeExercise(${exerciseCount})" style="flex: 0 0 auto;">✕</button>
                 </div>
-                <button type="button" class="exercise-remove" onclick="removeExercise(${exerciseCount})" style="flex: 0 0 auto;">✕</button>
+                <div class="exercise-notes">
+                    <textarea name="exercise_${exerciseCount}_notes" placeholder="Add notes for this exercise (optional)..." class="exercise-notes-input"></textarea>
+                </div>
             `;
             
             exercisesList.appendChild(exerciseItem);
@@ -848,6 +966,12 @@
             valueDisplay.textContent = ratingLabels[rating];
         }
 
+        // Update exercise name
+        function updateExerciseName(exerciseNum) {
+            const select = document.querySelector(`select[name="exercise_${exerciseNum}_name"]`);
+            // The form data will automatically include the selected name
+        }
+
         // Remove exercise
         function removeExercise(exerciseNum) {
             document.getElementById(`exercise-${exerciseNum}`).remove();
@@ -860,11 +984,12 @@
                 // Update the item ID
                 item.id = `exercise-${newNum}`;
                 
-                // Update the exercise name display
-                const exerciseName = item.querySelector('.exercise-name');
-                exerciseName.textContent = `💪 Exercise ${newNum}`;
+                // Update the select field name and onchange handler
+                const select = item.querySelector('select');
+                select.name = `exercise_${newNum}_name`;
+                select.setAttribute('onchange', `updateExerciseName(${newNum})`);
                 
-                // Update the input field name and handlers
+                // Update the input field name and handlers for rating
                 const slider = item.querySelector('.rating-slider');
                 slider.name = `exercise_${newNum}_rating`;
                 slider.setAttribute('onchange', `updateRatingValue(${newNum})`);
@@ -873,6 +998,10 @@
                 // Update the rating value display ID
                 const ratingDisplay = item.querySelector('.rating-value');
                 ratingDisplay.id = `rating-value-${newNum}`;
+                
+                // Update the notes field name
+                const notesInput = item.querySelector('.exercise-notes-input');
+                notesInput.name = `exercise_${newNum}_notes`;
                 
                 // Update the remove button onclick handler
                 const removeBtn = item.querySelector('.exercise-remove');
@@ -926,11 +1055,23 @@
                     }
                     
                     let hasUnrated = false;
-                    exerciseRatings.forEach(input => {
+                    let hasUnnamed = false;
+                    exerciseRatings.forEach((input, index) => {
+                        const exerciseNum = index + 1;
                         if (input.value === '') {
                             hasUnrated = true;
                         }
+                        const nameSelect = document.querySelector(`select[name="exercise_${exerciseNum}_name"]`);
+                        if (!nameSelect.value) {
+                            hasUnnamed = true;
+                        }
                     });
+                    
+                    if (hasUnnamed) {
+                        errorMsg.textContent = '✗ Please select a name for all exercises';
+                        errorMsg.classList.add('show');
+                        return false;
+                    }
                     
                     if (hasUnrated) {
                         errorMsg.textContent = '✗ Please rate all exercises';
@@ -963,10 +1104,15 @@
                 const exerciseNum = index + 1;
                 const rating = input.value;
                 const emoji = ratingLabels[rating];
+                const nameSelect = document.querySelector(`select[name="exercise_${exerciseNum}_name"]`);
+                const exerciseName = nameSelect?.value || 'Unnamed Exercise';
+                const notes = document.querySelector(`textarea[name="exercise_${exerciseNum}_notes"]`)?.value || '';
+                const notesDisplay = notes ? `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #3a4560; font-size: 13px; color: #999;">📝 ${notes}</div>` : '';
+                
                 exercisesSummary += `
                     <div class="summary-item">
-                        <div class="summary-label">Exercise ${exerciseNum}</div>
-                        <div class="summary-value">${emoji} (${rating}/5)</div>
+                        <div class="summary-label">${exerciseName}</div>
+                        <div class="summary-value">${emoji} (${rating}/5)${notesDisplay}</div>
                     </div>
                 `;
             });
