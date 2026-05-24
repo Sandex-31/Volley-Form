@@ -1,3 +1,41 @@
+// ===== FIREBASE CONFIGURATION =====
+const firebaseConfig = {
+    apiKey: "AIzaSyB7ZT4RmUgTn73PV8Azo7Jxj2fXMUBjf5c",
+    authDomain: "volleyball-exercises-9fd18.firebaseapp.com",
+    databaseURL: "https://volleyball-exercises-9fd18-default-rtdb.europe-west1.firebasedatabase.app/",
+    projectId: "volleyball-exercises-9fd18",
+    storageBucket: "volleyball-exercises-9fd18.appspot.com",
+    messagingSenderId: "155905070449",
+    appId: "1:155905070449:web:fd23b00f8e45fca439d2d0"
+};
+
+// Initialize Firebase
+let db = null;
+let submissionsRef = null;
+let firebaseReady = false;
+
+function initializeFirebase() {
+    try {
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        db = firebase.database();
+        submissionsRef = db.ref('formSubmissions');
+        firebaseReady = true;
+        console.log('✅ Firebase initialized successfully');
+        return true;
+    } catch (error) {
+        console.error('❌ Firebase initialization failed:', error);
+        firebaseReady = false;
+        return false;
+    }
+}
+
+// Initialize Firebase when page loads
+if (typeof firebase !== 'undefined') {
+    setTimeout(initializeFirebase, 500);
+}
+
 let currentStep = 1;
 const totalSteps = 3;
 
@@ -340,39 +378,50 @@ function submitForm() {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData);
     
-    console.log('Form Data Submitted:', data);
+    // Add timestamp
+    const submission = {
+        ...data,
+        timestamp: new Date().toISOString(),
+        submittedAt: new Date().toLocaleString()
+    };
     
-    // Submit to Formspree
-    fetch('https://formspree.io/f/mojbwadw', {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json'
-        },
-        body: formData
-    })
-    .then(response => {
-        if (response.ok) {
-            // Show success message
-            document.getElementById('successMessage').classList.add('show');
-            
-            // Reset after 2 seconds
-            setTimeout(() => {
-                currentStep = 1;
-                form.reset();
-                document.getElementById('successMessage').classList.remove('show');
-                showStep(1);
-                updateProgress();
-            }, 2000);
-        } else {
-            alert('Error submitting form. Please try again.');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error submitting form. Please try again.');
-    });
+    console.log('Form Data Submitted:', submission);
+    
+    // Save to Firebase
+    if (firebaseReady && submissionsRef) {
+        const newSubmissionRef = submissionsRef.push();
+        newSubmissionRef.set(submission)
+            .then(() => {
+                console.log('✅ Form saved to Firebase');
+                // Show success message
+                document.getElementById('successMessage').classList.add('show');
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    currentStep = 1;
+                    form.reset();
+                    document.getElementById('successMessage').classList.remove('show');
+                    showStep(1);
+                    updateProgress();
+                }, 2000);
+            })
+            .catch(error => {
+                console.error('❌ Error saving to Firebase:', error);
+                alert('Error submitting form. Please try again.');
+            });
+    } else {
+        console.warn('⚠️ Firebase not available, form not submitted');
+        alert('⚠️ Database connection unavailable. Please try again.');
+    }
 }
 
 // Initialize
-updateProgress();
-addExercise(); // Add first exercise by default
+document.addEventListener('DOMContentLoaded', function() {
+    // Ensure Firebase is initialized
+    if (!firebaseReady && typeof firebase !== 'undefined') {
+        initializeFirebase();
+    }
+    
+    updateProgress();
+    addExercise(); // Add first exercise by default
+});
