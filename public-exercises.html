@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Today's Exercise</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1f3a 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: #242d47;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            padding: 40px;
+            max-width: 650px;
+            width: 100%;
+            border: 1px solid #3a4560;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #f0f4f8;
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #ffffff;
+            font-size: 14px;
+        }
+
+        .admin-button {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-admin {
+            background: #3a4560;
+            color: #d0d9e8;
+        }
+
+        .btn-admin:hover {
+            background: #4a5575;
+        }
+
+        .exercises-section {
+            margin-bottom: 30px;
+        }
+
+        .exercises-section h2 {
+            color: #f0f4f8;
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .exercises-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .exercise-item {
+            background: linear-gradient(135deg, #5b7cfa 0%, #748ffc 100%);
+            padding: 20px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(91, 124, 250, 0.2);
+        }
+
+        .exercise-item-name {
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .exercise-item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-remove-exercise {
+            background: #c23030;
+            color: white;
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-remove-exercise:hover {
+            background: #e03131;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .empty-state-text {
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #d0d9e8;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #3a4560;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            background: #2d3854;
+            color: #d0d9e8;
+        }
+
+        input[type="password"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #5b7cfa;
+            box-shadow: 0 0 0 3px rgba(91, 124, 250, 0.15);
+            background: #323d54;
+        }
+
+        select option {
+            background: #2d3854;
+            color: #d0d9e8;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        .modal-content {
+            background-color: #242d47;
+            margin: auto;
+            padding: 40px;
+            border-radius: 10px;
+            border: 1px solid #3a4560;
+            width: 90%;
+            max-width: 500px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .modal.show {
+            display: block;
+        }
+
+        .close-modal {
+            color: #999;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-modal:hover {
+            color: #fff;
+        }
+
+        .modal h2 {
+            color: #f0f4f8;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .error-message {
+            display: none;
+            background: #c23030;
+            color: white;
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+            border: 1px solid #e03131;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            display: none;
+            background: #51a376;
+            color: white;
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+            border: 1px solid #69c896;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #5b7cfa 0%, #748ffc 100%);
+            color: white;
+            flex: 1;
+            padding: 12px 24px;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(91, 124, 250, 0.3);
+        }
+
+        .btn-cancel {
+            background: #3a4560;
+            color: #d0d9e8;
+            flex: 1;
+            padding: 12px 24px;
+        }
+
+        .btn-cancel:hover {
+            background: #4a5575;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .back-link a {
+            color: #5b7cfa;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .exercise-name {
+                font-size: 24px;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏐 Next training Exercise</h1>
+            <p>Training schedule for the next appointment</p>
+        </div>
+
+        <div class="admin-button">
+            <button class="btn-admin" onclick="openAdminPanel()">👨‍💼 Admin Panel</button>
+        </div>
+
+        <!-- Exercises List Display -->
+        <div class="exercises-section">
+            <h2>📋 Exercises</h2>
+            <div id="exercisesList" class="exercises-list"></div>
+        </div>
+
+        <!-- Back to Form Link -->
+        <div class="back-link">
+            <a href="index.html">← Back to Form</a>
+        </div>
+    </div>
+
+    <!-- Admin Panel Modal -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeAdminPanel()">&times;</span>
+            
+            <h2>👨‍💼 Admin Panel</h2>
+            <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="success-message"></div>
+
+            <div id="adminLogin">
+                <div class="form-group">
+                    <label for="adminPassword">Admin Password</label>
+                    <input type="password" id="adminPassword" placeholder="Enter admin password...">
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn-save" onclick="loginAdmin()">Login</button>
+                    <button class="btn-cancel" onclick="closeAdminPanel()">Cancel</button>
+                </div>
+            </div>
+
+            <div id="adminPanel" style="display: none;">
+                <div class="form-group">
+                    <label for="exerciseSelect">Select Exercise to Add</label>
+                    <select id="exerciseSelect">
+                        <option value="">-- Choose an exercise --</option>
+                    </select>
+                </div>
+                <button class="btn-save" style="width: 100%; margin-bottom: 20px;" onclick="addSelectedExercise()">+ Add Exercise</button>
+                
+                <div style="border-top: 1px solid #3a4560; padding-top: 20px; margin-top: 20px;">
+                    <h3 style="color: #d0d9e8; font-size: 14px; margin-bottom: 15px; font-weight: 700;">📋 Currently Scheduled</h3>
+                    <div id="adminExercisesList" style="max-height: 250px; overflow-y: auto; margin-bottom: 20px;"></div>
+                </div>
+
+                <div class="modal-buttons">
+                    <button class="btn-cancel" onclick="logoutAdmin()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_PASSWORD = 'admin123'; // Change this to your desired admin password
+        const DEFAULT_EXERCISES = [
+            'Warm-up (giri di campo)',
+            'Preparazione atletica (addome/dorso/gambe)',
+            'Esplosività (salti, sprint, balzi)',
+            'Difesa (1, 6, 5 con 2 schiacciatori)',
+            'Difesa (4 ruoli autogestita, 1 schiacciatore a giro)',
+            'Ricezione (4 in rice, opposti/centrali servizio)',
+            'Ricezione (liberi in rice, il resto in servizio)',
+            'Situazione di gioco (6 vs 6, con muro a 2 o 3)',
+            'Attacchi (uno o entrambi i campi, bande/opposti/centrali)',
+            'Attacchi (un campo, bande/opposti, centrali a muro)',
+            'Attacchi (bande/opposti, approccio e salto con blocco della palla)',
+            'Attacchi (approccio, con il minimo di passi, senza toccare la rete con la mano)',
+            'Attacchi (tecnica diagonali/parallele/pallonetti con pallina da tennis)',
+            'Attacchi (approccio con tappetino per staccare il primo passo)',
+            'Bande (approccio a muro e rotazione in posizione di attacco)',
+            'Bande (movimento delle braccia con palla da tennis)',
+            'Liberi (rinforzo gambe e posizione squat con spostamento/affondi/hip trust/ single leg reach)',
+            'Liberi (scatti con cinesini)',
+            'Liberi (bagher a chiamata partento di spalle)',
+            'Liberi (bagher con elastico alle spalliere)',
+            'Liberi (difesa palla corta/palla lunga)',
+            'Opposti (attacco con muro)',
+            'Opposti (approccio per attacco da prima)',
+            'Opposti (approccio per attacco da seconda)',
+            'Centrali (approccio ad attacco in prima)',
+            'Centrali (muro a 2 entrambi i lati)',
+            'Centrali (muro singolo con spostamento laterale doppio tramite cinesini)',
+            'Centrali (situazione di gioco con muro e approccio)',
+            'Centrali (muro con lettura del palleggio)'
+        ];
+
+        let allExercises = [];
+        let selectedExercises = [];
+        let isAdminLoggedIn = false;
+
+        // Load exercises and selected exercises list
+        function loadData() {
+            const saved = localStorage.getItem('exercisesList');
+            if (saved) {
+                allExercises = JSON.parse(saved);
+            } else {
+                allExercises = DEFAULT_EXERCISES;
+            }
+
+            const savedSelected = localStorage.getItem('selectedExercises');
+            if (savedSelected) {
+                selectedExercises = JSON.parse(savedSelected);
+            } else {
+                selectedExercises = [];
+            }
+        }
+
+        // Display all selected exercises
+        function displayExercises() {
+            const list = document.getElementById('exercisesList');
+            
+            if (selectedExercises.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <div class="empty-state-text">No exercises scheduled for today</div>
+                    </div>
+                `;
+            } else {
+                list.innerHTML = selectedExercises.map((exercise, index) => `
+                    <div class="exercise-item">
+                        <div class="exercise-item-name">${exercise}</div>
+                        <div class="exercise-item-actions">
+                            <button class="btn-remove-exercise" onclick="removeExerciseFromDisplay(${index})">Remove</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Open admin panel
+        function openAdminPanel() {
+            document.getElementById('adminModal').classList.add('show');
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('adminPassword').focus();
+            clearMessages();
+        }
+
+        // Close admin panel
+        function closeAdminPanel() {
+            document.getElementById('adminModal').classList.remove('show');
+            isAdminLoggedIn = false;
+            document.getElementById('adminLogin').style.display = 'block';
+            document.getElementById('adminPanel').style.display = 'none';
+        }
+
+        // Login as admin
+        function loginAdmin() {
+            const password = document.getElementById('adminPassword').value;
+            const errorMsg = document.getElementById('errorMessage');
+
+            if (password === ADMIN_PASSWORD) {
+                isAdminLoggedIn = true;
+                document.getElementById('adminPassword').value = '';
+                document.getElementById('adminLogin').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                populateExerciseSelect();
+                updateAdminExercisesList();
+                errorMsg.classList.remove('show');
+            } else {
+                errorMsg.textContent = '✗ Incorrect admin password';
+                errorMsg.classList.add('show');
+            }
+        }
+
+        // Logout admin
+        function logoutAdmin() {
+            isAdminLoggedIn = false;
+            document.getElementById('adminLogin').style.display = 'block';
+            document.getElementById('adminPanel').style.display = 'none';
+            closeAdminPanel();
+        }
+
+        // Populate exercise select dropdown
+        function populateExerciseSelect() {
+            const select = document.getElementById('exerciseSelect');
+            select.innerHTML = '<option value="">-- Choose an exercise --</option>';
+            
+            allExercises.forEach(exercise => {
+                const option = document.createElement('option');
+                option.value = exercise;
+                option.textContent = exercise;
+                select.appendChild(option);
+            });
+        }
+
+        // Add selected exercise to the list
+        function addSelectedExercise() {
+            const selected = document.getElementById('exerciseSelect').value;
+            const errorMsg = document.getElementById('errorMessage');
+            const successMsg = document.getElementById('successMessage');
+
+            if (!selected) {
+                errorMsg.textContent = '✗ Please select an exercise';
+                errorMsg.classList.add('show');
+                return;
+            }
+
+            if (selectedExercises.includes(selected)) {
+                errorMsg.textContent = '✗ This exercise is already scheduled';
+                errorMsg.classList.add('show');
+                return;
+            }
+
+            selectedExercises.push(selected);
+            localStorage.setItem('selectedExercises', JSON.stringify(selectedExercises));
+            
+            document.getElementById('exerciseSelect').value = '';
+            errorMsg.classList.remove('show');
+            successMsg.textContent = '✓ Exercise added successfully!';
+            successMsg.classList.add('show');
+
+            updateAdminExercisesList();
+            displayExercises();
+
+            setTimeout(() => {
+                successMsg.classList.remove('show');
+            }, 2000);
+        }
+
+        // Remove exercise from display
+        function removeExerciseFromDisplay(index) {
+            selectedExercises.splice(index, 1);
+            localStorage.setItem('selectedExercises', JSON.stringify(selectedExercises));
+            
+            const successMsg = document.getElementById('successMessage');
+            successMsg.textContent = '✓ Exercise removed!';
+            successMsg.classList.add('show');
+            
+            displayExercises();
+            updateAdminExercisesList();
+
+            setTimeout(() => {
+                successMsg.classList.remove('show');
+            }, 1500);
+        }
+
+        // Update exercises list in admin panel
+        function updateAdminExercisesList() {
+            const adminList = document.getElementById('adminExercisesList');
+            
+            if (selectedExercises.length === 0) {
+                adminList.innerHTML = '<div style="color: #999; text-align: center; padding: 15px; font-style: italic;">No exercises scheduled</div>';
+            } else {
+                adminList.innerHTML = selectedExercises.map((exercise, index) => `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #2d3854; border-radius: 5px; margin-bottom: 8px; border: 1px solid #3a4560;">
+                        <span style="color: #d0d9e8; font-size: 13px;">${exercise}</span>
+                        <button class="btn-remove-exercise" onclick="removeExerciseFromAdminList(${index})" style="font-size: 11px; padding: 4px 8px;">Remove</button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Remove exercise from admin list
+        function removeExerciseFromAdminList(index) {
+            selectedExercises.splice(index, 1);
+            localStorage.setItem('selectedExercises', JSON.stringify(selectedExercises));
+            updateAdminExercisesList();
+            displayExercises();
+        }
+
+        // Clear messages
+        function clearMessages() {
+            document.getElementById('errorMessage').classList.remove('show');
+            document.getElementById('successMessage').classList.remove('show');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            displayExercises();
+
+            document.getElementById('adminPassword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    loginAdmin();
+                }
+            });
+
+            document.getElementById('exerciseSelect').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addSelectedExercise();
+                }
+            });
+
+            // Close modal when clicking outside
+            window.onclick = function(event) {
+                const modal = document.getElementById('adminModal');
+                if (event.target == modal) {
+                    closeAdminPanel();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

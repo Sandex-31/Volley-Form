@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Exercises</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1f3a 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: #242d47;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            padding: 40px;
+            max-width: 650px;
+            width: 100%;
+            border: 1px solid #3a4560;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #f0f4f8;
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #ffffff;
+            font-size: 14px;
+        }
+
+        .password-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #2d3854;
+            border-radius: 5px;
+            border: 1px solid #3a4560;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #d0d9e8;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="password"],
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #3a4560;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            background: #2d3854;
+            color: #d0d9e8;
+        }
+
+        input[type="password"]:focus,
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #5b7cfa;
+            box-shadow: 0 0 0 3px rgba(91, 124, 250, 0.15);
+            background: #323d54;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-unlock {
+            background: linear-gradient(135deg, #5b7cfa 0%, #748ffc 100%);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-unlock:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(91, 124, 250, 0.3);
+        }
+
+        .locked {
+            display: none;
+        }
+
+        .locked.show {
+            display: block;
+        }
+
+        .error-message {
+            display: none;
+            background: #c23030;
+            color: white;
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+            border: 1px solid #e03131;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            display: none;
+            background: #51a376;
+            color: white;
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+            border: 1px solid #69c896;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .exercises-list {
+            margin-bottom: 30px;
+        }
+
+        .exercises-list h2 {
+            color: #f0f4f8;
+            font-size: 20px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .exercise-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            background: #2d3854;
+            border: 1px solid #3a4560;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+
+        .exercise-item:hover {
+            background: #333d56;
+            border-color: #5b7cfa;
+        }
+
+        .exercise-name {
+            flex: 1;
+            color: #d0d9e8;
+            font-size: 14px;
+        }
+
+        .btn-remove {
+            background: #c23030;
+            color: white;
+            padding: 8px 12px;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+
+        .btn-remove:hover {
+            background: #e03131;
+        }
+
+        .add-exercise-section {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #2d3854;
+            border-radius: 5px;
+            border: 1px solid #3a4560;
+        }
+
+        .add-exercise-section h3 {
+            color: #f0f4f8;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"].add-exercise-input {
+            flex: 1;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, #5b7cfa 0%, #748ffc 100%);
+            color: white;
+            padding: 12px 24px;
+            font-size: 14px;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(91, 124, 250, 0.3);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-save {
+            background: #51a376;
+            color: white;
+            flex: 1;
+            padding: 12px 24px;
+        }
+
+        .btn-save:hover {
+            background: #69c896;
+        }
+
+        .btn-back {
+            background: #3a4560;
+            color: #d0d9e8;
+            flex: 1;
+            padding: 12px 24px;
+        }
+
+        .btn-back:hover {
+            background: #4a5575;
+        }
+
+        .empty-message {
+            color: #999;
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .form-row {
+                flex-direction: column;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚙️ Manage Exercises</h1>
+            <p>Edit the list of available exercises</p>
+        </div>
+
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+
+        <!-- Password Section -->
+        <div class="password-section" id="passwordSection">
+            <div class="form-group">
+                <label for="password">Enter Password to Edit</label>
+                <input type="password" id="password" placeholder="Enter password...">
+            </div>
+            <button class="btn-unlock" onclick="unlockEditing()">Unlock Editing</button>
+        </div>
+
+        <!-- Exercises Management Section (Hidden until unlocked) -->
+        <div class="locked" id="exercisesSection">
+            <!-- Add Exercise Section -->
+            <div class="add-exercise-section">
+                <h3>Add New Exercise</h3>
+                <div class="form-row">
+                    <input type="text" id="newExerciseName" class="add-exercise-input" placeholder="Enter exercise name...">
+                    <button class="btn-add" onclick="addExercise()">Add</button>
+                </div>
+            </div>
+
+            <!-- Current Exercises List -->
+            <div class="exercises-list">
+                <h2>Current Exercises</h2>
+                <div id="exercisesList"></div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn-save" onclick="saveExercises()">💾 Save Changes</button>
+                <button class="btn-back" onclick="goBack()">← Back to Form</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CORRECT_PASSWORD = 'volley123'; // Change this to your desired password
+
+        let exercises = [];
+        let isUnlocked = false;
+
+        // Load exercises from localStorage or use defaults
+        function loadExercises() {
+            const saved = localStorage.getItem('exercisesList');
+            if (saved) {
+                exercises = JSON.parse(saved);
+            } else {
+                exercises = [
+                    'Warm-up (giri di campo)',
+                    'Preparazione atletica (addome/dorso/gambe)',
+                    'Esplosività (salti, sprint, balzi)',
+                    'Difesa (1, 6, 5 con 2 schiacciatori)',
+                    'Difesa (4 ruoli autogestita, 1 schiacciatore a giro)',
+                    'Ricezione (4 in rice, opposti/centrali servizio)',
+                    'Ricezione (liberi in rice, il resto in servizio)',
+                    'Situazione di gioco (6 vs 6, con muro a 2 o 3)',
+                    'Attacchi (uno o entrambi i campi, bande/opposti/centrali)',
+                    'Attacchi (un campo, bande/opposti, centrali a muro)',
+                    'Attacchi (bande/opposti, approccio e salto con blocco della palla)',
+                    'Attacchi (approccio, con il minimo di passi, senza toccare la rete con la mano)',
+                    'Attacchi (tecnica diagonali/parallele/pallonetti con pallina da tennis)',
+                    'Attacchi (approccio con tappetino per staccare il primo passo)',
+                    'Bande (approccio a muro e rotazione in posizione di attacco)',
+                    'Bande (movimento delle braccia con palla da tennis)',
+                    'Liberi (rinforzo gambe e posizione squat con spostamento/affondi/hip trust/ single leg reach)',
+                    'Liberi (scatti con cinesini)',
+                    'Liberi (bagher a chiamata partento di spalle)',
+                    'Liberi (bagher con elastico alle spalliere)',
+                    'Liberi (difesa palla corta/palla lunga)',
+                    'Opposti (attacco con muro)',
+                    'Opposti (approccio per attacco da prima)',
+                    'Opposti (approccio per attacco da seconda)',
+                    'Centrali (approccio ad attacco in prima)',
+                    'Centrali (muro a 2 entrambi i lati)',
+                    'Centrali (muro singolo con spostamento laterale doppio tramite cinesini)',
+                    'Centrali (situazione di gioco con muro e approccio)',
+                    'Centrali (muro con lettura del palleggio)'
+                ];
+            }
+        }
+
+        // Display exercises
+        function displayExercises() {
+            const list = document.getElementById('exercisesList');
+            if (exercises.length === 0) {
+                list.innerHTML = '<div class="empty-message">No exercises found. Add one to get started!</div>';
+                return;
+            }
+
+            list.innerHTML = exercises.map((exercise, index) => `
+                <div class="exercise-item">
+                    <span class="exercise-name">${exercise}</span>
+                    <button class="btn-remove" onclick="removeExercise(${index})">Remove</button>
+                </div>
+            `).join('');
+        }
+
+        // Unlock editing
+        function unlockEditing() {
+            const passwordInput = document.getElementById('password');
+            const errorMsg = document.getElementById('errorMessage');
+
+            if (passwordInput.value === CORRECT_PASSWORD) {
+                isUnlocked = true;
+                document.getElementById('passwordSection').style.display = 'none';
+                document.getElementById('exercisesSection').classList.add('show');
+                errorMsg.classList.remove('show');
+                displayExercises();
+                passwordInput.value = '';
+            } else {
+                errorMsg.textContent = '✗ Incorrect password';
+                errorMsg.classList.add('show');
+                passwordInput.value = '';
+            }
+        }
+
+        // Add exercise
+        function addExercise() {
+            const input = document.getElementById('newExerciseName');
+            const name = input.value.trim();
+            const errorMsg = document.getElementById('errorMessage');
+
+            if (!name) {
+                errorMsg.textContent = '✗ Please enter an exercise name';
+                errorMsg.classList.add('show');
+                return;
+            }
+
+            if (exercises.includes(name)) {
+                errorMsg.textContent = '✗ This exercise already exists';
+                errorMsg.classList.add('show');
+                return;
+            }
+
+            exercises.push(name);
+            input.value = '';
+            errorMsg.classList.remove('show');
+            displayExercises();
+        }
+
+        // Remove exercise
+        function removeExercise(index) {
+            exercises.splice(index, 1);
+            displayExercises();
+        }
+
+        // Save exercises
+        function saveExercises() {
+            localStorage.setItem('exercisesList', JSON.stringify(exercises));
+            const successMsg = document.getElementById('successMessage');
+            successMsg.textContent = '✓ Exercises saved successfully!';
+            successMsg.classList.add('show');
+
+            setTimeout(() => {
+                successMsg.classList.remove('show');
+            }, 3000);
+        }
+
+        // Go back to form
+        function goBack() {
+            window.history.back();
+        }
+
+        // Allow Enter key to add exercise
+        document.addEventListener('DOMContentLoaded', function() {
+            loadExercises();
+            document.getElementById('newExerciseName').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addExercise();
+                }
+            });
+            document.getElementById('password').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    unlockEditing();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
