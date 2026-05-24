@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Today's Exercise</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
     <style>
         * {
             margin: 0;
@@ -386,7 +389,34 @@
     </div>
 
     <script>
-        const ADMIN_PASSWORD = 'admin123'; // Change this to your desired admin password
+        // ===== FIREBASE CONFIGURATION =====
+        // TODO: Replace with your own Firebase config from https://console.firebase.google.com/
+        const firebaseConfig = {
+            apiKey: "AIzaSyB7ZT4RmUgTn73PV8Azo7Jxj2fXMUBjf5c",
+            authDomain: "volleyball-exercises-9fd18.firebaseapp.com",
+            databaseURL: "https://volleyball-exercises-9fd18-default-rtdb.europe-west1.firebasedatabase.app/",
+            projectId: "volleyball-exercises-9fd18",
+            storageBucket: "volleyball-exercises-9fd18.appspot.com",
+            messagingSenderId: "155905070449",
+            appId: "1:155905070449:web:fd23b00f8e45fca439d2d0"
+        };
+
+        // Initialize Firebase
+        let db = null;
+        let selectedExercisesRef = null;
+        let firebaseReady = false;
+
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.database();
+            selectedExercisesRef = db.ref('selectedExercises');
+            firebaseReady = true;
+        } catch (error) {
+            console.warn('Firebase not available, using localStorage instead:', error);
+            firebaseReady = false;
+        }
+
+        const ADMIN_PASSWORD = 'admin123';
         const DEFAULT_EXERCISES = [
             'Warm-up (giri di campo)',
             'Preparazione atletica (addome/dorso/gambe)',
@@ -423,7 +453,7 @@
         let selectedExercises = [];
         let isAdminLoggedIn = false;
 
-        // Load exercises and selected exercises list
+        // Load exercises
         function loadData() {
             const saved = localStorage.getItem('exercisesList');
             if (saved) {
@@ -432,11 +462,31 @@
                 allExercises = DEFAULT_EXERCISES;
             }
 
-            const savedSelected = localStorage.getItem('selectedExercises');
-            if (savedSelected) {
-                selectedExercises = JSON.parse(savedSelected);
+            // Load selectedExercises from Firebase
+            if (firebaseReady && selectedExercisesRef) {
+                selectedExercisesRef.on('value', (snapshot) => {
+                    const data = snapshot.val();
+                    selectedExercises = data || [];
+                    displayExercises();
+                });
             } else {
-                selectedExercises = [];
+                // Fallback to localStorage
+                const savedSelected = localStorage.getItem('selectedExercises');
+                if (savedSelected) {
+                    selectedExercises = JSON.parse(savedSelected);
+                } else {
+                    selectedExercises = [];
+                }
+                displayExercises();
+            }
+        }
+
+        // Save exercises to Firebase or localStorage
+        function saveSelectedExercises() {
+            if (firebaseReady && selectedExercisesRef) {
+                selectedExercisesRef.set(selectedExercises);
+            } else {
+                localStorage.setItem('selectedExercises', JSON.stringify(selectedExercises));
             }
         }
 
@@ -538,7 +588,7 @@
             }
 
             selectedExercises.push(selected);
-            localStorage.setItem('selectedExercises', JSON.stringify(selectedExercises));
+            saveSelectedExercises();
             
             document.getElementById('exerciseSelect').value = '';
             errorMsg.classList.remove('show');
@@ -556,7 +606,7 @@
         // Remove exercise from display
         function removeExerciseFromDisplay(index) {
             selectedExercises.splice(index, 1);
-            localStorage.setItem('selectedExercises', JSON.stringify(selectedExercises));
+            saveSelectedExercises();
             
             const successMsg = document.getElementById('successMessage');
             successMsg.textContent = '✓ Exercise removed!';
@@ -589,7 +639,7 @@
         // Remove exercise from admin list
         function removeExerciseFromAdminList(index) {
             selectedExercises.splice(index, 1);
-            localStorage.setItem('selectedExercises', JSON.stringify(selectedExercises));
+            saveSelectedExercises();
             updateAdminExercisesList();
             displayExercises();
         }
@@ -603,7 +653,6 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             loadData();
-            displayExercises();
 
             document.getElementById('adminPassword').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
