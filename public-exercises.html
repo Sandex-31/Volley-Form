@@ -557,9 +557,6 @@
                 list.innerHTML = selectedExercises.map((exercise, index) => `
                     <div class="exercise-item">
                         <div class="exercise-item-name">${exercise}</div>
-                        <div class="exercise-item-actions">
-                            <button class="btn-remove-exercise" onclick="removeExerciseFromDisplay(${index})">Remove</button>
-                        </div>
                     </div>
                 `).join('');
             }
