@@ -297,23 +297,6 @@
                 return false;
             }
         }
-        
-        export const clearTableOnThuFri = functions.pubsub
-        .schedule("0 2 * * 4-5")  // 2:00 UTC Thu & Fri; adjust as needed
-        .timeZone("UTC")
-        .onRun(async () => {
-            const collectionRef = db.collection("selectedExercises"); // ← change this
-
-            const snapshot = await collectionRef.get();
-            const batch = db.batch();
-
-            snapshot.docs.forEach((doc) => {
-            batch.delete(doc.ref);
-            });
-
-            await batch.commit();
-            console.log(`Cleared ${snapshot.size} documents on ${new Date().toISOString()}`);
-        });
 
 
         // Emoji ratings mapping
