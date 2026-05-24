@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Today's Exercise</title>
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
+    <!-- Firebase SDK (Compat version for CDN) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <style>
         * {
             margin: 0;
@@ -329,6 +329,7 @@
         <div class="header">
             <h1>🏐 Next training Exercise</h1>
             <p>Training schedule for the next appointment</p>
+            <p id="firebaseStatus" style="font-size: 12px; margin-top: 10px; color: #999;">⏳ Connecting...</p>
         </div>
 
         <div class="admin-button">
@@ -390,7 +391,6 @@
 
     <script>
         // ===== FIREBASE CONFIGURATION =====
-        // TODO: Replace with your own Firebase config from https://console.firebase.google.com/
         const firebaseConfig = {
             apiKey: "AIzaSyB7ZT4RmUgTn73PV8Azo7Jxj2fXMUBjf5c",
             authDomain: "volleyball-exercises-9fd18.firebaseapp.com",
@@ -406,14 +406,38 @@
         let selectedExercisesRef = null;
         let firebaseReady = false;
 
-        try {
-            firebase.initializeApp(firebaseConfig);
-            db = firebase.database();
-            selectedExercisesRef = db.ref('selectedExercises');
-            firebaseReady = true;
-        } catch (error) {
-            console.warn('Firebase not available, using localStorage instead:', error);
-            firebaseReady = false;
+        function initializeFirebase() {
+            try {
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                }
+                db = firebase.database();
+                selectedExercisesRef = db.ref('selectedExercises');
+                firebaseReady = true;
+                console.log('✅ Firebase initialized successfully');
+                updateStatusIndicator('✅ Real-time sync active', '#51a376');
+                return true;
+            } catch (error) {
+                console.error('❌ Firebase initialization failed:', error);
+                firebaseReady = false;
+                updateStatusIndicator('⚠️ Using local storage', '#e67e22');
+                return false;
+            }
+        }
+
+        function updateStatusIndicator(text, color) {
+            const status = document.getElementById('firebaseStatus');
+            if (status) {
+                status.textContent = text;
+                status.style.color = color;
+            }
+        }
+
+        // Try to initialize Firebase when script loads
+        if (typeof firebase !== 'undefined') {
+            setTimeout(initializeFirebase, 500);
+        } else {
+            console.warn('Firebase SDK not loaded yet, will try again on page load');
         }
 
         const ADMIN_PASSWORD = 'admin123';
@@ -464,12 +488,28 @@
 
             // Load selectedExercises from Firebase
             if (firebaseReady && selectedExercisesRef) {
-                selectedExercisesRef.on('value', (snapshot) => {
-                    const data = snapshot.val();
-                    selectedExercises = data || [];
-                    displayExercises();
-                });
+                console.log('📡 Setting up Firebase real-time listener...');
+                updateStatusIndicator('📡 Syncing...', '#5b7cfa');
+                selectedExercisesRef.on('value', 
+                    (snapshot) => {
+                        const data = snapshot.val();
+                        console.log('🔄 Firebase data received:', data);
+                        selectedExercises = Array.isArray(data) ? data : [];
+                        updateStatusIndicator('✅ Real-time sync active', '#51a376');
+                        displayExercises();
+                    },
+                    (error) => {
+                        console.error('❌ Firebase read error:', error);
+                        updateStatusIndicator('⚠️ Using local storage (sync failed)', '#e67e22');
+                        // Fallback to localStorage
+                        const savedSelected = localStorage.getItem('selectedExercises');
+                        selectedExercises = savedSelected ? JSON.parse(savedSelected) : [];
+                        displayExercises();
+                    }
+                );
             } else {
+                console.warn('⚠️ Firebase not ready, using localStorage');
+                updateStatusIndicator('⚠️ Using local storage (Firebase unavailable)', '#e67e22');
                 // Fallback to localStorage
                 const savedSelected = localStorage.getItem('selectedExercises');
                 if (savedSelected) {
@@ -484,8 +524,16 @@
         // Save exercises to Firebase or localStorage
         function saveSelectedExercises() {
             if (firebaseReady && selectedExercisesRef) {
-                selectedExercisesRef.set(selectedExercises);
+                console.log('💾 Saving to Firebase:', selectedExercises);
+                selectedExercisesRef.set(selectedExercises)
+                    .then(() => console.log('✅ Firebase save successful'))
+                    .catch(error => {
+                        console.error('❌ Firebase save failed:', error);
+                        // Fallback to localStorage
+                        localStorage.setItem('selectedExercises', JSON.stringify(selectedExercises));
+                    });
             } else {
+                console.log('💾 Saving to localStorage:', selectedExercises);
                 localStorage.setItem('selectedExercises', JSON.stringify(selectedExercises));
             }
         }
@@ -652,7 +700,19 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            loadData();
+            // Ensure Firebase is initialized before loading data
+            if (!firebaseReady) {
+                console.log('⏳ Initializing Firebase...');
+                if (typeof firebase !== 'undefined') {
+                    initializeFirebase();
+                } else {
+                    console.warn('⚠️ Firebase SDK not available');
+                    updateStatusIndicator('⚠️ Using local storage', '#e67e22');
+                }
+            }
+            
+            // Load data after a small delay to ensure Firebase is ready
+            setTimeout(loadData, 200);
 
             document.getElementById('adminPassword').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
