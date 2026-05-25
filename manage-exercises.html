@@ -178,10 +178,65 @@
             border-color: #5b7cfa;
         }
 
+        .exercise-item.dragging {
+            opacity: 0.5;
+            background: #1f2635;
+        }
+
+        .exercise-item.drag-over {
+            border: 2px dashed #5b7cfa;
+            background: #2d3854;
+        }
+
+        .drag-handle {
+            cursor: grab;
+            color: #999;
+            font-size: 18px;
+            padding: 4px 8px;
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+
         .exercise-name {
             flex: 1;
             color: #d0d9e8;
             font-size: 14px;
+        }
+
+        .reorder-buttons {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .btn-reorder {
+            background: #3a4560;
+            color: #d0d9e8;
+            padding: 6px 8px;
+            font-size: 12px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-reorder:hover:not(:disabled) {
+            background: #5b7cfa;
+            color: white;
+        }
+
+        .btn-reorder:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
         }
 
         .btn-remove {
@@ -343,6 +398,12 @@
                 exercises = JSON.parse(saved);
             } else {
                 exercises = [
+                    'TEST NUOVO ESERCIZIO GENERALE',
+                    'Liberi - TEST NUOVO ESERCIZIO',
+                    'Bande - TEST NUOVO ESERCIZIO',
+                    'Opposti - TEST NUOVO ESERCIZIO',
+                    'Centrali - TEST NUOVO ESERCIZIO',
+                    'Palleggi - TEST NUOVO ESERCIZIO',
                     'Warm-up (giri di campo)',
                     'Preparazione atletica (addome/dorso/gambe)',
                     'Esplosività (salti, sprint, balzi)',
@@ -350,10 +411,12 @@
                     'Bagherone (1v1 bagher)',
                     'Inferno & Paradiso',
                     'Partitella',
+                    'Servizio (mirato per ruoli)',
                     'Difesa (1, 6, 5 con 2 schiacciatori)',
                     'Difesa (4 ruoli autogestita, 1 schiacciatore a giro)',
                     'Ricezione (4 in rice, opposti/centrali servizio)',
                     'Ricezione (liberi in rice, il resto in servizio)',
+                    'Ricezione (doppia ricezione a 2 campi)',
                     'Situazione di gioco (6 vs 6, con muro a 2 o 3)',
                     'Attacchi (uno o entrambi i campi, bande/opposti/centrali)',
                     'Attacchi (un campo, bande/opposti, centrali a muro)',
@@ -389,11 +452,79 @@
             }
 
             list.innerHTML = exercises.map((exercise, index) => `
-                <div class="exercise-item">
+                <div class="exercise-item" draggable="true" data-index="${index}">
+                    <span class="drag-handle" title="Drag to reorder">⋮⋮</span>
                     <span class="exercise-name">${exercise}</span>
+                    <div class="reorder-buttons">
+                        <button type="button" class="btn-reorder" onclick="moveExerciseUp(${index})" ${index === 0 ? 'disabled' : ''} title="Move up">▲</button>
+                        <button type="button" class="btn-reorder" onclick="moveExerciseDown(${index})" ${index === exercises.length - 1 ? 'disabled' : ''} title="Move down">▼</button>
+                    </div>
                     <button class="btn-remove" onclick="removeExercise(${index})">Remove</button>
                 </div>
             `).join('');
+
+            // Add drag and drop listeners
+            setupDragAndDrop();
+        }
+
+        // Setup drag and drop
+        let draggedItem = null;
+        function setupDragAndDrop() {
+            const items = document.querySelectorAll('.exercise-item');
+            
+            items.forEach(item => {
+                item.addEventListener('dragstart', (e) => {
+                    draggedItem = item;
+                    item.classList.add('dragging');
+                });
+                
+                item.addEventListener('dragend', (e) => {
+                    item.classList.remove('dragging');
+                    items.forEach(i => i.classList.remove('drag-over'));
+                    draggedItem = null;
+                });
+                
+                item.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    if (draggedItem && draggedItem !== item) {
+                        item.classList.add('drag-over');
+                    }
+                });
+                
+                item.addEventListener('dragleave', (e) => {
+                    item.classList.remove('drag-over');
+                });
+                
+                item.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    if (draggedItem && draggedItem !== item) {
+                        const draggedIndex = parseInt(draggedItem.dataset.index);
+                        const targetIndex = parseInt(item.dataset.index);
+                        
+                        // Swap exercises
+                        [exercises[draggedIndex], exercises[targetIndex]] = [exercises[targetIndex], exercises[draggedIndex]];
+                        
+                        // Refresh display
+                        displayExercises();
+                    }
+                });
+            });
+        }
+
+        // Move exercise up
+        function moveExerciseUp(index) {
+            if (index > 0) {
+                [exercises[index - 1], exercises[index]] = [exercises[index], exercises[index - 1]];
+                displayExercises();
+            }
+        }
+
+        // Move exercise down
+        function moveExerciseDown(index) {
+            if (index < exercises.length - 1) {
+                [exercises[index + 1], exercises[index]] = [exercises[index], exercises[index + 1]];
+                displayExercises();
+            }
         }
 
         // Unlock editing
