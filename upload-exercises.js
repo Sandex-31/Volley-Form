@@ -19,7 +19,7 @@ let selectedExercisesRef = null;
 let firebaseReady = false;
 
 // Initialize Supabase
-let supabase = null;
+let supabaseClient = null;
 let supabaseReady = false;
 
 function initializeFirebase() {
@@ -58,8 +58,8 @@ function initializeSupabase() {
         }
         
         // Only create client if not already created
-        if (!supabase) {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        if (!supabaseClient) {
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         }
         
         supabaseReady = true;
@@ -311,7 +311,7 @@ function uploadExerciseData() {
 }
 
 function uploadVideo(exerciseName, file, description, saveBtn) {
-    if (!supabaseReady || !supabase) {
+    if (!supabaseReady || !supabaseClient) {
         showMessage('✗ Supabase not connected. Check credentials in upload-exercises.js', 'error');
         saveBtn.disabled = false;
         return;
@@ -330,7 +330,7 @@ function uploadVideo(exerciseName, file, description, saveBtn) {
     `;
 
     // Upload to Supabase Storage
-    supabase.storage
+    supabaseClient.storage
         .from(bucketName)
         .upload(filePath, file)
         .then((response) => {
@@ -339,7 +339,7 @@ function uploadVideo(exerciseName, file, description, saveBtn) {
             }
 
             // Get public URL
-            const { data } = supabase.storage
+            const { data } = supabaseClient.storage
                 .from(bucketName)
                 .getPublicUrl(filePath);
 
