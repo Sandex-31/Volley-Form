@@ -137,6 +137,7 @@ function loginAdmin() {
 
     if (password === ADMIN_PASSWORD) {
         isAdminLoggedIn = true;
+        localStorage.setItem('adminLoggedIn', 'true');
         document.getElementById('adminPassword').value = '';
         document.getElementById('loginSection').style.display = 'none';
         document.getElementById('uploadSection').style.display = 'block';
@@ -149,10 +150,22 @@ function loginAdmin() {
 
 function logoutAdmin() {
     isAdminLoggedIn = false;
+    localStorage.removeItem('adminLoggedIn');
     document.getElementById('loginSection').style.display = 'block';
     document.getElementById('uploadSection').style.display = 'none';
     document.getElementById('adminPassword').value = '';
     showMessage('✓ Logged out', 'success');
+}
+
+function checkAdminLogin() {
+    if (localStorage.getItem('adminLoggedIn') === 'true') {
+        isAdminLoggedIn = true;
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('uploadSection').style.display = 'block';
+        loadExercises();
+        return true;
+    }
+    return false;
 }
 
 // ===== DATA MANAGEMENT =====
@@ -389,16 +402,26 @@ document.addEventListener('DOMContentLoaded', function() {
         initializeFirebase();
     }
 
-    // Admin password enter key
-    document.getElementById('adminPassword').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            loginAdmin();
+    // Check if already logged in from previous session
+    if (!checkAdminLogin()) {
+        // Admin password enter key
+        const passwordInput = document.getElementById('adminPassword');
+        if (passwordInput) {
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    loginAdmin();
+                }
+            });
+            passwordInput.focus();
         }
-    });
+    }
 
     // Edit description enter key (allow multiline)
     // Note: Don't add enter key listener to textarea to allow new lines
 
     // Cancel edit button
-    document.getElementById('cancelEditBtn').addEventListener('click', cancelEdit);
+    const cancelBtn = document.getElementById('cancelEditBtn');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', cancelEdit);
+    }
 });
