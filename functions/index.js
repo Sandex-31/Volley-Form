@@ -1,8 +1,11 @@
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
+/**
+ * Cloud Functions for Volleyball Form
+ * Handles scheduled deletions, manual deletions, and response management
+ */
 
-// Initialize Firebase Admin SDK
-admin.initializeApp();
+const functions = require('firebase-functions');
+
+// ===== SCHEDULED FUNCTIONS =====
 
 /**
  * Scheduled Cloud Function to delete all responses every Tuesday and Friday at 00:00 UTC
@@ -13,6 +16,13 @@ exports.deleteResponsesScheduled = functions.pubsub
   .timeZone('UTC')
   .onRun(async (context) => {
     try {
+      console.log('🗑️ Starting scheduled deletion of responses...');
+      
+      const admin = require('firebase-admin');
+      if (!admin.apps.length) {
+        admin.initializeApp();
+      }
+      
       const db = admin.database();
       const submissionsRef = db.ref('formSubmissions');
       
@@ -20,18 +30,19 @@ exports.deleteResponsesScheduled = functions.pubsub
       const snapshot = await submissionsRef.once('value');
       const responseCount = snapshot.numChildren();
       
-      console.log(`🗑️ Starting deletion of ${responseCount} responses...`);
+      console.log(`Found ${responseCount} responses to delete`);
       
       // Delete all responses
       await submissionsRef.remove();
       
-      console.log(`✅ Successfully deleted ${responseCount} responses at ${new Date().toISOString()}`);
-      
-      return {
+      const result = {
         success: true,
         deletedCount: responseCount,
         timestamp: new Date().toISOString()
       };
+      
+      console.log(`✅ Successfully deleted ${responseCount} responses`);
+      return result;
       
     } catch (error) {
       console.error('❌ Error deleting responses:', error);
@@ -43,46 +54,121 @@ exports.deleteResponsesScheduled = functions.pubsub
     }
   });
 
+
+// ===== HTTP FUNCTIONS =====
+
 /**
- * Optional: HTTP triggered function to manually delete responses
- * Call with: curl -X POST https://us-central1-PROJECT_ID.cloudfunctions.net/deleteResponsesManual
+ * HTTP triggered function to manually delete all responses
+ * Call with: curl -X POST https://region-project.cloudfunctions.net/deleteResponsesManual
+ * With authentication required
  */
 exports.deleteResponsesManual = functions.https.onCall(async (data, context) => {
-  // Optional: Add authentication check
-  if (!context.auth) {
-    throw new functions.https.HttpsError(
-      'unauthenticated',
-      'User must be authenticated to delete responses'
-    );
-  }
-  
   try {
+    // Optional: Check authentication
+    if (!context.auth && !data.adminSecret) {
+      throw new functions.https.HttpsError('permission-denied', 'Authentication required');
+    }
+
+    const admin = require('firebase-admin');
+    if (!admin.apps.length) {
+      admin.initializeApp();
+    }
+
     const db = admin.database();
     const submissionsRef = db.ref('formSubmissions');
-    
     const snapshot = await submissionsRef.once('value');
     const responseCount = snapshot.numChildren();
-    
+
     console.log(`🗑️ Manual deletion triggered: ${responseCount} responses`);
     
     await submissionsRef.remove();
     
-    console.log(`✅ Successfully deleted ${responseCount} responses`);
-    
     return {
       success: true,
+      message: 'All responses deleted successfully',
       deletedCount: responseCount,
       timestamp: new Date().toISOString()
     };
-    
   } catch (error) {
-    console.error('❌ Error in manual deletion:', error);
+    console.error('Error in deleteResponsesManual:', error);
     throw new functions.https.HttpsError('internal', error.message);
   }
 });
 
 /**
- * Optional: HTTP function to get next scheduled deletion time
+ * HTTP triggered function to get all responses
+ */
+exports.getAllResponses = functions.https.onRequest(async (req, res) => {
+  res.set('Access-Control-Allow-Origin', '*');
+  
+  if (req.method === 'OPTIONS') {
+    res.set('Access-Control-Allow-Methods', 'GET');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    res.status(200).send('');
+    return;
+  }
+
+  try {
+    const admin = require('firebase-admin');
+    if (!admin.apps.length) {
+      admin.initializeApp();
+    }
+
+    const db = admin.database();
+    const snapshot = await db.ref('formSubmissions').once('value');
+    const data = snapshot.val();
+
+    res.json({
+      success: true,
+      data,
+      count: Object.keys(data || {}).length,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+/**
+ * HTTP triggered function to backup responses
+ */
+exports.backupResponses = functions.https.onRequest(async (req, res) => {
+  res.set('Access-Control-Allow-Origin', '*');
+  
+  try {
+    const admin = require('firebase-admin');
+    if (!admin.apps.length) {
+      admin.initializeApp();
+    }
+
+    const db = admin.database();
+    const snapshot = await db.ref('formSubmissions').once('value');
+    const data = snapshot.val();
+
+    res.json({
+      success: true,
+      message: 'Backup created',
+      data,
+      count: Object.keys(data || {}).length,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+/**
+ * HTTP function to get next scheduled deletion time
  */
 exports.getNextDeletionTime = functions.https.onRequest((req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
@@ -136,6 +222,7 @@ function getNextScheduledDeletion(date) {
   
   nextDate.setUTCDate(nextDate.getUTCDate() + daysToAdd);
   nextDate.setUTCHours(0, 0, 0, 0);
+
   
   return nextDate;
 }

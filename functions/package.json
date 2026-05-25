@@ -1,15 +1,32 @@
 {
-  "name": "volleyball-form-deletion",
+  "name": "volleyball-form-functions",
   "version": "1.0.0",
-  "description": "Response deletion script for Volleyball Form",
-  "main": "deleteResponses.js",
+  "description": "Cloud Functions for Volleyball Form - handles scheduled deletions, backups, and response management",
+  "main": "index.js",
   "scripts": {
-    "delete": "node deleteResponses.js"
+    "serve": "firebase emulators:start --only functions",
+    "deploy": "firebase deploy --only functions",
+    "delete": "node deleteResponses.js delete",
+    "backup": "node deleteResponses.js backup",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "firebase-admin": "^12.0.0"
+    "firebase-admin": "^12.0.0",
+    "firebase-functions": "^5.0.0"
+  },
+  "devDependencies": {
+    "firebase-functions-test": "^3.1.0"
   },
   "engines": {
     "node": "20"
-  }
+  },
+  "keywords": [
+    "firebase",
+    "cloud-functions",
+    "volleyball",
+    "form",
+    "responses"
+  ],
+  "author": "Volleyball Team",
+  "license": "MIT"
 }

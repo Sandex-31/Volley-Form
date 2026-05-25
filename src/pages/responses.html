@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Responses - Volleyball</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <style>
+        .response-card {
+            background: #1f2635;
+            border: 1px solid #3a4560;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .response-header {
+            border-bottom: 1px solid #3a4560;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .response-timestamp {
+            color: #999;
+            font-size: 12px;
+            margin: 0;
+        }
+
+        .response-content p {
+            margin: 8px 0;
+            color: #d0d9e8;
+            word-break: break-word;
+        }
+
+        .response-content strong {
+            color: #667eea;
+        }
+
+        #responsesContainer {
+            max-width: 900px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Form Responses</h1>
+            <p>View all submitted form responses</p>
+        </div>
+
+        <!-- Responses Container -->
+        <div id="responsesContainer">
+            <p class="loading">Loading responses...</p>
+        </div>
+
+        <!-- Navigation -->
+        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #3a4560; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+            <a href="index.html" style="display: inline-block; padding: 10px 40px; background: #3a4560; color: #d0d9e8; text-decoration: none; border-radius: 5px; font-weight: 600; transition: all 0.3s;" onmouseover="this.style.background='#4a5575'" onmouseout="this.style.background='#3a4560'">📋 Back to Form</a>
+            <a href="public-exercises.html" style="display: inline-block; padding: 10px 40px; background: #3a4560; color: #d0d9e8; text-decoration: none; border-radius: 5px; font-weight: 600; transition: all 0.3s;" onmouseover="this.style.background='#4a5575'" onmouseout="this.style.background='#3a4560'">🏐 View Exercises</a>
+        </div>
+    </div>
+
+    <!-- ===== FIREBASE SDK ===== -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <!-- ===== CONFIGURATION & CONSTANTS ===== -->
+    <script src="../config/firebase.config.js"></script>
+    <script src="../config/supabase.config.js"></script>
+    <script src="../config/constants.js"></script>
+
+    <!-- ===== COMMON SERVICES ===== -->
+    <script src="../common/logger.js"></script>
+    <script src="../common/storage-service.js"></script>
+    <script src="../common/ui-service.js"></script>
+
+    <!-- ===== DATA SERVICES ===== -->
+    <script src="../services/firebase-service.js"></script>
+    <script src="../services/exercise-service.js"></script>
+
+    <!-- ===== RESPONSES MODULE ===== -->
+    <script src="../modules/responses/responses.js"></script>
+</body>
+</html>
