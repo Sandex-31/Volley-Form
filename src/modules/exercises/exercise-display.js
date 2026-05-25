@@ -8,6 +8,12 @@ const ExerciseDisplay = {
      * Initialize display module
      */
     init: function() {
+        // Wait for Firebase to be ready before loading exercises
+        if (!FirebaseService.isReady()) {
+            // Retry in 100ms if Firebase isn't ready yet
+            setTimeout(() => this.init(), 100);
+            return;
+        }
         this.loadAndDisplayExercises();
         Logger.info('Exercise display module initialized');
     },

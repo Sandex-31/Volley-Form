@@ -6,23 +6,11 @@
     <title>Volley Form - Loading...</title>
     <meta http-equiv="refresh" content="0;url=src/pages/index.html">
     <script>
-        // Redirect for browsers that don't support meta refresh
         window.location.href = 'src/pages/index.html';
     </script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .container {
-            text-align: center;
-            color: white;
-        }
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .container { text-align: center; color: white; }
         h1 { margin: 0; }
         p { margin: 10px 0 0 0; }
     </style>
@@ -32,104 +20,5 @@
         <h1>🏐 Volley Form</h1>
         <p>Redirecting...</p>
     </div>
-</body>
-</html>
-
-        <!-- Progress Bar -->
-        <div class="progress-container">
-            <div class="progress-bar">
-                <div class="progress-fill"></div>
-            </div>
-            <div class="progress-text"><span id="currentStep">1</span> of <span id="totalSteps">3</span> completed</div>
-        </div>
-
-        <!-- Steps Indicator -->
-        <div class="steps-indicator">
-            <div class="step active" data-step="1">
-                <div class="step-circle">1</div>
-                <div class="step-label">Personal</div>
-            </div>
-            <div class="step" data-step="2">
-                <div class="step-circle">2</div>
-                <div class="step-label">Exercises</div>
-            </div>
-            <div class="step" data-step="3">
-                <div class="step-circle">3</div>
-                <div class="step-label">Notes</div>
-            </div>
-        </div>
-
-        <div id="errorMessage" class="error-message" data-fs-error></div>
-        <div id="successMessage" class="success-message" data-fs-success>
-            ✓ Form submitted successfully!
-        </div>
-
-        <form id="dataForm">
-            <!-- STEP 1: Personal Information -->
-            <div class="step-content active" data-step="1">
-                <h3 style="color: #d4d0d0; margin-bottom: 20px;">Personal Information</h3>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="firstName">First Name *</label>
-                        <input type="text" id="firstName" name="firstName" data-fs-field required>
-                    </div>
-                    <div class="form-group">
-                        <label for="lastName">Last Name *</label>
-                        <input type="text" id="lastName" name="lastName" data-fs-field required>
-                    </div>
-                </div>
-
-                <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #3a4560; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                    <a href="public-exercises.html" style="display: inline-block; padding: 10px 20px; background: #3a4560; color: #d0d9e8; text-decoration: none; border-radius: 5px; font-weight: 600; transition: all 0.3s;" onmouseover="this.style.background='#4a5575'" onmouseout="this.style.background='#3a4560'">🏐 View Training Exercises</a>
-                    <a href="manage-exercises.html" style="display: inline-block; padding: 10px 40px; background: #3a4560; color: #d0d9e8; text-decoration: none; border-radius: 5px; font-weight: 600; transition: all 0.3s;" onmouseover="this.style.background='#4a5575'" onmouseout="this.style.background='#3a4560'">⚙️ Manage Exercises</a>
-                    <a href="responses.html" style="display: inline-block; padding: 10px 47px; background: #3a4560; color: #d0d9e8; text-decoration: none; border-radius: 5px; font-weight: 600; transition: all 0.3s;" onmouseover="this.style.background='#4a5575'" onmouseout="this.style.background='#3a4560'">📊 View Responses</a>
-                </div>
-            </div>
-
-            <!-- STEP 2: Exercise Ratings -->
-            <div class="step-content" data-step="2">
-                <h3 style="color: #d4d0d0; margin-bottom: 10px; font-size: 24px;">💪 Exercise Ratings</h3>
-                <p style="color: #666; margin-bottom: 25px; font-size: 14px;">How did each exercise feel? Drag the slider to rate from 😞 to 🤩</p>
-                
-                <div class="form-group" style="margin-bottom: 25px;">
-                    <label for="exerciseDate">Date *</label>
-                    <input type="date" id="exerciseDate" name="exerciseDate" data-fs-field required>
-                </div>
-                
-                <div id="exercisesList">
-                    <!-- Exercises will be added here dynamically -->
-                </div>
-
-                <button type="button" class="add-exercise-btn" id="addExerciseBtn" onclick="addExercise()">➕ Add Another Exercise</button>
-            </div>
-
-            <!-- STEP 3: Notes -->
-            <div class="step-content" data-step="3">
-                <h3 style="color: #d4d0d0; margin-bottom: 20px;">📝 Notes</h3>
-                <p style="color: #666; margin-bottom: 20px; font-size: 14px;">Write anything you'd want the others to know. (everything is totally anonymous and secure.)</p>
-                
-                <div class="form-group">
-                    <label for="notes">Your Notes</label>
-                    <textarea id="notes" name="notes" placeholder="Write your thoughts, feedback, or any additional information..."></textarea>
-                </div>
-            </div>
-
-            <!-- Navigation Buttons -->
-            <div class="button-group">
-                <button type="button" class="btn-prev" id="prevBtn" onclick="previousStep()" disabled>← Previous</button>
-                <button type="button" class="btn-next" id="nextBtn" onclick="nextStep()">Next →</button>
-            </div>
-        </form>
-    </div>
-
-    <script src="script.js"></script>
-
-    <!-- Formspree integration -->
-    <script>
-        window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
-        formspree('initForm', { formElement: '#dataForm', formId: 'mojbwadw' });
-    </script>
-    <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 </body>
 </html>

@@ -9,19 +9,8 @@
         window.location.href = 'src/pages/public-exercises.html';
     </script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .container {
-            text-align: center;
-            color: white;
-        }
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .container { text-align: center; color: white; }
         h1 { margin: 0; }
         p { margin: 10px 0 0 0; }
     </style>
@@ -31,78 +20,5 @@
         <h1>🏐 Training Exercises</h1>
         <p>Redirecting...</p>
     </div>
-</body>
-</html>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🏐 Next training Exercise</h1>
-            <p>Training schedule for the next appointment</p>
-            <p id="firebaseStatus" style="font-size: 12px; margin-top: 10px; color: #999;">⏳ Connecting...</p>
-        </div>
-
-        <div class="admin-button">
-            <button class="btn-admin" onclick="openAdminPanel()">👨‍💼 Admin Panel</button>
-        </div>
-
-        <!-- Exercises List Display -->
-        <div class="exercises-section">
-            <h2>📋 Exercises</h2>
-            <div id="exercisesList" class="exercises-list"></div>
-        </div>
-
-        <!-- Back to Form Link -->
-        <div class="back-link">
-            <a href="index.html">← Back to Form</a>
-        </div>
-    </div>
-
-    <!-- Admin Panel Modal -->
-    <div id="adminModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeAdminPanel()">&times;</span>
-            
-            <h2>👨‍💼 Admin Panel</h2>
-            <div id="errorMessage" class="error-message"></div>
-            <div id="successMessage" class="success-message"></div>
-
-            <div id="adminLogin">
-                <div class="form-group">
-                    <label for="adminPassword">Admin Password</label>
-                    <input type="password" id="adminPassword" placeholder="Enter admin password...">
-                </div>
-                <div class="modal-buttons">
-                    <button class="btn-save" onclick="loginAdmin()">Login</button>
-                    <button class="btn-cancel" onclick="closeAdminPanel()">Cancel</button>
-                </div>
-            </div>
-
-            <div id="adminPanel" style="display: none;">
-                <div class="form-group">
-                    <label for="exerciseSelect">Select Exercise to Add</label>
-                    <select id="exerciseSelect">
-                        <option value="">-- Choose an exercise --</option>
-                    </select>
-                </div>
-                <button class="btn-save" style="width: 100%; margin-bottom: 20px;" onclick="addSelectedExercise()">+ Add Exercise</button>
-                
-                <div style="border-top: 1px solid #3a4560; padding-top: 20px; margin-top: 20px;">
-                    <a href="upload-exercises.html" style="display: block; width: 100%; text-align: center; background: linear-gradient(135deg, #748ffc 0%, #5b7cfa 100%); color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin-bottom: 20px; font-weight: 600; cursor: pointer; border: none; transition: all 0.3s;">📹 Upload Videos & Descriptions</a>
-                </div>
-                
-                <div style="border-top: 1px solid #3a4560; padding-top: 20px; margin-top: 20px;">
-                    <h3 style="color: #d0d9e8; font-size: 14px; margin-bottom: 15px; font-weight: 700;">📋 Currently Scheduled</h3>
-                    <div id="adminExercisesList" style="max-height: 250px; overflow-y: auto; margin-bottom: 20px;"></div>
-                </div>
-
-                <div class="modal-buttons">
-                    <button class="btn-cancel" onclick="logoutAdmin()">Logout</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- External JavaScript -->
-    <script src="public-exercises.js"></script>
 </body>
 </html>

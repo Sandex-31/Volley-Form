@@ -52,11 +52,9 @@ const FirebaseModule = {
     }
 };
 
-// Auto-initialize when script loads
+// Auto-initialize when script loads (immediately, no delay)
 if (typeof firebase !== 'undefined') {
-    setTimeout(() => {
-        if (!FirebaseModule.isReady) {
-            FirebaseModule.init();
-        }
-    }, 500);
+    if (!FirebaseModule.isReady) {
+        FirebaseModule.init();
+    }
 }

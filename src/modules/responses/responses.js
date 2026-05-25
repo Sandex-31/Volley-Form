@@ -8,6 +8,12 @@ const ResponsesModule = {
      * Initialize responses module
      */
     init: function() {
+        // Wait for Firebase to be ready before loading responses
+        if (!FirebaseService.isReady()) {
+            // Retry in 100ms if Firebase isn't ready yet
+            setTimeout(() => this.init(), 100);
+            return;
+        }
         this.loadResponses();
         Logger.info('Responses module initialized');
     },
