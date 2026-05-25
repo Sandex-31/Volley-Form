@@ -305,6 +305,85 @@
             text-decoration: underline;
         }
 
+        .admin-exercise-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: #2d3854;
+            border-radius: 5px;
+            margin-bottom: 8px;
+            border: 1px solid #3a4560;
+            transition: all 0.3s;
+        }
+
+        .admin-exercise-item:hover {
+            background: #333d56;
+            border-color: #5b7cfa;
+        }
+
+        .admin-exercise-item.dragging {
+            opacity: 0.5;
+            background: #1f2635;
+        }
+
+        .admin-exercise-item.drag-over {
+            border: 2px dashed #5b7cfa;
+        }
+
+        .admin-drag-handle {
+            cursor: grab;
+            color: #999;
+            font-size: 16px;
+            padding: 2px 6px;
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .admin-drag-handle:active {
+            cursor: grabbing;
+        }
+
+        .admin-exercise-name {
+            flex: 1;
+            color: #d0d9e8;
+            font-size: 12px;
+            word-break: break-word;
+        }
+
+        .admin-reorder-buttons {
+            display: flex;
+            gap: 2px;
+            flex-shrink: 0;
+        }
+
+        .admin-btn-reorder {
+            background: #3a4560;
+            color: #d0d9e8;
+            padding: 4px 6px;
+            font-size: 11px;
+            border-radius: 3px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .admin-btn-reorder:hover:not(:disabled) {
+            background: #5b7cfa;
+            color: white;
+        }
+
+        .admin-btn-reorder:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
         @media (max-width: 480px) {
             .container {
                 padding: 20px;
@@ -685,12 +764,86 @@
                 adminList.innerHTML = '<div style="color: #999; text-align: center; padding: 15px; font-style: italic;">No exercises scheduled</div>';
             } else {
                 adminList.innerHTML = selectedExercises.map((exercise, index) => `
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #2d3854; border-radius: 5px; margin-bottom: 8px; border: 1px solid #3a4560;">
-                        <span style="color: #d0d9e8; font-size: 13px;">${exercise}</span>
+                    <div class="admin-exercise-item" draggable="true" data-index="${index}">
+                        <span class="admin-drag-handle" title="Drag to reorder">☰</span>
+                        <span class="admin-exercise-name">${exercise}</span>
+                        <div class="admin-reorder-buttons">
+                            <button type="button" class="admin-btn-reorder" onclick="moveExerciseUpAdmin(${index})" ${index === 0 ? 'disabled' : ''} title="Move up">▲</button>
+                            <button type="button" class="admin-btn-reorder" onclick="moveExerciseDownAdmin(${index})" ${index === selectedExercises.length - 1 ? 'disabled' : ''} title="Move down">▼</button>
+                        </div>
                         <button class="btn-remove-exercise" onclick="removeExerciseFromAdminList(${index})" style="font-size: 11px; padding: 4px 8px;">Remove</button>
                     </div>
                 `).join('');
+                setupAdminDragAndDrop();
             }
+        }
+
+        // Move exercise up in admin
+        function moveExerciseUpAdmin(index) {
+            if (index > 0) {
+                [selectedExercises[index - 1], selectedExercises[index]] = [selectedExercises[index], selectedExercises[index - 1]];
+                saveSelectedExercises();
+                updateAdminExercisesList();
+                displayExercises();
+            }
+        }
+
+        // Move exercise down in admin
+        function moveExerciseDownAdmin(index) {
+            if (index < selectedExercises.length - 1) {
+                [selectedExercises[index + 1], selectedExercises[index]] = [selectedExercises[index], selectedExercises[index + 1]];
+                saveSelectedExercises();
+                updateAdminExercisesList();
+                displayExercises();
+            }
+        }
+
+        // Setup drag and drop for admin exercises
+        let draggedAdminItem = null;
+        function setupAdminDragAndDrop() {
+            const items = document.querySelectorAll('.admin-exercise-item');
+            
+            items.forEach(item => {
+                item.addEventListener('dragstart', (e) => {
+                    if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+                        e.preventDefault();
+                        return;
+                    }
+                    draggedAdminItem = item;
+                    item.classList.add('dragging');
+                });
+                
+                item.addEventListener('dragend', (e) => {
+                    item.classList.remove('dragging');
+                    items.forEach(i => i.classList.remove('drag-over'));
+                    draggedAdminItem = null;
+                });
+                
+                item.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    if (draggedAdminItem && draggedAdminItem !== item) {
+                        item.classList.add('drag-over');
+                    }
+                });
+                
+                item.addEventListener('dragleave', (e) => {
+                    item.classList.remove('drag-over');
+                });
+                
+                item.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    if (draggedAdminItem && draggedAdminItem !== item) {
+                        const draggedIndex = parseInt(draggedAdminItem.dataset.index);
+                        const targetIndex = parseInt(item.dataset.index);
+                        
+                        [selectedExercises[draggedIndex], selectedExercises[targetIndex]] = [selectedExercises[targetIndex], selectedExercises[draggedIndex]];
+                        
+                        saveSelectedExercises();
+                        updateAdminExercisesList();
+                        displayExercises();
+                    }
+                });
+            });
         }
 
         // Remove exercise from admin list

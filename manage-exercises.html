@@ -26,7 +26,7 @@
             border-radius: 10px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
             padding: 40px;
-            max-width: 650px;
+            max-width: 900px;
             width: 100%;
             border: 1px solid #3a4560;
         }
@@ -171,6 +171,8 @@
             border-radius: 5px;
             margin-bottom: 10px;
             transition: all 0.3s;
+            min-width: 0;
+            width: 100%;
         }
 
         .exercise-item:hover {
@@ -191,10 +193,13 @@
         .drag-handle {
             cursor: grab;
             color: #999;
-            font-size: 18px;
+            font-size: 20px;
             padding: 4px 8px;
             user-select: none;
             flex-shrink: 0;
+            font-weight: bold;
+            min-width: 24px;
+            text-align: center;
         }
 
         .drag-handle:active {
@@ -205,6 +210,8 @@
             flex: 1;
             color: #d0d9e8;
             font-size: 14px;
+            min-width: 150px;
+            word-break: break-word;
         }
 
         .reorder-buttons {
@@ -217,16 +224,17 @@
             background: #3a4560;
             color: #d0d9e8;
             padding: 6px 8px;
-            font-size: 12px;
+            font-size: 14px;
             border-radius: 4px;
             border: none;
             cursor: pointer;
             transition: all 0.3s;
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
 
         .btn-reorder:hover:not(:disabled) {
@@ -243,8 +251,9 @@
             background: #c23030;
             color: white;
             padding: 8px 12px;
-            font-size: 14px;
+            font-size: 12px;
             border-radius: 5px;
+            flex-shrink: 0;
         }
 
         .btn-remove:hover {
@@ -325,6 +334,7 @@
         @media (max-width: 480px) {
             .container {
                 padding: 20px;
+                max-width: 100%;
             }
 
             .header h1 {
@@ -337,6 +347,32 @@
 
             .action-buttons {
                 flex-direction: column;
+            }
+
+            .exercise-item {
+                padding: 10px 8px;
+                gap: 6px;
+            }
+
+            .drag-handle {
+                font-size: 16px;
+                padding: 4px 4px;
+            }
+
+            .btn-reorder {
+                width: 28px;
+                height: 28px;
+                padding: 4px 4px;
+            }
+
+            .btn-remove {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+
+            .exercise-name {
+                font-size: 12px;
+                min-width: 100px;
             }
         }
     </style>
@@ -453,7 +489,7 @@
 
             list.innerHTML = exercises.map((exercise, index) => `
                 <div class="exercise-item" draggable="true" data-index="${index}">
-                    <span class="drag-handle" title="Drag to reorder">⋮⋮</span>
+                    <span class="drag-handle" title="Drag to reorder">☰</span>
                     <span class="exercise-name">${exercise}</span>
                     <div class="reorder-buttons">
                         <button type="button" class="btn-reorder" onclick="moveExerciseUp(${index})" ${index === 0 ? 'disabled' : ''} title="Move up">▲</button>
@@ -474,6 +510,11 @@
             
             items.forEach(item => {
                 item.addEventListener('dragstart', (e) => {
+                    // Prevent dragging if clicking on buttons
+                    if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+                        e.preventDefault();
+                        return;
+                    }
                     draggedItem = item;
                     item.classList.add('dragging');
                 });
