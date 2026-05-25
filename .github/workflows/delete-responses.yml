@@ -1,0 +1,37 @@
+name: Delete Training Responses
+
+# Run every Tuesday and Friday at 00:00 UTC
+on:
+  schedule:
+    - cron: '0 0 * * 2,5'
+  
+  # Allow manual trigger from Actions tab
+  workflow_dispatch:
+
+jobs:
+  delete-responses:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install dependencies
+        working-directory: ./functions
+        run: npm install
+      
+      - name: Delete responses from Firebase
+        working-directory: ./functions
+        run: node deleteResponses.js
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      
+      - name: Log completion
+        run: |
+          echo "✅ Deletion completed at $(date)"
+          echo "Next scheduled run: $(node -e "const d = new Date(); d.setUTCDate(d.getUTCDate() + (d.getUTCDay() === 2 ? 3 : d.getUTCDay() === 5 ? 3 : 2 - d.getUTCDay())); console.log(d.toISOString())")"

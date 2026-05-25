@@ -1,0 +1,15 @@
+{
+  "name": "volleyball-form-deletion",
+  "version": "1.0.0",
+  "description": "Response deletion script for Volleyball Form",
+  "main": "deleteResponses.js",
+  "scripts": {
+    "delete": "node deleteResponses.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.0.0"
+  },
+  "engines": {
+    "node": "20"
+  }
+}
