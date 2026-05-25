@@ -310,6 +310,16 @@ function uploadExerciseData() {
     }
 }
 
+function sanitizeFilePath(str) {
+    return str
+        .normalize('NFD')                           // Decompose accented characters
+        .replace(/[\u0300-\u036f]/g, '')           // Remove accents
+        .replace(/[^\w\s-]/g, '')                  // Remove special characters (keep letters, numbers, spaces, hyphens)
+        .replace(/\s+/g, '_')                      // Replace spaces with underscores
+        .replace(/_+/g, '_')                       // Remove multiple consecutive underscores
+        .toLowerCase();                            // Convert to lowercase
+}
+
 function uploadVideo(exerciseName, file, description, saveBtn) {
     if (!supabaseReady || !supabaseClient) {
         showMessage('✗ Supabase not connected. Check credentials in upload-exercises.js', 'error');
@@ -318,8 +328,10 @@ function uploadVideo(exerciseName, file, description, saveBtn) {
     }
 
     const bucketName = 'exercises';
-    const fileName = `${Date.now()}_${file.name}`;
-    const filePath = `${exerciseName}/${fileName}`;
+    const sanitizedExerciseName = sanitizeFilePath(exerciseName);
+    const sanitizedFileName = sanitizeFilePath(file.name);
+    const fileName = `${Date.now()}_${sanitizedFileName}`;
+    const filePath = `${sanitizedExerciseName}/${fileName}`;
 
     document.getElementById('uploadProgress').style.display = 'block';
     document.getElementById('uploadProgress').innerHTML = `
