@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Exercise Videos</title>
+    <!-- Firebase SDK (for Database only) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <!-- Supabase SDK (for Storage) - Using unpkg instead of jsDelivr -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <!-- External CSS -->
+    <link rel="stylesheet" href="upload-exercises.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📹 Upload Exercise Videos</h1>
+            <p>Add video descriptions and upload training videos for exercises</p>
+        </div>
+
+        <!-- Messages -->
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+        <div id="infoMessage" class="info-message"></div>
+
+        <!-- Login Section -->
+        <div id="loginSection">
+            <h2 style="color: #f0f4f8; margin-bottom: 20px; font-size: 18px; font-weight: 700;">Admin Authentication</h2>
+            <div class="form-group">
+                <label for="adminPassword">Admin Password</label>
+                <input type="password" id="adminPassword" placeholder="Enter admin password..." autofocus>
+            </div>
+            <button class="btn-save" onclick="loginAdmin()">🔑 Login</button>
+        </div>
+
+        <!-- Upload Section (Hidden by default) -->
+        <div id="uploadSection" style="display: none;">
+            <div style="text-align: right; margin-bottom: 20px;">
+                <button class="btn-secondary" onclick="logoutAdmin()" style="width: auto; padding: 8px 16px; font-size: 12px;">Logout</button>
+            </div>
+
+            <!-- Edit Exercise Section -->
+            <div id="editSection" style="display: none;">
+                <h2 style="color: #f0f4f8; margin-bottom: 20px; font-size: 18px; font-weight: 700;">✏️ Edit Exercise</h2>
+                
+                <div class="form-group">
+                    <label for="editExerciseName">Exercise Name</label>
+                    <input type="text" id="editExerciseName" readonly style="background: #1f2635; cursor: not-allowed;">
+                </div>
+
+                <div class="form-group">
+                    <label for="editDescription">Exercise Description</label>
+                    <textarea id="editDescription" placeholder="Write a detailed description of the exercise technique, benefits, and tips..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="editVideoInput">📹 Upload Video (MP4, Max 100 MB)</label>
+                    <input type="file" id="editVideoInput" accept=".mp4,video/mp4" onchange="validateFileSize(this)">
+                    <small style="color: #999; display: block; margin-top: 8px;">
+                        💡 Format: MP4 | Max size: 100 MB | Recommended: 1080p, landscape orientation
+                    </small>
+                </div>
+
+                <div id="uploadProgress" class="upload-progress"></div>
+
+                <div class="button-group">
+                    <button class="btn-save" onclick="uploadExerciseData()">✓ Save & Upload</button>
+                    <button class="btn-secondary" id="cancelEditBtn">Cancel</button>
+                </div>
+            </div>
+
+            <!-- Exercise List Section -->
+            <div class="section">
+                <h2>📋 Scheduled Exercises</h2>
+                <div id="exercisesList"></div>
+            </div>
+        </div>
+
+        <!-- Back Link -->
+        <div class="back-link">
+            <a href="public-exercises.html">← Back to Exercises View</a>
+        </div>
+    </div>
+
+    <!-- External JavaScript -->
+    <script src="upload-exercises.js"></script>
+</body>
+</html>
