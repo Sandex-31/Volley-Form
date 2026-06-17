@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reimbursements - Volleyball</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+    <style>
+        .rb-summary {
+            text-align: center;
+            color: #d0d9e8;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+        .rb-summary strong { color: #5b7cfa; }
+
+        .rb-toolbar {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .rb-message {
+            display: none;
+            text-align: center;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .rb-message.success { background: #1f3a2d; color: #6fe0a0; border: 1px solid #2e6b4a; }
+        .rb-message.error   { background: #3a1f24; color: #f0a0a8; border: 1px solid #6b2e38; }
+
+        .rb-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .rb-row {
+            display: grid;
+            grid-template-columns: 1fr auto 2fr;
+            gap: 12px;
+            align-items: center;
+            background: #242d47;
+            border: 1px solid #3a4560;
+            border-radius: 8px;
+            padding: 12px 15px;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .rb-row.is-paid {
+            border-color: #2e6b4a;
+            background: #20302a;
+        }
+
+        .rb-name {
+            color: #f0f4f8;
+            font-weight: 600;
+            font-size: 15px;
+            word-break: break-word;
+        }
+
+        .rb-toggle {
+            cursor: pointer;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+        .rb-toggle:hover { opacity: 0.85; }
+        .rb-toggle:active { transform: scale(0.96); }
+        .rb-toggle.paid  { background: #2e6b4a; color: #d6ffe8; }
+        .rb-toggle.topay { background: #3a4560; color: #d0d9e8; }
+
+        .rb-note {
+            background: #1f2635;
+            border: 1px solid #3a4560;
+            border-radius: 6px;
+            padding: 8px 10px;
+            color: #d0d9e8;
+            font-size: 13px;
+            width: 100%;
+        }
+        .rb-note:focus { outline: none; border-color: #5b7cfa; }
+
+        .rb-empty {
+            text-align: center;
+            padding: 50px 20px;
+            color: #999;
+        }
+        .rb-empty-icon { font-size: 56px; margin-bottom: 15px; }
+        .rb-empty-text { font-size: 18px; color: #d0d9e8; margin-bottom: 8px; }
+
+        .rb-admin {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background: #1f2635;
+            border: 1px solid #3a4560;
+            border-radius: 8px;
+        }
+        .rb-admin h3 { color: #f0f4f8; margin-bottom: 6px; }
+        .rb-admin p { color: #999; font-size: 13px; margin-bottom: 12px; }
+        .rb-admin textarea {
+            width: 100%;
+            min-height: 180px;
+            background: #242d47;
+            border: 1px solid #3a4560;
+            border-radius: 6px;
+            color: #d0d9e8;
+            padding: 12px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        .rb-admin textarea:focus { outline: none; border-color: #5b7cfa; }
+
+        .rb-btn {
+            cursor: pointer;
+            display: inline-block;
+            padding: 10px 22px;
+            background: #3a4560;
+            color: #d0d9e8;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        .rb-btn:hover { background: #4a5575; }
+        .rb-btn.primary { background: #5b7cfa; color: #fff; }
+        .rb-btn.primary:hover { background: #748ffc; }
+        .rb-btn.danger { background: #6b2e38; color: #f0a0a8; }
+        .rb-btn.danger:hover { background: #843843; }
+
+        @media (max-width: 600px) {
+            .rb-row {
+                grid-template-columns: 1fr auto;
+                grid-template-areas: "name toggle" "note note";
+            }
+            .rb-name   { grid-area: name; }
+            .rb-toggle { grid-area: toggle; }
+            .rb-note   { grid-area: note; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💶 Reimbursements</h1>
+            <p>Who has paid back the person that anticipated the money</p>
+        </div>
+
+        <div id="rbSummary" class="rb-summary">Loading…</div>
+
+        <div class="rb-toolbar">
+            <button type="button" id="adminLoginBtn" class="rb-btn">🔒 Admin (edit list)</button>
+            <button type="button" id="resetAllBtn" class="rb-btn danger" style="display:none;">↺ Reset all to “to pay”</button>
+        </div>
+
+        <div id="rbMessage" class="rb-message"></div>
+
+        <div id="reimbursementList" class="rb-list">
+            <div class="rb-empty"><div class="rb-empty-icon">⏳</div><div class="rb-empty-text">Loading…</div></div>
+        </div>
+
+        <!-- Admin panel: set the roster (one name per line) -->
+        <div id="adminPanel" class="rb-admin">
+            <h3>Edit the list of people</h3>
+            <p>One name per line. Existing people keep their paid/to-pay status; removing a line removes that person.</p>
+            <textarea id="rosterInput" placeholder="Mario Rossi&#10;Luca Bianchi&#10;Giulia Verdi"></textarea>
+            <div style="margin-top: 12px; text-align: right;">
+                <button type="button" id="saveRosterBtn" class="rb-btn primary">💾 Save list</button>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #3a4560; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+            <a href="index.html" style="display: inline-block; padding: 10px 40px; background: #3a4560; color: #d0d9e8; text-decoration: none; border-radius: 5px; font-weight: 600; transition: all 0.3s;" onmouseover="this.style.background='#4a5575'" onmouseout="this.style.background='#3a4560'">📋 Back to Form</a>
+            <a href="responses.html" style="display: inline-block; padding: 10px 40px; background: #3a4560; color: #d0d9e8; text-decoration: none; border-radius: 5px; font-weight: 600; transition: all 0.3s;" onmouseover="this.style.background='#4a5575'" onmouseout="this.style.background='#3a4560'">📊 View Responses</a>
+        </div>
+    </div>
+
+    <!-- ===== FIREBASE SDK ===== -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <!-- ===== CONFIGURATION ===== -->
+    <!-- logger first so firebase.config's auto-init can log without erroring -->
+    <script src="../common/logger.js"></script>
+    <script src="../config/firebase.config.js"></script>
+    <script src="../config/constants.js"></script>
+
+    <!-- ===== DATA SERVICES ===== -->
+    <script src="../services/firebase-service.js"></script>
+    <script src="../services/reimbursement-service.js"></script>
+
+    <!-- ===== REIMBURSEMENTS MODULE ===== -->
+    <script src="../modules/reimbursements/reimbursements.js"></script>
+</body>
+</html>
