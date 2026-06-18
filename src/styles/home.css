@@ -1,0 +1,209 @@
+/* ===== HOME DASHBOARD SPECIFIC STYLES ===== */
+
+.home-container {
+    max-width: 950px;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.welcome-hero {
+    background: #242d47;
+    padding: 50px 40px;
+    border-radius: 12px;
+    border: 1px solid #3a4560;
+    margin-bottom: 30px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.welcome-hero h1 {
+    font-size: 40px;
+    font-weight: 800;
+    margin-bottom: 15px;
+    background: linear-gradient(135deg, #5b7cfa 0%, #748ffc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.welcome-hero p {
+    color: #b0c4de;
+    font-size: 15px;
+    max-width: 650px;
+    margin: 0 auto 25px auto;
+    line-height: 1.6;
+}
+
+/* Home Section Layout */
+.home-section {
+    background: #242d47;
+    border: 1px solid #3a4560;
+    border-radius: 10px;
+    padding: 25px 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.home-section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #f0f4f8;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #3a4560;
+    padding-bottom: 10px;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.home-section-title a {
+    font-size: 12px;
+    color: #5b7cfa;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.home-section-title a:hover {
+    text-decoration: underline;
+}
+
+/* Quick Navigation Grid */
+.home-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.home-card {
+    background: #1f2635;
+    border: 1px solid #3a4560;
+    border-radius: 10px;
+    padding: 25px 20px;
+    transition: all 0.3s ease;
+    text-align: left;
+    display: block;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.home-card:hover {
+    border-color: #5b7cfa;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(91, 124, 250, 0.15);
+}
+
+.home-card .icon {
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+.home-card h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #f0f4f8;
+    margin-bottom: 8px;
+}
+
+.home-card p {
+    font-size: 13px;
+    color: #8892b0;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* Squad Roster Preview */
+.roster-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.player-preview-card {
+    background: #1f2635;
+    border: 1px solid #3a4560;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.player-preview-card .jersey {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3a4560 0%, #4e5a7b 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.player-preview-card .name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #f0f4f8;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    text-align: center;
+}
+
+.player-preview-card .role {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 700;
+}
+
+/* Next Match Preview Widget */
+.match-preview-card {
+    background: #1f2635;
+    border: 1px solid #3a4560;
+    border-radius: 10px;
+    padding: 20px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.match-preview-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #f0f4f8;
+}
+
+.match-preview-info p {
+    margin: 0;
+    font-size: 13px;
+    color: #8892b0;
+}
+
+.match-preview-badge {
+    background: rgba(91, 124, 250, 0.15);
+    color: #748ffc;
+    border: 1px solid rgba(91, 124, 250, 0.3);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+    .match-preview-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

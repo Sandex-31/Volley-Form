@@ -6,18 +6,21 @@
     <title>Volleyball Matches - Volley Tool</title>
     <link rel="stylesheet" href="../styles/styles.css">
     <link rel="stylesheet" href="../styles/navbar.css">
+    <link rel="stylesheet" href="../styles/players.css">
     <link rel="stylesheet" href="../styles/match-table.css">
     <link rel="stylesheet" href="../styles/match-stats.css">
 </head>
 <body>
     <!-- ===== NAVIGATION BAR ===== -->
     <nav class="navbar">
-        <a href="index.html" class="navbar-brand">🏐 <span>Volley Tool</span></a>
+        <a href="index.html" class="navbar-brand">🏐 <span>Wapatanka</span></a>
         <ul class="navbar-menu">
-            <li class="navbar-item"><a href="index.html">📋 Form</a></li>
+            <li class="navbar-item"><a href="index.html">🏠 Home</a></li>
+            <li class="navbar-item"><a href="form.html">📋 Rate Form</a></li>
             <li class="navbar-item"><a href="public-exercises.html">💪 Exercises</a></li>
             <li class="navbar-item"><a href="responses.html">📊 Responses</a></li>
             <li class="navbar-item active"><a href="match-table.html">🏆 Matches</a></li>
+            <li class="navbar-item"><a href="players.html">👥 Players</a></li>
             <li class="navbar-item"><a href="upload-exercises.html">⚙️ Manage</a></li>
         </ul>
     </nav>
@@ -29,6 +32,12 @@
             <p>Track team schedules, set scores, and game results</p>
         </div>
 
+        <!-- Admin Action Header (Hidden for public, toggled by JS) -->
+        <div id="matchAdminActions" class="players-header-actions" style="display: none;">
+            <button class="btn-save" onclick="MatchManager.openAddModal()" style="width: auto; padding: 10px 20px;">➕ Add Match</button>
+        </div>
+
+        <!-- Dynamic Matches Table -->
         <div class="table-responsive">
             <table class="match-table">
                 <thead>
@@ -41,155 +50,115 @@
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td><span class="match-date">Jun 24, 2026</span></td>
-                        <td><span class="opponent-name">CUS Torino</span></td>
-                        <td><span class="loc-badge loc-home">🏠 Home</span></td>
-                        <td>
-                            <span class="score-main">- - -</span>
-                            <span class="score-details">Upcoming appointment</span>
-                        </td>
-                        <td><span class="badge badge-upcoming">Upcoming</span></td>
-                        <td><button class="btn-stats-trigger" onclick="MatchStats.openModal('cus_torino_2026_06_24', 'CUS Torino', 'Jun 24, 2026')">📊 Stats</button></td>
-                    </tr>
-                    <tr>
-                        <td><span class="match-date">Jun 14, 2026</span></td>
-                        <td><span class="opponent-name">VBA Olimpia</span></td>
-                        <td><span class="loc-badge loc-home">🏠 Home</span></td>
-                        <td>
-                            <span class="score-main">3 - 1</span>
-                            <span class="score-details">25-21, 22-25, 25-18, 25-23</span>
-                        </td>
-                        <td><span class="badge badge-won">Won</span></td>
-                        <td><button class="btn-stats-trigger" onclick="MatchStats.openModal('vba_olimpia_2026_06_14', 'VBA Olimpia', 'Jun 14, 2026')">📊 Stats</button></td>
-                    </tr>
-                    <tr>
-                        <td><span class="match-date">Jun 10, 2026</span></td>
-                        <td><span class="opponent-name">Pallavolo Milano</span></td>
-                        <td><span class="loc-badge loc-away">🚌 Away</span></td>
-                        <td>
-                            <span class="score-main">1 - 3</span>
-                            <span class="score-details">20-25, 25-22, 19-25, 21-25</span>
-                        </td>
-                        <td><span class="badge badge-lost">Lost</span></td>
-                        <td><button class="btn-stats-trigger" onclick="MatchStats.openModal('pallavolo_milano_2026_06_10', 'Pallavolo Milano', 'Jun 10, 2026')">📊 Stats</button></td>
-                    </tr>
-                    <tr>
-                        <td><span class="match-date">Jun 05, 2026</span></td>
-                        <td><span class="opponent-name">Spike Club Bergamo</span></td>
-                        <td><span class="loc-badge loc-home">🏠 Home</span></td>
-                        <td>
-                            <span class="score-main">3 - 0</span>
-                            <span class="score-details">25-15, 25-18, 25-19</span>
-                        </td>
-                        <td><span class="badge badge-won">Won</span></td>
-                        <td><button class="btn-stats-trigger" onclick="MatchStats.openModal('spike_club_bergamo_2026_06_05', 'Spike Club Bergamo', 'Jun 05, 2026')">📊 Stats</button></td>
+                <tbody id="matchesTableBody">
+                    <tr id="loadingRow">
+                        <td colspan="6" style="text-align: center; color: #999; font-style: italic;">Loading matches from database...</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
 
+    <!-- ===== MATCH ADMIN MODAL ===== -->
+    <div id="matchAdminModal" class="player-modal">
+        <div class="player-modal-content" style="max-width: 500px;">
+            <span class="close-player-modal" onclick="MatchManager.closeModal()">&times;</span>
+            <h2 id="matchModalTitle" style="color: #f0f4f8; margin-bottom: 20px; font-size: 18px; font-weight: 700;">Add Match</h2>
+            
+            <form id="matchForm" onsubmit="MatchManager.handleFormSubmit(event)">
+                <input type="hidden" id="editMatchId" value="">
+                
+                <div class="form-group" style="margin-bottom: 15px; text-align: left;">
+                    <label for="matchOpponent">Opponent Name *</label>
+                    <input type="text" id="matchOpponent" required placeholder="e.g. CUS Torino">
+                </div>
+
+                <div class="form-row" style="margin-bottom: 15px; text-align: left;">
+                    <div class="form-group">
+                        <label for="matchDate">Match Date *</label>
+                        <input type="date" id="matchDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="matchLocation">Location *</label>
+                        <select id="matchLocation" required>
+                            <option value="">-- Select Location --</option>
+                            <option value="Home">Home</option>
+                            <option value="Away">Away</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row" style="margin-bottom: 20px; text-align: left;">
+                    <div class="form-group">
+                        <label for="matchScore">Score (e.g. 3 - 1 or - - -) *</label>
+                        <input type="text" id="matchScore" required placeholder="e.g. 3 - 1">
+                    </div>
+                    <div class="form-group">
+                        <label for="matchStatus">Status *</label>
+                        <select id="matchStatus" required>
+                            <option value="">-- Select Status --</option>
+                            <option value="Upcoming">Upcoming</option>
+                            <option value="Won">Won</option>
+                            <option value="Lost">Lost</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px; text-align: left;">
+                    <label for="matchSets">Sets Scores Breakdown / Subtext *</label>
+                    <input type="text" id="matchSets" required placeholder="e.g. 25-21, 22-25, 25-18 or Upcoming appointment">
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn-save">✓ Save Match</button>
+                    <button type="button" class="btn-secondary" onclick="MatchManager.closeModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- ===== STATS MODAL ===== -->
     <div id="statsModal" class="stats-modal">
-        <div class="stats-modal-content">
+        <div class="stats-modal-content" style="max-width: 95%; width: 1100px;">
             <span class="close-stats-modal" onclick="MatchStats.closeModal()">&times;</span>
             
-            <div class="stats-modal-header">
+            <div class="stats-modal-header" style="margin-bottom: 20px;">
                 <h2 id="statsMatchOpponent">Match Statistics</h2>
                 <p id="statsMatchDate">Date</p>
             </div>
 
-            <!-- Service Errors Section -->
-            <div class="stats-section srv-errors">
-                <div class="stats-section-title">🏐 Service Errors</div>
-                
-                <div class="stats-row">
-                    <span class="stats-label">Under Net</span>
-                    <div class="stats-counter">
-                        <button class="btn-counter btn-counter-minus" onclick="MatchStats.decrement('service_under_net')">-</button>
-                        <span id="val-service_under_net" class="stats-value">0</span>
-                        <button class="btn-counter btn-counter-plus" onclick="MatchStats.increment('service_under_net')">+</button>
-                    </div>
-                </div>
-
-                <div class="stats-row">
-                    <span class="stats-label">Out</span>
-                    <div class="stats-counter">
-                        <button class="btn-counter btn-counter-minus" onclick="MatchStats.decrement('service_out')">-</button>
-                        <span id="val-service_out" class="stats-value">0</span>
-                        <button class="btn-counter btn-counter-plus" onclick="MatchStats.increment('service_out')">+</button>
-                    </div>
-                </div>
-
-                <div class="stats-row">
-                    <span class="stats-label">Net</span>
-                    <div class="stats-counter">
-                        <button class="btn-counter btn-counter-minus" onclick="MatchStats.decrement('service_net')">-</button>
-                        <span id="val-service_net" class="stats-value">0</span>
-                        <button class="btn-counter btn-counter-plus" onclick="MatchStats.increment('service_net')">+</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Fouls Section -->
-            <div class="stats-section fouls">
-                <div class="stats-section-title">⚠️ Fouls</div>
-                
-                <div class="stats-row">
-                    <span class="stats-label">General Foul</span>
-                    <div class="stats-counter">
-                        <button class="btn-counter btn-counter-minus" onclick="MatchStats.decrement('foul')">-</button>
-                        <span id="val-foul" class="stats-value">0</span>
-                        <button class="btn-counter btn-counter-plus" onclick="MatchStats.increment('foul')">+</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Points Made Section -->
-            <div class="stats-section points">
-                <div class="stats-section-title">🔥 Points Made</div>
-                
-                <div class="stats-row">
-                    <span class="stats-label">Spike</span>
-                    <div class="stats-counter">
-                        <button class="btn-counter btn-counter-minus" onclick="MatchStats.decrement('point_spike')">-</button>
-                        <span id="val-point_spike" class="stats-value">0</span>
-                        <button class="btn-counter btn-counter-plus" onclick="MatchStats.increment('point_spike')">+</button>
-                    </div>
-                </div>
-
-                <div class="stats-row">
-                    <span class="stats-label">Block</span>
-                    <div class="stats-counter">
-                        <button class="btn-counter btn-counter-minus" onclick="MatchStats.decrement('point_block')">-</button>
-                        <span id="val-point_block" class="stats-value">0</span>
-                        <button class="btn-counter btn-counter-plus" onclick="MatchStats.increment('point_block')">+</button>
-                    </div>
-                </div>
-
-                <div class="stats-row">
-                    <span class="stats-label">Lob</span>
-                    <div class="stats-counter">
-                        <button class="btn-counter btn-counter-minus" onclick="MatchStats.decrement('point_lob')">-</button>
-                        <span id="val-point_lob" class="stats-value">0</span>
-                        <button class="btn-counter btn-counter-plus" onclick="MatchStats.increment('point_lob')">+</button>
-                    </div>
-                </div>
-
-                <div class="stats-row">
-                    <span class="stats-label">Random</span>
-                    <div class="stats-counter">
-                        <button class="btn-counter btn-counter-minus" onclick="MatchStats.decrement('point_random')">-</button>
-                        <span id="val-point_random" class="stats-value">0</span>
-                        <button class="btn-counter btn-counter-plus" onclick="MatchStats.increment('point_random')">+</button>
-                    </div>
-                </div>
+            <div class="table-responsive" style="max-height: 60vh; overflow-y: auto;">
+                <table class="match-table stats-table" style="width: 100%; min-width: 950px; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background-color: #1f2635; position: sticky; top: 0; z-index: 10;">
+                            <th style="text-align: left; padding: 12px; border: 1px solid #3a4560;">Player</th>
+                            <th colspan="3" style="text-align: center; border: 1px solid #3a4560; border-left: 2px solid #3a4560; border-right: 2px solid #3a4560; background-color: rgba(91, 124, 250, 0.1);">🏐 Service Errors</th>
+                            <th style="text-align: center; border: 1px solid #3a4560; border-right: 2px solid #3a4560; background-color: rgba(250, 91, 91, 0.1);">⚠️ Fouls</th>
+                            <th colspan="4" style="text-align: center; border: 1px solid #3a4560; background-color: rgba(81, 163, 118, 0.1);">🔥 Points Made</th>
+                        </tr>
+                        <tr style="background-color: #242d47; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; position: sticky; top: 38px; z-index: 10;">
+                            <th style="text-align: left; padding: 8px 12px; border: 1px solid #3a4560;">Name</th>
+                            <!-- Service Errors -->
+                            <th style="text-align: center; border: 1px solid #3a4560; border-left: 2px solid #3a4560; padding: 8px;">Under Net</th>
+                            <th style="text-align: center; border: 1px solid #3a4560; padding: 8px;">Out</th>
+                            <th style="text-align: center; border: 1px solid #3a4560; border-right: 2px solid #3a4560; padding: 8px;">Net</th>
+                            <!-- Fouls -->
+                            <th style="text-align: center; border: 1px solid #3a4560; border-right: 2px solid #3a4560; padding: 8px;">Foul</th>
+                            <!-- Points -->
+                            <th style="text-align: center; border: 1px solid #3a4560; padding: 8px;">Spike</th>
+                            <th style="text-align: center; border: 1px solid #3a4560; padding: 8px;">Block</th>
+                            <th style="text-align: center; border: 1px solid #3a4560; padding: 8px;">Lob</th>
+                            <th style="text-align: center; border: 1px solid #3a4560; padding: 8px;">Random</th>
+                        </tr>
+                    </thead>
+                    <tbody id="statsTableBody">
+                        <!-- Filled dynamically by JavaScript -->
+                    </tbody>
+                </table>
             </div>
 
             <!-- Sync status -->
-            <div id="statsSyncStatus" class="stats-sync-status saved">
+            <div id="statsSyncStatus" class="stats-sync-status saved" style="display: flex; margin-top: 15px; justify-content: flex-end;">
                 <span class="dot"></span> <span id="syncText">Saved to Database</span>
             </div>
         </div>
@@ -210,9 +179,11 @@
 
     <!-- ===== DATA SERVICES ===== -->
     <script src="../services/firebase-service.js"></script>
+    <script src="../services/player-service.js"></script>
     <script src="../services/match-service.js"></script>
 
-    <!-- ===== MATCH STATS MODULE ===== -->
+    <!-- ===== MATCH STATS & MANAGER MODULES ===== -->
+    <script src="../modules/matches/match-manager.js"></script>
     <script src="../modules/matches/match-stats.js"></script>
 </body>
 </html>

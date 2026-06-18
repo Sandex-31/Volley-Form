@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wapatanka - Exercise Rating Form</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/navbar.css">
+</head>
+<body>
+    <!-- ===== NAVIGATION BAR ===== -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">🏐 <span>Wapatanka</span></a>
+        <ul class="navbar-menu">
+            <li class="navbar-item"><a href="index.html">🏠 Home</a></li>
+            <li class="navbar-item active"><a href="form.html">📋 Rate Form</a></li>
+            <li class="navbar-item"><a href="public-exercises.html">💪 Exercises</a></li>
+            <li class="navbar-item"><a href="responses.html">📊 Responses</a></li>
+            <li class="navbar-item"><a href="match-table.html">🏆 Matches</a></li>
+            <li class="navbar-item"><a href="players.html">👥 Players</a></li>
+            <li class="navbar-item"><a href="upload-exercises.html">⚙️ Manage</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>Wapatanka feedback</h1>
+            <p>Complete all steps to submit your information</p>
+            <p>Everything is totally anonymous and secure.</p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="progress-text"><span id="currentStep">1</span> of <span id="totalSteps">3</span> completed</div>
+        </div>
+
+        <!-- Steps Indicator -->
+        <div class="steps-indicator">
+            <div class="step active" data-step="1">
+                <div class="step-circle">1</div>
+                <div class="step-label">Personal</div>
+            </div>
+            <div class="step" data-step="2">
+                <div class="step-circle">2</div>
+                <div class="step-label">Exercises</div>
+            </div>
+            <div class="step" data-step="3">
+                <div class="step-circle">3</div>
+                <div class="step-label">Notes</div>
+            </div>
+        </div>
+
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message">✓ Form submitted successfully!</div>
+
+        <form id="dataForm">
+            <!-- STEP 1: Personal Information -->
+            <div class="step-content active" data-step="1">
+                <h3 style="color: #d4d0d0; margin-bottom: 20px;">Personal Information</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name *</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name *</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: Exercise Ratings -->
+            <div class="step-content" data-step="2">
+                <h3 style="color: #d4d0d0; margin-bottom: 10px; font-size: 24px;">💪 Exercise Ratings</h3>
+                <p style="color: #666; margin-bottom: 25px; font-size: 14px;">How did each exercise feel? Drag the slider to rate from 😞 to 🤩</p>
+                
+                <div class="form-group" style="margin-bottom: 25px;">
+                    <label for="exerciseDate">Date *</label>
+                    <input type="date" id="exerciseDate" name="exerciseDate" required>
+                </div>
+                
+                <div id="exercisesList">
+                    <!-- Exercises will be added here dynamically -->
+                </div>
+
+                <button type="button" class="add-exercise-btn" id="addExerciseBtn" onclick="FormModule.addExercise()">➕ Add Another Exercise</button>
+            </div>
+
+            <!-- STEP 3: Notes -->
+            <div class="step-content" data-step="3">
+                <h3 style="color: #d4d0d0; margin-bottom: 20px;">📝 Notes</h3>
+                <p style="color: #666; margin-bottom: 20px; font-size: 14px;">Write anything you'd want the others to know. (everything is totally anonymous and secure.)</p>
+                
+                <div class="form-group">
+                    <label for="notes">Your Notes</label>
+                    <textarea id="notes" name="notes" placeholder="Write your thoughts, feedback, or any additional information..."></textarea>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="button-group">
+                <button type="button" class="btn-prev" id="prevBtn" disabled>← Previous</button>
+                <button type="button" class="btn-next" id="nextBtn">Next →</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ===== FIREBASE SDK ===== -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <!-- ===== CONFIGURATION & CONSTANTS ===== -->
+    <script src="../config/firebase.config.js"></script>
+    <script src="../config/supabase.config.js"></script>
+    <script src="../config/constants.js"></script>
+
+    <!-- ===== COMMON SERVICES ===== -->
+    <script src="../common/logger.js"></script>
+    <script src="../common/storage-service.js"></script>
+    <script src="../common/ui-service.js"></script>
+
+    <!-- ===== DATA SERVICES ===== -->
+    <script src="../services/firebase-service.js"></script>
+    <script src="../services/exercise-service.js"></script>
+
+    <!-- ===== FORM MODULE ===== -->
+    <script src="../modules/form/validation.js"></script>
+    <script src="../modules/form/form.js"></script>
+</body>
+</html>

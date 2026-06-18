@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Roster - Volley Tool</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/navbar.css">
+    <link rel="stylesheet" href="../styles/players.css">
+</head>
+<body>
+    <!-- ===== NAVIGATION BAR ===== -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">🏐 <span>Wapatanka</span></a>
+        <ul class="navbar-menu">
+            <li class="navbar-item"><a href="index.html">🏠 Home</a></li>
+            <li class="navbar-item"><a href="form.html">📋 Rate Form</a></li>
+            <li class="navbar-item"><a href="public-exercises.html">💪 Exercises</a></li>
+            <li class="navbar-item"><a href="responses.html">📊 Responses</a></li>
+            <li class="navbar-item"><a href="match-table.html">🏆 Matches</a></li>
+            <li class="navbar-item active"><a href="players.html">👥 Players</a></li>
+            <li class="navbar-item"><a href="upload-exercises.html">⚙️ Manage</a></li>
+        </ul>
+    </nav>
+
+    <!-- ===== MAIN CONTENT CONTAINER ===== -->
+    <div class="players-container container">
+        <div class="header">
+            <h1>👥 Team Roster</h1>
+            <p>View and manage volleyball players, numbers, and roles</p>
+        </div>
+
+        <!-- Admin Action Header (Hidden for public, toggled by JS) -->
+        <div id="playerAdminActions" class="players-header-actions" style="display: none;">
+            <button class="btn-save" onclick="PlayersModule.openAddModal()" style="width: auto; padding: 10px 20px;">➕ Add Player</button>
+        </div>
+
+        <!-- Roster Grid -->
+        <div id="playersGrid" class="players-grid">
+            <p class="loading" style="grid-column: 1/-1; text-align: center; color: #999; font-style: italic;">Loading roster...</p>
+        </div>
+    </div>
+
+    <!-- ===== PLAYER ADMIN MODAL ===== -->
+    <div id="playerAdminModal" class="player-modal">
+        <div class="player-modal-content">
+            <span class="close-player-modal" onclick="PlayersModule.closeModal()">&times;</span>
+            <h2 id="playerModalTitle" style="color: #f0f4f8; margin-bottom: 20px; font-size: 18px; font-weight: 700;">Add Player</h2>
+            
+            <form id="playerForm" onsubmit="PlayersModule.handleFormSubmit(event)">
+                <input type="hidden" id="editPlayerId" value="">
+                
+                <div class="form-group" style="margin-bottom: 15px; text-align: left;">
+                    <label for="playerName">Full Name *</label>
+                    <input type="text" id="playerName" required placeholder="e.g. Lorenzo Rossi">
+                </div>
+
+                <div class="form-row" style="margin-bottom: 20px; text-align: left;">
+                    <div class="form-group">
+                        <label for="playerNumber">Jersey Number *</label>
+                        <input type="number" id="playerNumber" required min="1" max="99" placeholder="e.g. 7">
+                    </div>
+                    <div class="form-group">
+                        <label for="playerRole">Role *</label>
+                        <select id="playerRole" required>
+                            <option value="">-- Select Role --</option>
+                            <option value="Setter">Setter</option>
+                            <option value="Banda">Banda (Banda/Banda Opposta)</option>
+                            <option value="Opposite">Opposite</option>
+                            <option value="Centrale">Centrale (Middle Blocker)</option>
+                            <option value="Libero">Libero</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn-save">✓ Save Player</button>
+                    <button type="button" class="btn-secondary" onclick="PlayersModule.closeModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== FIREBASE SDK ===== -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <!-- ===== CONFIGURATION & CONSTANTS ===== -->
+    <script src="../config/firebase.config.js"></script>
+    <script src="../config/constants.js"></script>
+
+    <!-- ===== COMMON SERVICES ===== -->
+    <script src="../common/logger.js"></script>
+    <script src="../common/storage-service.js"></script>
+    <script src="../common/ui-service.js"></script>
+
+    <!-- ===== DATA SERVICES ===== -->
+    <script src="../services/firebase-service.js"></script>
+    <script src="../services/player-service.js"></script>
+
+    <!-- ===== PLAYERS MODULE ===== -->
+    <script src="../modules/players/players.js"></script>
+</body>
+</html>
