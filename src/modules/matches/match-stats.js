@@ -89,32 +89,32 @@ const MatchStats = {
                 </td>
                 
                 <!-- Service Errors -->
-                <td style="text-align: center; border-left: 2px solid #3a4560; vertical-align: middle;">
+                <td data-label="Under Net" style="text-align: center; border-left: 2px solid #3a4560; vertical-align: middle;">
                     ${this.createCounterHtml(player.id, 'service_under_net')}
                 </td>
-                <td style="text-align: center; vertical-align: middle;">
+                <td data-label="Out" style="text-align: center; vertical-align: middle;">
                     ${this.createCounterHtml(player.id, 'service_out')}
                 </td>
-                <td style="text-align: center; border-right: 2px solid #3a4560; vertical-align: middle;">
+                <td data-label="Net" style="text-align: center; border-right: 2px solid #3a4560; vertical-align: middle;">
                     ${this.createCounterHtml(player.id, 'service_net')}
                 </td>
                 
                 <!-- Fouls -->
-                <td style="text-align: center; border-right: 2px solid #3a4560; vertical-align: middle;">
+                <td data-label="Foul" style="text-align: center; border-right: 2px solid #3a4560; vertical-align: middle;">
                     ${this.createCounterHtml(player.id, 'foul')}
                 </td>
                 
                 <!-- Points Made -->
-                <td style="text-align: center; vertical-align: middle;">
+                <td data-label="Spike" style="text-align: center; vertical-align: middle;">
                     ${this.createCounterHtml(player.id, 'point_spike')}
                 </td>
-                <td style="text-align: center; vertical-align: middle;">
+                <td data-label="Block" style="text-align: center; vertical-align: middle;">
                     ${this.createCounterHtml(player.id, 'point_block')}
                 </td>
-                <td style="text-align: center; vertical-align: middle;">
+                <td data-label="Lob" style="text-align: center; vertical-align: middle;">
                     ${this.createCounterHtml(player.id, 'point_lob')}
                 </td>
-                <td style="text-align: center; vertical-align: middle;">
+                <td data-label="Random" style="text-align: center; vertical-align: middle;">
                     ${this.createCounterHtml(player.id, 'point_random')}
                 </td>
             `;

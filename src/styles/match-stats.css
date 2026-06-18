@@ -289,3 +289,73 @@
 .stats-table tbody tr:hover {
     background-color: rgba(58, 69, 96, 0.2);
 }
+
+/* Responsive grid cards layout for mobile phones */
+@media (max-width: 768px) {
+    .stats-modal-content {
+        padding: 20px 15px !important;
+    }
+
+    /* Hide the standard headers */
+    .stats-table thead {
+        display: none !important;
+    }
+
+    /* Force tables/tbody/rows to render as full-width block elements */
+    .stats-table, 
+    .stats-table tbody, 
+    .stats-table tr {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    /* Convert each player row into a dedicated card */
+    .stats-table tr {
+        background: #1f2635;
+        border: 1px solid #3a4560;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        padding: 15px;
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px 10px;
+    }
+
+    /* Force player details cell to span full width of the card */
+    .stats-table td:first-child {
+        grid-column: 1 / -1;
+        display: block !important;
+        width: 100% !important;
+        border: none !important;
+        border-bottom: 1px solid #3a4560 !important;
+        padding: 0 0 12px 0 !important;
+        margin-bottom: 4px;
+        background: transparent !important;
+    }
+
+    /* Format all stats cells as grid item cells */
+    .stats-table td {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 10px 6px !important;
+        border: 1px solid rgba(58, 69, 96, 0.4) !important;
+        border-radius: 6px;
+        background: rgba(36, 45, 71, 0.4);
+    }
+
+    /* Prepend custom categories label based on the data-label attribute */
+    .stats-table td[data-label]::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 10px;
+        color: #8892b0;
+        margin-bottom: 6px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        text-align: center;
+    }
+}
