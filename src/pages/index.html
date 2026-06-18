@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wapatanka Squad - Volley Tool</title>
+    <title>Wapatanka - Volley Tool</title>
     <link rel="stylesheet" href="../styles/styles.css">
     <link rel="stylesheet" href="../styles/navbar.css">
     <link rel="stylesheet" href="../styles/players.css">
     <link rel="stylesheet" href="../styles/home.css">
 </head>
+
 <body>
     <!-- ===== NAVIGATION BAR ===== -->
     <nav class="navbar">
-        <a href="index.html" class="navbar-brand">🏐 <span>Wapatanka</span></a>
+        <a href="index.html" class="navbar-brand"><img src="../assets/logo.png" alt="Wapatanka Logo" class="navbar-logo"> <span>Wapatanka</span></a>
         <ul class="navbar-menu">
             <li class="navbar-item active"><a href="index.html">🏠 Home</a></li>
             <li class="navbar-item"><a href="form.html">📋 Rate Form</a></li>
@@ -26,14 +28,19 @@
 
     <!-- ===== MAIN CONTENT CONTAINER ===== -->
     <div class="home-container container">
-        
+
         <!-- Welcome Hero Banner -->
         <div class="welcome-hero">
-            <h1>🏐 WAPATANKA SQUAD</h1>
-            <p>Welcome to the official Volley Tool for Wapatanka. Submit training feedback, view our scheduled match schedule, review roster cards, and update game performance statistics.</p>
+            <h1 style="display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap;"><img src="../assets/logo.png" alt="Wapatanka Logo" style="height: 50px; width: auto; object-fit: contain;"> WAPATANKA</h1>
+            <p>Welcome to the official Volley Tool for Wapatanka. Submit training feedback, view our scheduled match
+                schedule, review roster cards, and update game performance statistics.</p>
             <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                <a href="form.html" class="btn-save" style="width: auto; padding: 12px 24px; text-decoration: none; font-weight: 700;">📋 Rate Today's Training</a>
-                <a href="match-table.html" class="btn-secondary" style="width: auto; padding: 12px 24px; text-decoration: none; font-weight: 700; background: #3a4560; color: #d0d9e8;">🏆 View Matches</a>
+                <a href="form.html" class="btn-save"
+                    style="width: auto; padding: 12px 24px; text-decoration: none; font-weight: 700;">📋 Rate Today's
+                    Training</a>
+                <a href="match-table.html" class="btn-secondary"
+                    style="width: auto; padding: 12px 24px; text-decoration: none; font-weight: 700; background: #3a4560; color: #d0d9e8;">🏆
+                    View Matches</a>
             </div>
         </div>
 
@@ -55,7 +62,8 @@
                 <a href="players.html">Manage Roster →</a>
             </div>
             <div id="rosterPreviewGrid" class="roster-preview-grid">
-                <p style="color: #999; font-style: italic; text-align: center; grid-column: 1/-1;">Syncing team roster...</p>
+                <p style="color: #999; font-style: italic; text-align: center; grid-column: 1/-1;">Syncing team
+                    roster...</p>
             </div>
         </div>
 
@@ -106,4 +114,5 @@
     <!-- ===== HOME MODULE ===== -->
     <script src="../modules/home/home.js"></script>
 </body>
+
 </html>

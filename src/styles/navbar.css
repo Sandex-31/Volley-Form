@@ -37,6 +37,13 @@
     -webkit-text-fill-color: transparent;
 }
 
+.navbar-logo {
+    height: 28px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+}
+
 .navbar-menu {
     display: flex;
     align-items: center;
