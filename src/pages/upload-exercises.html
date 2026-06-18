@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Exercises - Admin Panel</title>
     <link rel="stylesheet" href="../styles/upload-exercises.css">
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -20,7 +22,8 @@
 
         <!-- Login Section -->
         <div id="loginSection">
-            <h2 style="color: #f0f4f8; margin-bottom: 20px; font-size: 18px; font-weight: 700;">Admin Authentication</h2>
+            <h2 style="color: #f0f4f8; margin-bottom: 20px; font-size: 18px; font-weight: 700;">Admin Authentication
+            </h2>
             <div class="form-group">
                 <label for="adminPassword">Admin Password</label>
                 <input type="password" id="adminPassword" placeholder="Enter admin password..." autofocus>
@@ -31,14 +34,66 @@
         <!-- Upload Section (Hidden by default) -->
         <div id="uploadSection" style="display: none;">
             <div style="text-align: right; margin-bottom: 20px;">
-                <button class="btn-secondary" id="logoutBtn" style="width: auto; padding: 8px 16px; font-size: 12px;">Logout</button>
+                <button class="btn-secondary" id="logoutBtn"
+                    style="width: auto; padding: 8px 16px; font-size: 12px;">Logout</button>
+            </div>
+
+            <!-- Edit Exercise Section -->
+            <div id="editSection"
+                style="display: none; margin-bottom: 30px; padding-bottom: 25px; border-bottom: 1px solid #3a4560;">
+                <h2 style="color: #f0f4f8; margin-bottom: 20px; font-size: 18px; font-weight: 700;">✏️ Edit Exercise
+                </h2>
+
+                <div class="form-group">
+                    <label for="editExerciseName">Exercise Name</label>
+                    <input type="text" id="editExerciseName" readonly style="background: #1f2635; cursor: not-allowed;">
+                </div>
+
+                <div class="form-group">
+                    <label for="editDescription">Exercise Description</label>
+                    <textarea id="editDescription"
+                        placeholder="Write a detailed description of the exercise technique, benefits, and tips..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="editVideoInput">📹 Upload Video (MP4, Max 100 MB)</label>
+                    <input type="file" id="editVideoInput" accept=".mp4,video/mp4">
+                    <small style="color: #999; display: block; margin-top: 8px;">
+                        💡 Format: MP4 | Max size: 100 MB | Recommended: 1080p, landscape orientation
+                    </small>
+                </div>
+
+                <div id="uploadProgress" class="upload-progress"></div>
+
+                <div class="button-group">
+                    <button class="btn-save" onclick="ExerciseUploadManager.uploadExerciseData()">✓ Save &
+                        Upload</button>
+                    <button class="btn-secondary" id="cancelEditBtn">Cancel</button>
+                </div>
+            </div>
+
+            <!-- Add Exercise Section -->
+            <div class="section" style="margin-bottom: 30px; padding-bottom: 25px; border-bottom: 1px solid #3a4560;">
+                <h2>➕ Schedule Exercise</h2>
+                <div class="form-group">
+                    <label for="exerciseSelect">Select Preset Exercise</label>
+                    <select id="exerciseSelect">
+                        <option value="">-- Choose an exercise --</option>
+                    </select>
+                </div>
+                <button type="button" class="btn-save" onclick="ExerciseUploadManager.addPresetExercise()"
+                    style="margin-bottom: 15px;">+ Add Preset Exercise</button>
+
+                <div style="text-align: center; margin: 10px 0; color: #666;">- OR -</div>
+
+                <button type="button" class="btn-secondary" onclick="ExerciseUploadManager.addNewExercise()">➕ Create
+                    Custom Exercise</button>
             </div>
 
             <!-- Exercise List Section -->
             <div class="section">
                 <h2>📋 Scheduled Exercises</h2>
-                <div id="exercisesList"></div>
-                <button type="button" class="btn-save" onclick="ExerciseUploadManager.addNewExercise()">➕ Add New Exercise</button>
+                <div id="exercisesList" class="exercises-list"></div>
             </div>
         </div>
 
@@ -76,4 +131,5 @@
     <!-- ===== EXERCISE UPLOAD MODULE ===== -->
     <script src="../modules/exercises/upload-manager.js"></script>
 </body>
+
 </html>

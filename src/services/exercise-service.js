@@ -111,6 +111,21 @@ const ExerciseService = {
             APP_CONSTANTS.FIREBASE_REFS.SELECTED_EXERCISES,
             this.selectedExercises
         );
+    },
+
+    /**
+     * Save the entire selected exercises list (e.g. for reordering)
+     */
+    saveSelectedExercises: async function(exercises) {
+        if (!FirebaseService.isReady()) {
+            UIService.showMessage('⚠️ Firebase not available', 'error');
+            return false;
+        }
+        this.selectedExercises = exercises;
+        return await FirebaseService.write(
+            APP_CONSTANTS.FIREBASE_REFS.SELECTED_EXERCISES,
+            this.selectedExercises
+        );
     }
 };
 

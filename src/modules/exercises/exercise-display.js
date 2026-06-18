@@ -37,40 +37,71 @@ const ExerciseDisplay = {
         container.innerHTML = '';
 
         if (!exercises || exercises.length === 0) {
-            container.innerHTML = '<p class="no-exercises-message">No exercises available at the moment.</p>';
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📭</div>
+                    <div class="empty-state-text">No exercises scheduled for today</div>
+                </div>
+            `;
             UIService.updateStatusIndicator('✅ Real-time sync active', '#51a376');
             return;
         }
 
-        exercises.forEach((exercise) => {
+        exercises.forEach((exercise, index) => {
             const exName = typeof exercise === 'string' ? exercise : exercise.name;
             const exDescription = typeof exercise === 'string' ? '' : (exercise.description || '');
             const videoUrl = typeof exercise === 'string' ? '' : (exercise.videoUrl || '');
 
-            const exerciseCard = document.createElement('div');
-            exerciseCard.className = 'exercise-card';
+            const exerciseItem = document.createElement('div');
+            exerciseItem.className = 'exercise-item';
+            exerciseItem.id = `exercise-${index}`;
 
             let cardContent = `
-                <h3>${this.escapeHtml(exName)}</h3>
+                <div class="exercise-item-header" onclick="ExerciseDisplay.toggleExercise(${index})">
+                    <div class="exercise-item-name">${this.escapeHtml(exName)}</div>
+                    <div class="exercise-expand-icon" id="icon-${index}">▼</div>
+                </div>
+                <div class="exercise-item-content" id="content-${index}">
+                    <div class="exercise-item-body">
+                        ${exDescription ? `<div class="exercise-description">${this.escapeHtml(exDescription)}</div>` : ''}
+                        <div class="exercise-video-container">
+                            ${videoUrl ? `
+                                <video class="exercise-video" controls loop>
+                                    <source src="${this.escapeHtml(videoUrl)}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            ` : `
+                                <div class="no-video-message">🎥 No video available yet</div>
+                            `}
+                        </div>
+                    </div>
+                </div>
             `;
 
-            if (exDescription) {
-                cardContent += `<p class="exercise-description">${this.escapeHtml(exDescription)}</p>`;
-            }
-
-            if (videoUrl) {
-                cardContent += `
-                    <div class="video-container">
-                        <a href="${exUrl}" target="_blank" class="video-link">📹 Watch Video</a>
-                    </div>
-                `;
-            }
-
-            exerciseCard.innerHTML = cardContent;
-            container.appendChild(exerciseCard);
+            exerciseItem.innerHTML = cardContent;
+            container.appendChild(exerciseItem);
         });
 
         UIService.updateStatusIndicator('✅ Real-time sync active', '#51a376');
+    },
+
+    /**
+     * Toggle expand/collapse exercise item
+     */
+    toggleExercise: function(index) {
+        const content = document.getElementById(`content-${index}`);
+        const icon = document.getElementById(`icon-${index}`);
+        if (!content || !icon) return;
+
+        if (content.style.maxHeight) {
+            content.style.maxHeight = null;
+            icon.classList.remove('expanded');
+            content.classList.remove('expanded');
+        } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+            icon.classList.add('expanded');
+            content.classList.add('expanded');
+        }
     },
 
     /**
