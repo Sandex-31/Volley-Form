@@ -6,9 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Exercises - Admin Panel</title>
     <link rel="stylesheet" href="../styles/upload-exercises.css">
+    <link rel="stylesheet" href="../styles/navbar.css">
 </head>
 
 <body>
+    <!-- ===== NAVIGATION BAR ===== -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">🏐 <span>Volley Tool</span></a>
+        <ul class="navbar-menu">
+            <li class="navbar-item"><a href="index.html">📋 Form</a></li>
+            <li class="navbar-item"><a href="public-exercises.html">💪 Exercises</a></li>
+            <li class="navbar-item"><a href="responses.html">📊 Responses</a></li>
+            <li class="navbar-item"><a href="match-table.html">🏆 Matches</a></li>
+            <li class="navbar-item active"><a href="upload-exercises.html">⚙️ Manage</a></li>
+        </ul>
+    </nav>
+
     <div class="container">
         <div class="header">
             <h1>📹 Manage Exercises</h1>
@@ -97,11 +110,6 @@
             </div>
         </div>
 
-        <!-- Back Link -->
-        <div class="back-link">
-            <a href="index.html">← Back to Form</a>
-            <a href="public-exercises.html">🏐 View Exercises</a>
-        </div>
     </div>
 
     <!-- ===== FIREBASE SDK ===== -->

@@ -5,8 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Training Exercises - Volleyball</title>
     <link rel="stylesheet" href="../styles/public-exercises.css">
+    <link rel="stylesheet" href="../styles/navbar.css">
 </head>
 <body>
+    <!-- ===== NAVIGATION BAR ===== -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">🏐 <span>Volley Tool</span></a>
+        <ul class="navbar-menu">
+            <li class="navbar-item"><a href="index.html">📋 Form</a></li>
+            <li class="navbar-item active"><a href="public-exercises.html">💪 Exercises</a></li>
+            <li class="navbar-item"><a href="responses.html">📊 Responses</a></li>
+            <li class="navbar-item"><a href="match-table.html">🏆 Matches</a></li>
+            <li class="navbar-item"><a href="upload-exercises.html">⚙️ Manage</a></li>
+        </ul>
+    </nav>
+
     <div class="container">
         <div class="header">
             <h1>🏐 Training Exercises</h1>
@@ -19,11 +32,6 @@
             <p class="loading">Loading exercises...</p>
         </div>
 
-        <!-- Navigation -->
-        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #3a4560; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-            <a href="index.html" style="display: inline-block; padding: 10px 40px; background: #3a4560; color: #d0d9e8; text-decoration: none; border-radius: 5px; font-weight: 600; transition: all 0.3s;" onmouseover="this.style.background='#4a5575'" onmouseout="this.style.background='#3a4560'">📋 Back to Form</a>
-            <a href="upload-exercises.html" style="display: inline-block; padding: 10px 40px; background: #3a4560; color: #d0d9e8; text-decoration: none; border-radius: 5px; font-weight: 600; transition: all 0.3s;" onmouseover="this.style.background='#4a5575'" onmouseout="this.style.background='#3a4560'">⚙️ Manage Exercises</a>
-        </div>
     </div>
 
     <!-- ===== FIREBASE SDK ===== -->

@@ -1,0 +1,104 @@
+/* ===== NAVBAR STYLES ===== */
+.navbar {
+    width: 100%;
+    background: rgba(36, 45, 71, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(58, 69, 96, 0.6);
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #f0f4f8;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover {
+    transform: scale(1.02);
+}
+
+.navbar-brand span {
+    background: linear-gradient(135deg, #748ffc 0%, #5b7cfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.navbar-menu {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    list-style: none;
+}
+
+.navbar-item a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #d0d9e8;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.navbar-item a:hover {
+    color: #ffffff;
+    background: rgba(91, 124, 250, 0.15);
+}
+
+.navbar-item.active a {
+    color: #ffffff;
+    background: linear-gradient(135deg, #5b7cfa 0%, #748ffc 100%);
+    box-shadow: 0 4px 15px rgba(91, 124, 250, 0.3);
+}
+
+/* Adjust page containers for navbar presence */
+body {
+    padding-top: 0 !important; /* Reset body center paddings if any */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.container {
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 12px 20px;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .navbar-menu {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .navbar-item a {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+}

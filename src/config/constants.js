@@ -27,7 +27,8 @@ const APP_CONSTANTS = {
     // Firebase References
     FIREBASE_REFS: {
         FORM_SUBMISSIONS: 'formSubmissions',
-        SELECTED_EXERCISES: 'selectedExercises'
+        SELECTED_EXERCISES: 'selectedExercises',
+        MATCH_STATS: 'matchStats'
     },
 
     // Rating Labels

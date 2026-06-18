@@ -1,0 +1,136 @@
+/* ===== MATCHES PAGE & TABLE STYLES ===== */
+
+.matches-container {
+    max-width: 950px;
+    width: 100%;
+    background: #242d47;
+    border-radius: 10px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    padding: 40px;
+    border: 1px solid #3a4560;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 25px;
+    border-radius: 8px;
+    border: 1px solid #3a4560;
+    background: #1f2635;
+}
+
+.match-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    color: #d0d9e8;
+    min-width: 600px;
+}
+
+.match-table th, 
+.match-table td {
+    padding: 16px 20px;
+    border-bottom: 1px solid #3a4560;
+}
+
+.match-table th {
+    background-color: #2d3854;
+    color: #f0f4f8;
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.match-table tbody tr {
+    transition: background-color 0.3s ease;
+}
+
+.match-table tbody tr:hover {
+    background-color: rgba(91, 124, 250, 0.08);
+}
+
+.match-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Badge Styles */
+.badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.badge-won {
+    background-color: rgba(81, 163, 118, 0.15);
+    color: #69c896;
+    border: 1px solid rgba(81, 163, 118, 0.3);
+    box-shadow: 0 0 10px rgba(81, 163, 118, 0.1);
+}
+
+.badge-lost {
+    background-color: rgba(194, 48, 48, 0.15);
+    color: #ff6b6b;
+    border: 1px solid rgba(194, 48, 48, 0.3);
+    box-shadow: 0 0 10px rgba(194, 48, 48, 0.1);
+}
+
+.badge-upcoming {
+    background-color: rgba(91, 124, 250, 0.15);
+    color: #748ffc;
+    border: 1px solid rgba(91, 124, 250, 0.3);
+    box-shadow: 0 0 10px rgba(91, 124, 250, 0.1);
+}
+
+/* Location Badge */
+.loc-badge {
+    font-weight: 600;
+    font-size: 13px;
+}
+.loc-home {
+    color: #f0f4f8;
+}
+.loc-away {
+    color: #999;
+}
+
+/* Scores */
+.score-main {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.score-details {
+    display: block;
+    font-size: 11px;
+    color: #8892b0;
+    margin-top: 4px;
+}
+
+.opponent-name {
+    font-weight: 600;
+    color: #ffffff;
+    font-size: 15px;
+}
+
+.match-date {
+    font-size: 14px;
+    color: #d0d9e8;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .matches-container {
+        padding: 20px;
+    }
+    
+    .match-table th, 
+    .match-table td {
+        padding: 12px 14px;
+    }
+}
