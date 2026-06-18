@@ -207,3 +207,35 @@
         align-items: flex-start;
     }
 }
+
+/* Badge Styles for Match Status Widget */
+.badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.badge-won {
+    background-color: rgba(81, 163, 118, 0.15);
+    color: #69c896;
+    border: 1px solid rgba(81, 163, 118, 0.3);
+    box-shadow: 0 0 10px rgba(81, 163, 118, 0.1);
+}
+
+.badge-lost {
+    background-color: rgba(194, 48, 48, 0.15);
+    color: #ff6b6b;
+    border: 1px solid rgba(194, 48, 48, 0.3);
+    box-shadow: 0 0 10px rgba(194, 48, 48, 0.1);
+}
+
+.badge-upcoming {
+    background-color: rgba(91, 124, 250, 0.15);
+    color: #748ffc;
+    border: 1px solid rgba(91, 124, 250, 0.3);
+    box-shadow: 0 0 10px rgba(91, 124, 250, 0.1);
+}
