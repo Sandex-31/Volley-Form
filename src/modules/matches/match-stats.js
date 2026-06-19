@@ -89,22 +89,34 @@ const MatchStats = {
                 </td>
                 
                 <!-- Service Errors -->
-                <td data-label="Under Net" style="text-align: center; border-left: 2px solid #3a4560; vertical-align: middle;">
-                    ${this.createCounterHtml(player.id, 'service_under_net')}
-                </td>
-                <td data-label="Out" style="text-align: center; vertical-align: middle;">
+                <td data-label="Out" style="text-align: center; border-left: 2px solid #3a4560; vertical-align: middle;">
                     ${this.createCounterHtml(player.id, 'service_out')}
                 </td>
                 <td data-label="Net" style="text-align: center; border-right: 2px solid #3a4560; vertical-align: middle;">
                     ${this.createCounterHtml(player.id, 'service_net')}
                 </td>
                 
-                <!-- Fouls -->
-                <td data-label="Foul" style="text-align: center; border-right: 2px solid #3a4560; vertical-align: middle;">
+                <!-- Errors & Fouls -->
+                <td data-label="Foul" style="text-align: center; vertical-align: middle;">
                     ${this.createCounterHtml(player.id, 'foul')}
+                </td>
+                <td data-label="Grave Error" style="text-align: center; vertical-align: middle;">
+                    ${this.createCounterHtml(player.id, 'error_grave')}
+                </td>
+                <td data-label="Block Error" style="text-align: center; vertical-align: middle;">
+                    ${this.createCounterHtml(player.id, 'error_block')}
+                </td>
+                <td data-label="Receive Error" style="text-align: center; vertical-align: middle;">
+                    ${this.createCounterHtml(player.id, 'error_receive')}
+                </td>
+                <td data-label="Defense Error" style="text-align: center; border-right: 2px solid #3a4560; vertical-align: middle;">
+                    ${this.createCounterHtml(player.id, 'error_defense')}
                 </td>
                 
                 <!-- Points Made -->
+                <td data-label="Serve Point" style="text-align: center; vertical-align: middle;">
+                    ${this.createCounterHtml(player.id, 'point_serve')}
+                </td>
                 <td data-label="Spike" style="text-align: center; vertical-align: middle;">
                     ${this.createCounterHtml(player.id, 'point_spike')}
                 </td>

@@ -153,14 +153,18 @@ const MatchService = {
      */
     getDefaultStats: function () {
         return {
-            service_under_net: 0,
             service_out: 0,
             service_net: 0,
             foul: 0,
+            error_grave: 0,
+            error_block: 0,
+            error_receive: 0,
+            error_defense: 0,
+            point_serve: 0,
             point_spike: 0,
-            point_random: 0,
             point_block: 0,
-            point_lob: 0
+            point_lob: 0,
+            point_random: 0
         };
     }
 };
