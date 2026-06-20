@@ -193,14 +193,19 @@ const MatchStats = {
 
         const stats = this.allPlayerStats[playerId];
         stats[statKey] = (stats[statKey] || 0) + 1;
-        
+
         // Optimistic UI update
         this.updatePlayerRowUI(playerId, stats);
 
-        const success = await MatchService.saveMatchStats(this.currentMatchId, playerId, stats);
+        // Atomic server-side increment: only the touched field changes, so
+        // concurrent edits from other devices are not overwritten (no lost updates).
+        const success = await MatchService.incrementStat(this.currentMatchId, playerId, statKey, 1);
         if (success) {
             this.showSyncStatus('saved');
         } else {
+            // Roll back the optimistic update if the write failed.
+            stats[statKey] = Math.max(0, (stats[statKey] || 0) - 1);
+            this.updatePlayerRowUI(playerId, stats);
             UIService.showMessage('Failed to save stats', 'error');
             this.showSyncStatus('saved'); // reset dot
         }
@@ -218,14 +223,18 @@ const MatchStats = {
         this.showSyncStatus('syncing');
         
         stats[statKey] = stats[statKey] - 1;
-        
+
         // Optimistic UI update
         this.updatePlayerRowUI(playerId, stats);
 
-        const success = await MatchService.saveMatchStats(this.currentMatchId, playerId, stats);
+        // Atomic server-side decrement (mirrors increment).
+        const success = await MatchService.incrementStat(this.currentMatchId, playerId, statKey, -1);
         if (success) {
             this.showSyncStatus('saved');
         } else {
+            // Roll back the optimistic update if the write failed.
+            stats[statKey] = (stats[statKey] || 0) + 1;
+            this.updatePlayerRowUI(playerId, stats);
             UIService.showMessage('Failed to save stats', 'error');
             this.showSyncStatus('saved'); // reset dot
         }

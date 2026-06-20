@@ -59,6 +59,27 @@ const FirebaseService = {
     },
 
     /**
+     * Atomically increment a numeric value at a path (server-side).
+     * Avoids the read-modify-write race of writing a whole object back.
+     */
+    increment: async function(path, delta) {
+        if (!this.isReady()) {
+            Logger.error('Firebase not initialized');
+            return false;
+        }
+
+        try {
+            const db = FirebaseModule.getDb();
+            await db.ref(path).set(firebase.database.ServerValue.increment(delta));
+            Logger.success(`Incremented ${path} by ${delta}`);
+            return true;
+        } catch (error) {
+            Logger.error(`Failed to increment ${path}: ${error.message}`);
+            return false;
+        }
+    },
+
+    /**
      * Read data from database (one-time)
      */
     read: async function(path) {
