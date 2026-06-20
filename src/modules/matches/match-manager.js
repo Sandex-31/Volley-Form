@@ -106,6 +106,19 @@ const MatchManager = {
                 `;
             }
 
+            let statsButtons = '';
+            if (match.status === 'Upcoming') {
+                statsButtons = `
+                    <button class="btn-stats-trigger btn-live-tracker" onclick="MatchStats.openLiveModal('${match.id}', '${this.escapeQuote(match.opponent)}', '${this.escapeQuote(dateDisplay)}')">⏱️ Live Tracker</button>
+                    <button class="btn-stats-trigger" onclick="MatchStats.openModal('${match.id}', '${this.escapeQuote(match.opponent)}', '${this.escapeQuote(dateDisplay)}', true)" style="margin-left: 5px;">📊 Review</button>
+                `;
+            } else {
+                statsButtons = `
+                    <button class="btn-stats-trigger btn-review-stats" onclick="MatchStats.openModal('${match.id}', '${this.escapeQuote(match.opponent)}', '${this.escapeQuote(dateDisplay)}', true)">📊 Review</button>
+                    <button class="btn-stats-trigger" onclick="MatchStats.openLiveModal('${match.id}', '${this.escapeQuote(match.opponent)}', '${this.escapeQuote(dateDisplay)}')" style="margin-left: 5px;">⏱️ Edit Stats</button>
+                `;
+            }
+
             tr.innerHTML = `
                 <td><span class="match-date">${dateDisplay}</span></td>
                 <td><span class="opponent-name">${this.escapeHtml(match.opponent)}</span></td>
@@ -116,7 +129,7 @@ const MatchManager = {
                 </td>
                 <td><span class="badge ${statusBadge}">${match.status}</span></td>
                 <td style="white-space: nowrap;">
-                    <button class="btn-stats-trigger" onclick="MatchStats.openModal('${match.id}', '${this.escapeQuote(match.opponent)}', '${this.escapeQuote(dateDisplay)}')">📊 Stats</button>
+                    ${statsButtons}
                     ${adminButtons}
                 </td>
             `;

@@ -295,67 +295,310 @@
     .stats-modal-content {
         padding: 20px 15px !important;
     }
+}
 
-    /* Hide the standard headers */
-    .stats-table thead {
-        display: none !important;
-    }
+/* ===== LIVE STATS MODAL CUSTOM STYLES ===== */
+.live-stats-modal-content {
+    max-width: 95% !important;
+    width: 600px !important;
+    padding: 25px !important;
+    border-radius: 12px !important;
+    max-height: 85vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
 
-    /* Force tables/tbody/rows to render as full-width block elements */
-    .stats-table, 
-    .stats-table tbody, 
-    .stats-table tr {
-        display: block !important;
-        width: 100% !important;
-        min-width: 0 !important;
-    }
+.live-view-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
 
-    /* Convert each player row into a dedicated card */
-    .stats-table tr {
-        background: #1f2635;
-        border: 1px solid #3a4560;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        padding: 15px;
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 12px 10px;
-    }
+/* Roster Grid styling */
+.live-roster-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)) !important;
+    gap: 12px !important;
+    max-height: 50vh !important;
+    overflow-y: auto !important;
+    padding-right: 5px !important;
+}
 
-    /* Force player details cell to span full width of the card */
-    .stats-table td:first-child {
-        grid-column: 1 / -1;
-        display: block !important;
-        width: 100% !important;
-        border: none !important;
-        border-bottom: 1px solid #3a4560 !important;
-        padding: 0 0 12px 0 !important;
-        margin-bottom: 4px;
-        background: transparent !important;
-    }
+.live-player-card {
+    background: #1f2635 !important;
+    border: 1px solid #3a4560 !important;
+    border-radius: 8px !important;
+    padding: 15px 10px !important;
+    text-align: center !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
 
-    /* Format all stats cells as grid item cells */
-    .stats-table td {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-        padding: 10px 6px !important;
-        border: 1px solid rgba(58, 69, 96, 0.4) !important;
-        border-radius: 6px;
-        background: rgba(36, 45, 71, 0.4);
-    }
+.live-player-card:hover {
+    border-color: #5b7cfa !important;
+    background: rgba(91, 124, 250, 0.05) !important;
+    transform: translateY(-2px) !important;
+}
 
-    /* Prepend custom categories label based on the data-label attribute */
-    .stats-table td[data-label]::before {
-        content: attr(data-label);
-        display: block;
-        font-size: 10px;
-        color: #8892b0;
-        margin-bottom: 6px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        text-align: center;
+.live-player-card .player-number-badge {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, #3a4560 0%, #4e5a7b 100%) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.live-player-card .player-name {
+    color: #f0f4f8 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    width: 100% !important;
+}
+
+.live-player-card .player-role {
+    color: #8892b0 !important;
+    font-size: 10px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* Player edit view header */
+.btn-back-roster {
+    background: #3a4560 !important;
+    color: #d0d9e8 !important;
+    border: none !important;
+    padding: 8px 16px !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+    cursor: pointer !important;
+    align-self: flex-start !important;
+    margin-bottom: 15px !important;
+    transition: all 0.2s !important;
+}
+
+.btn-back-roster:hover {
+    background: #4e5a7b !important;
+    color: #ffffff !important;
+}
+
+.live-player-header-compact {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    margin-bottom: 12px !important;
+    padding-bottom: 8px !important;
+    border-bottom: 1px solid #3a4560 !important;
+    width: 100% !important;
+    padding-right: 30px !important; /* Avoid overlap with absolute close button */
+}
+
+.btn-back-roster-compact {
+    background: #3a4560 !important;
+    color: #d0d9e8 !important;
+    border: none !important;
+    padding: 6px 12px !important;
+    border-radius: 4px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+    white-space: nowrap !important;
+}
+
+.btn-back-roster-compact:hover {
+    background: #4e5a7b !important;
+    color: #ffffff !important;
+}
+
+.live-player-info-compact {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+}
+
+.player-number-compact {
+    background: linear-gradient(135deg, #5b7cfa 0%, #748ffc 100%) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 12px !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+}
+
+.player-name-compact {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+}
+
+.player-role-compact {
+    color: #8892b0 !important;
+    font-size: 11px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* Scroll container for player stats editor */
+.live-stats-scroll-container {
+    max-height: 52vh !important;
+    overflow-y: auto !important;
+    padding-right: 5px !important;
+}
+
+/* Stat rows in live view */
+.live-stat-group {
+    background: #1f2635 !important;
+    border: 1px solid rgba(58, 69, 96, 0.4) !important;
+    border-radius: 8px !important;
+    padding: 8px 10px !important;
+    margin-bottom: 10px !important;
+}
+
+.live-stat-group-title {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    margin-bottom: 8px !important;
+}
+
+.live-stat-group.srv-errors { border-left: 4px solid #ff6b6b !important; }
+.live-stat-group.srv-errors .live-stat-group-title { color: #ff6b6b !important; }
+
+.live-stat-group.fouls { border-left: 4px solid #fcc419 !important; }
+.live-stat-group.fouls .live-stat-group-title { color: #fcc419 !important; }
+
+.live-stat-group.points { border-left: 4px solid #51a376 !important; }
+.live-stat-group.points .live-stat-group-title { color: #51a376 !important; }
+
+/* Grid counter styles */
+.live-counter-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    width: 100% !important;
+}
+
+@media (min-width: 480px) {
+    .live-counter-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
     }
+}
+
+.live-counter-tile {
+    background: rgba(36, 45, 71, 0.4) !important;
+    border: 1px solid rgba(58, 69, 96, 0.4) !important;
+    border-radius: 6px !important;
+    padding: 8px 6px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+}
+
+.live-counter-tile-label {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    color: #d0d9e8 !important;
+    text-align: center !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    width: 100% !important;
+}
+
+.live-counter-tile-controls {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+}
+
+/* Touch counter tile buttons */
+.btn-live-counter-tile {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 6px !important;
+    border: none !important;
+    cursor: pointer !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #ffffff !important;
+    transition: all 0.2s ease !important;
+}
+
+.btn-live-counter-tile-minus {
+    background: #3a4560 !important;
+}
+
+.btn-live-counter-tile-minus:hover:not(:disabled) {
+    background: #4e5a7b !important;
+}
+
+.btn-live-counter-tile-minus:disabled {
+    opacity: 0.25 !important;
+    cursor: not-allowed !important;
+}
+
+.btn-live-counter-tile-plus {
+    background: linear-gradient(135deg, #5b7cfa 0%, #748ffc 100%) !important;
+}
+
+.btn-live-counter-tile-plus:hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 2px 6px rgba(91, 124, 250, 0.3) !important;
+}
+
+.live-counter-tile-value {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    min-width: 20px !important;
+    text-align: center !important;
+}
+
+/* Action button style overrides */
+.btn-live-tracker {
+    background: linear-gradient(135deg, #e64980 0%, #ff8787 100%) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+.btn-live-tracker:hover {
+    background: linear-gradient(135deg, #d6336c 0%, #ff6b6b 100%) !important;
+    box-shadow: 0 4px 10px rgba(230, 73, 128, 0.3) !important;
+}
+
+.btn-review-stats {
+    background: linear-gradient(135deg, #5b7cfa 0%, #748ffc 100%) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+.btn-review-stats:hover {
+    background: linear-gradient(135deg, #4263eb 0%, #5c7cfa 100%) !important;
+    box-shadow: 0 4px 10px rgba(91, 124, 250, 0.3) !important;
 }

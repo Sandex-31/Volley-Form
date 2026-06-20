@@ -178,6 +178,7 @@ const MatchService = {
             error_grave: 0,
             error_block: 0,
             error_receive: 0,
+            error_set: 0,
             error_defense: 0,
             point_serve: 0,
             point_spike: 0,

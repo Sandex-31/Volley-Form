@@ -127,13 +127,13 @@
                 <p id="statsMatchDate">Date</p>
             </div>
 
-            <div class="table-responsive" style="max-height: 60vh; overflow-y: auto;">
+            <div class="table-responsive" style="max-height: 60vh; overflow: auto;">
                 <table class="match-table stats-table" style="width: 100%; min-width: 1150px; border-collapse: collapse;">
                     <thead>
                         <tr style="background-color: #1f2635; position: sticky; top: 0; z-index: 10;">
                             <th style="text-align: left; padding: 12px; border: 1px solid #3a4560;">Player</th>
                             <th colspan="2" style="text-align: center; border: 1px solid #3a4560; border-left: 2px solid #3a4560; border-right: 2px solid #3a4560; background-color: rgba(91, 124, 250, 0.1);">🏐 Service Errors</th>
-                            <th colspan="5" style="text-align: center; border: 1px solid #3a4560; border-right: 2px solid #3a4560; background-color: rgba(250, 91, 91, 0.1);">⚠️ Errors & Fouls</th>
+                            <th colspan="6" style="text-align: center; border: 1px solid #3a4560; border-right: 2px solid #3a4560; background-color: rgba(250, 91, 91, 0.1);">⚠️ Errors & Fouls</th>
                             <th colspan="5" style="text-align: center; border: 1px solid #3a4560; background-color: rgba(81, 163, 118, 0.1);">🔥 Points Made</th>
                         </tr>
                         <tr style="background-color: #242d47; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; position: sticky; top: 38px; z-index: 10;">
@@ -146,6 +146,7 @@
                             <th style="text-align: center; border: 1px solid #3a4560; padding: 8px;">Grave Err</th>
                             <th style="text-align: center; border: 1px solid #3a4560; padding: 8px;">Block Err</th>
                             <th style="text-align: center; border: 1px solid #3a4560; padding: 8px;">Rec Error</th>
+                            <th style="text-align: center; border: 1px solid #3a4560; padding: 8px;">Palleggio Err</th>
                             <th style="text-align: center; border: 1px solid #3a4560; border-right: 2px solid #3a4560; padding: 8px;">Def Error</th>
                             <!-- Points -->
                             <th style="text-align: center; border: 1px solid #3a4560; padding: 8px;">Serve Pt</th>
@@ -164,6 +165,50 @@
             <!-- Sync status -->
             <div id="statsSyncStatus" class="stats-sync-status saved" style="display: flex; margin-top: 15px; justify-content: flex-end;">
                 <span class="dot"></span> <span id="syncText">Saved to Database</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== LIVE TRACKER MODAL ===== -->
+    <div id="liveStatsModal" class="stats-modal">
+        <div class="stats-modal-content live-stats-modal-content">
+            <span class="close-stats-modal" onclick="MatchStats.closeLiveModal()">&times;</span>
+            
+            <div id="liveStatsModalHeader" class="stats-modal-header" style="margin-bottom: 15px;">
+                <h2 id="liveStatsMatchOpponent">Live Match Tracker</h2>
+                <p id="liveStatsMatchDate">Date</p>
+            </div>
+
+            <!-- View 1: Roster Grid -->
+            <div id="liveRosterView" class="live-view-panel">
+                <p style="color: #8892b0; font-size: 13px; margin-bottom: 15px;">Tap a player to log their stats in real-time:</p>
+                <div id="liveRosterGrid" class="live-roster-grid">
+                    <!-- Dynamic player cards -->
+                </div>
+            </div>
+
+            <!-- View 2: Player Edit Panel -->
+            <div id="livePlayerEditView" class="live-view-panel" style="display: none;">
+                <div class="live-player-header-compact">
+                    <button class="btn-back-roster-compact" onclick="MatchStats.showLiveRoster()">&larr; Roster</button>
+                    <div class="live-player-info-compact">
+                        <span id="livePlayerNumber" class="player-number-compact">#</span>
+                        <span id="livePlayerName" class="player-name-compact">Player Name</span>
+                        <span id="livePlayerRole" class="player-role-compact">Role</span>
+                    </div>
+                </div>
+
+                <div id="livePlayerStatsContainer" class="live-stats-scroll-container">
+                    <!-- Dynamic stat counters -->
+                </div>
+            </div>
+
+            <!-- Sync status -->
+            <div id="liveStatsSyncStatus" class="stats-sync-status saved" style="display: flex; margin-top: 15px; justify-content: space-between; align-items: center; border-top: 1px solid #3a4560; padding-top: 15px;">
+                <span id="liveActivePlayerIndicator" style="color: #8892b0; font-size: 12px; font-weight: 600;"></span>
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <span class="dot"></span> <span id="liveSyncText">Saved to Database</span>
+                </div>
             </div>
         </div>
     </div>
