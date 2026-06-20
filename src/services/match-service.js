@@ -109,6 +109,25 @@ const MatchService = {
     },
 
     /**
+     * Atomically adjust a single stat for a player in a match.
+     * Uses a server-side increment so concurrent edits from multiple
+     * devices don't overwrite each other (avoids lost updates).
+     */
+    incrementStat: async function (matchId, playerId, statKey, delta) {
+        if (!FirebaseService.isReady() || !playerId) {
+            UIService.showMessage('⚠️ Firebase not available', 'error');
+            return false;
+        }
+        try {
+            const path = `${APP_CONSTANTS.FIREBASE_REFS.MATCH_STATS}/${matchId}/${playerId}/${statKey}`;
+            return await FirebaseService.increment(path, delta);
+        } catch (error) {
+            Logger.error(`Error incrementing ${statKey} for ${matchId}/${playerId}: ${error.message}`);
+            return false;
+        }
+    },
+
+    /**
      * Subscribe to real-time statistics changes for a specific player in a match
      */
     subscribeToMatchStats: function (matchId, playerId, callback) {
