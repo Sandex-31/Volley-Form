@@ -28,10 +28,18 @@ const FirebaseModule = {
             }
             this.db = firebase.database();
             this.isReady = true;
-            Logger.log('✅ Firebase initialized successfully', 'success');
+            if (typeof Logger !== 'undefined') {
+                Logger.log('✅ Firebase initialized successfully', 'success');
+            } else {
+                console.log('✅ Firebase initialized successfully');
+            }
             return true;
         } catch (error) {
-            Logger.log('❌ Firebase initialization failed: ' + error.message, 'error');
+            if (typeof Logger !== 'undefined') {
+                Logger.log('❌ Firebase initialization failed: ' + error.message, 'error');
+            } else {
+                console.error('❌ Firebase initialization failed: ' + error.message);
+            }
             this.isReady = false;
             return false;
         }

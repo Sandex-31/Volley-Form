@@ -19,6 +19,7 @@
             <li class="navbar-item"><a href="responses.html">📊 Responses</a></li>
             <li class="navbar-item"><a href="match-table.html">🏆 Matches</a></li>
             <li class="navbar-item active"><a href="players.html">👥 Players</a></li>
+            <li class="navbar-item"><a href="ai-analysis.html">🎥 AI Analysis</a></li>
             <li class="navbar-item"><a href="upload-exercises.html">⚙️ Manage</a></li>
         </ul>
     </nav>
@@ -29,6 +30,11 @@
             <h1>👥 Team Roster</h1>
             <p>View and manage volleyball players, numbers, and roles</p>
         </div>
+
+        <!-- Messages -->
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+        <div id="infoMessage" class="info-message"></div>
 
         <!-- Admin Action Header (Hidden for public, toggled by JS) -->
         <div id="playerAdminActions" class="players-header-actions" style="display: none;">
@@ -55,10 +61,53 @@
                     <input type="text" id="playerName" required placeholder="e.g. Lorenzo Rossi">
                 </div>
 
+                <!-- Profile Photo Input & Preview -->
+                <div class="form-group" style="margin-bottom: 20px; text-align: left;">
+                    <label>Profile Picture (for AI face recognition)</label>
+                    <div class="modal-photo-upload-container">
+                        <div class="modal-photo-preview" id="modalPhotoPreviewContainer">
+                            <img id="playerPhotoPreview" src="" alt="Preview" style="transition: transform 0.1s ease-out;">
+                            <span id="playerPhotoPlaceholder">👤</span>
+                        </div>
+                        <div class="modal-photo-controls">
+                            <input type="file" id="playerPhotoInput" accept="image/*" style="display: none;" onchange="PlayersModule.handlePhotoSelect(event)">
+                            <button type="button" class="btn-secondary btn-upload-photo" onclick="document.getElementById('playerPhotoInput').click()">Choose Image</button>
+                            <button type="button" id="btnRemovePhoto" class="btn-secondary btn-remove-photo" onclick="PlayersModule.removeSelectedPhoto()" style="display: none;">Remove</button>
+                            <small class="upload-tip">Use a clear photo of the player's face so Gemini AI can identify them in videos.</small>
+                        </div>
+                    </div>
+
+                    <!-- Zoom & Pan Position Adjustments -->
+                    <div id="photoAdjustments" style="display: none; margin-top: 10px; background: #1f2635; padding: 12px; border-radius: 6px; border: 1px solid #3a4560;">
+                        <div style="font-size: 11px; color: #8892b0; margin-bottom: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">📐 Adjust Position & Zoom:</div>
+                        <div style="margin-bottom: 8px;">
+                            <div style="display: flex; justify-content: space-between; font-size: 11px; color: #8892b0; margin-bottom: 2px;">
+                                <span>Zoom</span>
+                                <span id="lblPhotoZoom">1.0x</span>
+                            </div>
+                            <input type="range" id="photoZoom" min="1" max="3" step="0.05" value="1" style="width: 100%; height: 6px; background: #242d47; border-radius: 3px; outline: none; -webkit-appearance: none; cursor: pointer;" oninput="PlayersModule.updatePhotoTransform()">
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <div style="flex: 1;">
+                                <label style="font-size: 11px; color: #8892b0; display: block; margin-bottom: 2px;">Pan Left/Right (X)</label>
+                                <input type="range" id="photoPanX" min="-50" max="50" step="1" value="0" style="width: 100%; height: 6px; background: #242d47; border-radius: 3px; outline: none; -webkit-appearance: none; cursor: pointer;" oninput="PlayersModule.updatePhotoTransform()">
+                            </div>
+                            <div style="flex: 1;">
+                                <label style="font-size: 11px; color: #8892b0; display: block; margin-bottom: 2px;">Pan Up/Down (Y)</label>
+                                <input type="range" id="photoPanY" min="-50" max="50" step="1" value="0" style="width: 100%; height: 6px; background: #242d47; border-radius: 3px; outline: none; -webkit-appearance: none; cursor: pointer;" oninput="PlayersModule.updatePhotoTransform()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-row" style="margin-bottom: 20px; text-align: left;">
                     <div class="form-group">
                         <label for="playerNumber">Jersey Number *</label>
                         <input type="number" id="playerNumber" required min="1" max="99" placeholder="e.g. 7">
+                    </div>
+                    <div class="form-group">
+                        <label for="playerHeight">Altezza (cm)</label>
+                        <input type="number" id="playerHeight" min="100" max="250" placeholder="e.g. 185">
                     </div>
                     <div class="form-group">
                         <label for="playerRole">Role *</label>
@@ -84,9 +133,14 @@
     <!-- ===== FIREBASE SDK ===== -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+
+    <!-- ===== SUPABASE SDK ===== -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
     <!-- ===== CONFIGURATION & CONSTANTS ===== -->
     <script src="../config/firebase.config.js"></script>
+    <script src="../config/supabase.config.js"></script>
     <script src="../config/constants.js"></script>
 
     <!-- ===== COMMON SERVICES ===== -->

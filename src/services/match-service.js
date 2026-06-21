@@ -30,6 +30,24 @@ const MatchService = {
     },
 
     /**
+     * Get all matches (one-time read)
+     */
+    getAllMatches: async function () {
+        if (!FirebaseService.isReady()) {
+            Logger.error('Firebase not initialized');
+            return [];
+        }
+        try {
+            const path = APP_CONSTANTS.FIREBASE_REFS.MATCHES;
+            const data = await FirebaseService.read(path);
+            return data ? Object.values(data) : [];
+        } catch (error) {
+            Logger.error(`Error reading matches: ${error.message}`);
+            return [];
+        }
+    },
+
+    /**
      * Add or update a match
      */
     saveMatch: async function (match) {

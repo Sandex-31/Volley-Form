@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Video Analysis - Volley Tool</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/navbar.css">
+    <link rel="stylesheet" href="../styles/video-analysis.css">
+</head>
+<body>
+    <!-- ===== NAVIGATION BAR ===== -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand"><img src="../assets/logo.png" alt="Wapatanka Logo" class="navbar-logo"> <span>Wapatanka</span></a>
+        <ul class="navbar-menu">
+            <li class="navbar-item"><a href="index.html">🏠 Home</a></li>
+            <li class="navbar-item"><a href="form.html">📋 Rate Form</a></li>
+            <li class="navbar-item"><a href="public-exercises.html">💪 Exercises</a></li>
+            <li class="navbar-item"><a href="responses.html">📊 Responses</a></li>
+            <li class="navbar-item"><a href="match-table.html">🏆 Matches</a></li>
+            <li class="navbar-item"><a href="players.html">👥 Players</a></li>
+            <li class="navbar-item"><a href="upload-exercises.html">⚙️ Manage</a></li>
+            <li class="navbar-item active"><a href="ai-analysis.html">🎥 AI Analysis</a></li>
+        </ul>
+    </nav>
+
+    <!-- ===== MAIN CONTENT CONTAINER ===== -->
+    <div class="analysis-container container">
+        <div class="header">
+            <h1>🎥 AI Video Analysis</h1>
+            <p>Upload a match video or paste a YouTube link to automatically extract statistics and events using Computer Vision.</p>
+        </div>
+
+        <div class="analysis-card">
+            <!-- Review Past Analyses Dropdown -->
+            <div class="form-group" style="margin-bottom: 25px; border-bottom: 1px solid #2a3449; padding-bottom: 20px;">
+                <label for="pastAnalysisSelect">📂 Review Past Analyses</label>
+                <select id="pastAnalysisSelect">
+                    <option value="">-- Loading past analyses... --</option>
+                </select>
+                <small style="color: #8892b0; margin-top: 5px; display: block;">Select a previously completed video analysis to view its dashboard instantly.</small>
+            </div>
+
+            <form id="aiAnalysisForm" onsubmit="VideoAnalysis.startAnalysis(event)">
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="videoLink">YouTube Video Link *</label>
+                    <input type="url" id="videoLink" required placeholder="https://www.youtube.com/watch?v=...">
+                    <small style="color: #8892b0; margin-top: 5px; display: block;">Paste the link to the full match video on YouTube.</small>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 25px;">
+                    <label for="matchSelect">Select Target Match (Optional)</label>
+                    <select id="matchSelect">
+                        <option value="">-- None / Training Session --</option>
+                    </select>
+                    <small style="color: #8892b0; margin-top: 5px; display: block;">If selected, the AI will save the extracted stats directly to this match.</small>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 25px;">
+                    <label for="customName">Custom Analysis Name (Optional)</label>
+                    <input type="text" id="customName" placeholder="e.g. Training Session - Attacks, or Match vs Opponent B">
+                    <small style="color: #8892b0; margin-top: 5px; display: block;">A friendly name to identify this analysis in the past reviews history dropdown.</small>
+                </div>
+
+                <button type="submit" id="startAnalysisBtn" class="btn-ai-analysis">🚀 Start AI Analysis</button>
+            </form>
+
+            <!-- Progress Tracker -->
+            <div id="analysisProgressContainer" class="progress-container" style="display: none;">
+                <h3 style="color: #e2e8f0; margin-bottom: 10px;">Analysis in Progress...</h3>
+                <div class="progress-bar-bg">
+                    <div id="progressBarFill" class="progress-bar-fill" style="width: 0%;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                    <span id="progressStatusText" style="color: #8892b0; font-size: 14px;">Initializing...</span>
+                    <span id="progressPercentage" style="color: #5b7cfa; font-weight: bold; font-size: 14px;">0%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis Results Dashboard -->
+        <div id="analysisResultsContainer" class="results-container" style="display: none; margin-top: 30px;">
+            <div class="results-header" style="margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a3449; padding-bottom: 15px;">
+                <h2 style="color: #e2e8f0; font-size: 22px; margin: 0; display: flex; align-items: center; gap: 10px;">📊 AI Analysis Dashboard</h2>
+                <button onclick="window.location.reload()" style="background: rgba(124, 58, 237, 0.1); border: 1px solid #7c3aed; color: #a78bfa; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; transition: background 0.2s;" onmouseover="this.style.background='rgba(124, 58, 237, 0.2)'" onmouseout="this.style.background='rgba(124, 58, 237, 0.1)'">🔄 Analyze Another</button>
+            </div>
+            
+            <!-- Tab Controls -->
+            <div class="tabs-nav" style="display: flex; gap: 15px; margin-bottom: 25px; border-bottom: 1px solid #2a3449; padding-bottom: 10px;">
+                <button onclick="VideoAnalysis.switchTab('dashboard')" id="tabBtnDashboard" class="tab-btn active" style="background: none; border: none; color: #a78bfa; font-size: 16px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-bottom: 3px solid #7c3aed; transition: all 0.2s; outline: none;">📊 Dashboard Generale</button>
+                <button onclick="VideoAnalysis.switchTab('segments')" id="tabBtnSegments" class="tab-btn" style="background: none; border: none; color: #8892b0; font-size: 16px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-bottom: 3px solid transparent; transition: all 0.2s; outline: none;">🎥 Azioni Rilevate</button>
+            </div>
+            
+            <!-- Tab 1: Dashboard View (Aggregated Stats) -->
+            <div id="dashboardView" class="tab-content-view">
+                <div style="margin-bottom: 35px;">
+                    <h3 style="color: #e2e8f0; font-size: 18px; margin-bottom: 15px; border-left: 4px solid #7c3aed; padding-left: 10px;">👥 Player Actions & Performance</h3>
+                    <div id="statsGrid" class="stats-grid">
+                        <!-- Cards will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tab 2: Segments View (Master-Detail) -->
+            <div id="segmentsView" class="tab-content-view" style="display: none;">
+                <!-- Filter and Search controls -->
+                <div class="segments-controls" style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; align-items: center; background: #1a1f2b; padding: 15px; border-radius: 8px; border: 1px solid #2a3449;">
+                    <div style="flex: 1; min-width: 250px;">
+                        <input type="text" id="segmentSearchInput" oninput="VideoAnalysis.filterSegments()" placeholder="🔍 Cerca nelle descrizioni (es. battuta, punto, Luca)..." style="width: 100%; padding: 10px 14px; background: #242d47; border: 1px solid #3a4560; border-radius: 6px; color: #f0f4f8; font-size: 14px; outline: none; transition: border-color 0.2s;">
+                    </div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;" id="segmentTypeFilters">
+                        <button onclick="VideoAnalysis.setFilterType('all')" class="filter-btn active" data-type="all">Tutte</button>
+                        <button onclick="VideoAnalysis.setFilterType('serve')" class="filter-btn" data-type="serve">Battute</button>
+                        <button onclick="VideoAnalysis.setFilterType('attack')" class="filter-btn" data-type="attack">Attacchi</button>
+                        <button onclick="VideoAnalysis.setFilterType('defense')" class="filter-btn" data-type="defense">Difese</button>
+                        <button onclick="VideoAnalysis.setFilterType('block')" class="filter-btn" data-type="block">Muri</button>
+                    </div>
+                </div>
+
+                <!-- Master-Detail Layout Panel -->
+                <div class="master-detail-container" style="display: flex; gap: 20px; height: 600px; max-height: 80vh; min-height: 450px;">
+                    <!-- Master Panel (Left side list) -->
+                    <div class="master-panel" id="masterPanelList" style="flex: 1; max-width: 320px; min-width: 250px; background: #1a1f2b; border: 1px solid #2a3449; border-radius: 8px; overflow-y: auto; display: flex; flex-direction: column;">
+                        <!-- Segment list items will be populated dynamically -->
+                    </div>
+
+                    <!-- Detail Panel (Right side preview) -->
+                    <div class="detail-panel" id="detailPanelContent" style="flex: 2; background: #1a1f2b; border: 1px solid #2a3449; border-radius: 8px; overflow-y: auto; display: flex; flex-direction: column; padding: 20px; justify-content: center; align-items: center; color: #8892b0;">
+                        <div style="text-align: center;">
+                            <span style="font-size: 48px; display: block; margin-bottom: 15px;">🎥</span>
+                            Seleziona un'azione dalla lista a sinistra per visualizzare il video e le statistiche dettagliate.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== COMMON SERVICES ===== -->
+    <script src="../common/logger.js"></script>
+
+    <!-- ===== FIREBASE SDK ===== -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <!-- ===== CONFIGURATION & CONSTANTS ===== -->
+    <script src="../config/firebase.config.js"></script>
+    <script src="../config/constants.js"></script>
+
+    <!-- ===== COMMON SERVICES ===== -->
+    <script src="../services/firebase-service.js"></script>
+    <script src="../services/match-service.js"></script>
+    
+    <!-- ===== MODULES ===== -->
+    <script src="../modules/analysis/video-analysis.js"></script>
+</body>
+</html>

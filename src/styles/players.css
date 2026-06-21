@@ -213,3 +213,167 @@
         padding: 20px;
     }
 }
+
+/* ===== PLAYER PROFILE PHOTO & UPLOAD STYLES ===== */
+
+/* Photo container in roster card */
+.player-card-photo-container {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    position: relative;
+    margin-bottom: 15px;
+    border: 3px solid #3a4560;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    background: #242d47;
+    overflow: visible;
+}
+
+.player-card:hover .player-card-photo-container {
+    border-color: #5b7cfa;
+    box-shadow: 0 4px 15px rgba(91, 124, 250, 0.4);
+}
+
+.player-card-photo {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Overlay jersey number badge */
+.player-card-photo-container .player-number-badge {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #5b7cfa 0%, #748ffc 100%);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    border: 2px solid #1f2635;
+    transition: all 0.3s ease;
+}
+
+.player-card:hover .player-card-photo-container .player-number-badge {
+    background: linear-gradient(135deg, #748ffc 0%, #5b7cfa 100%);
+    transform: scale(1.05);
+}
+
+/* Fallback letter avatar */
+.player-card-photo-container.placeholder-avatar {
+    background: linear-gradient(135deg, #2a3554 0%, #1f2635 100%);
+}
+
+.player-card-photo-container.placeholder-avatar .avatar-letter {
+    font-size: 38px;
+    font-weight: 700;
+    color: #8892b0;
+    text-transform: uppercase;
+}
+
+/* Modal photo upload layouts */
+.modal-photo-upload-container {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-top: 8px;
+    background: #1f2635;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #3a4560;
+}
+
+.modal-photo-preview {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #242d47;
+    border: 2px solid #3a4560;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.modal-photo-preview img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transform-origin: center center;
+    display: none;
+}
+
+.modal-photo-preview img.landscape {
+    height: 100%;
+    width: auto;
+    max-width: none;
+}
+
+.modal-photo-preview img.portrait {
+    width: 100%;
+    height: auto;
+    max-height: none;
+}
+
+.modal-photo-preview span {
+    font-size: 32px;
+    color: #8892b0;
+}
+
+.modal-photo-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-grow: 1;
+}
+
+.modal-photo-controls button {
+    width: fit-content;
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-upload-photo {
+    background: #5b7cfa;
+    color: white;
+    border: none;
+}
+
+.btn-upload-photo:hover {
+    background: #748ffc;
+}
+
+.btn-remove-photo {
+    background: #c23030;
+    color: white;
+    border: none;
+}
+
+.btn-remove-photo:hover {
+    background: #e03131;
+}
+
+.upload-tip {
+    color: #8892b0;
+    font-size: 11px;
+    margin-top: 2px;
+    line-height: 1.3;
+}
+
