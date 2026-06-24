@@ -186,6 +186,9 @@ const PlayerDetailModule = {
             SetOptics3D.selectSet(index);
         }
 
+        const offsetXVal = set.offsetX !== undefined ? set.offsetX : 0.0;
+        const offsetYVal = set.offsetY !== undefined ? set.offsetY : 2.5;
+
         document.getElementById('selectedSetDetails').innerHTML = `
             <div style="background: #242d47; padding: 15px; border-radius: 8px; border: 1px solid #3a4560;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -198,14 +201,22 @@ const PlayerDetailModule = {
                         ←
                     </button>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px;">
                     <div>
-                        <span style="color: #8892b0; font-size: 12px; text-transform: uppercase;">Apex Height</span>
-                        <div style="font-size: 20px; font-weight: bold; color: #f0f4f8;">${set.apex} m</div>
+                        <span style="color: #8892b0; font-size: 10px; text-transform: uppercase; display: block;">Apex Max</span>
+                        <div style="font-size: 16px; font-weight: bold; color: #f0f4f8;">${set.apex} m</div>
                     </div>
                     <div>
-                        <span style="color: #8892b0; font-size: 12px; text-transform: uppercase;">Target Offset</span>
-                        <div style="font-size: 20px; font-weight: bold; color: #f0f4f8;">${set.offset} m</div>
+                        <span style="color: #8892b0; font-size: 10px; text-transform: uppercase; display: block;">Distanza Rete (Z)</span>
+                        <div style="font-size: 16px; font-weight: bold; color: #f0f4f8;">${set.offset} m</div>
+                    </div>
+                    <div>
+                        <span style="color: #8892b0; font-size: 10px; text-transform: uppercase; display: block;">Offset Orizz. (X)</span>
+                        <div style="font-size: 16px; font-weight: bold; color: #f0f4f8;">${offsetXVal >= 0 ? '+' : ''}${offsetXVal} m</div>
+                    </div>
+                    <div>
+                        <span style="color: #8892b0; font-size: 10px; text-transform: uppercase; display: block;">Altezza Impatto (Y)</span>
+                        <div style="font-size: 16px; font-weight: bold; color: #f0f4f8;">${offsetYVal} m</div>
                     </div>
                 </div>
                 <div style="display: flex; gap: 10px; margin-top: 15px;">
@@ -221,6 +232,8 @@ const PlayerDetailModule = {
         document.getElementById('preferredSetForm').reset();
         document.getElementById('apexVal').textContent = '3.0m';
         document.getElementById('offsetVal').textContent = '0.5m';
+        document.getElementById('offsetXValText').textContent = '+0.0m';
+        document.getElementById('offsetYValText').textContent = '2.5m';
         document.getElementById('preferredSetModal').style.display = 'flex';
     },
 
@@ -233,6 +246,14 @@ const PlayerDetailModule = {
         document.getElementById('apexVal').textContent = set.apex + 'm';
         document.getElementById('setOffset').value = set.offset;
         document.getElementById('offsetVal').textContent = set.offset + 'm';
+
+        const offsetX = set.offsetX !== undefined ? set.offsetX : 0.0;
+        const offsetY = set.offsetY !== undefined ? set.offsetY : 2.5;
+
+        document.getElementById('setOffsetX').value = offsetX;
+        document.getElementById('offsetXValText').textContent = (offsetX >= 0 ? '+' : '') + offsetX + 'm';
+        document.getElementById('setOffsetY').value = offsetY;
+        document.getElementById('offsetYValText').textContent = offsetY + 'm';
         
         document.getElementById('preferredSetModal').style.display = 'flex';
     },
@@ -248,17 +269,23 @@ const PlayerDetailModule = {
         const target = document.getElementById('setTarget').value;
         const apex = parseFloat(document.getElementById('setApex').value);
         const offset = parseFloat(document.getElementById('setOffset').value);
+        const offsetX = parseFloat(document.getElementById('setOffsetX').value);
+        const offsetY = parseFloat(document.getElementById('setOffsetY').value);
 
         if (this.editingSetIndex !== undefined && this.editingSetIndex >= 0) {
             this.playerData.preferredSets[this.editingSetIndex].target = target;
             this.playerData.preferredSets[this.editingSetIndex].apex = apex;
             this.playerData.preferredSets[this.editingSetIndex].offset = offset;
+            this.playerData.preferredSets[this.editingSetIndex].offsetX = offsetX;
+            this.playerData.preferredSets[this.editingSetIndex].offsetY = offsetY;
         } else {
             const newSet = {
                 id: 'set_' + Date.now(),
                 target,
                 apex,
-                offset
+                offset,
+                offsetX,
+                offsetY
             };
             this.playerData.preferredSets.push(newSet);
         }
@@ -528,8 +555,12 @@ const SetOptics3D = {
             const targetDef = targetsMap[set.target];
             if(!targetDef) return;
             
+            const offsetX = parseFloat(set.offsetX !== undefined ? set.offsetX : 0.0);
+            const offsetY = parseFloat(set.offsetY !== undefined ? set.offsetY : 2.5);
+            const offsetZ = parseFloat(set.offset !== undefined ? set.offset : 0.5);
+            
             let xPos = 0;
-            let zPos = set.offset; 
+            let zPos = offsetZ; 
             
             switch(set.target) {
                 case 'ala_s': xPos = -4; break;
@@ -542,12 +573,14 @@ const SetOptics3D = {
                 case 'cen_b': xPos = 4; break;
                 case 'opp_4': xPos = 4; break;
                 case 'opp_6': xPos = 4.5; break;
-                case 'sec_0': xPos = 0; if(set.offset < 2) zPos = 3.0; break;
-                case 'sec_8': xPos = 3.5; if(set.offset < 2) zPos = 3.0; break;
+                case 'sec_0': xPos = 0; if(offsetZ < 2) zPos = 3.0; break;
+                case 'sec_8': xPos = 3.5; if(offsetZ < 2) zPos = 3.0; break;
                 default: xPos = 0;
             }
             
-            const targetPos = new THREE.Vector3(xPos, 2.5, zPos); 
+            xPos += offsetX;
+            
+            const targetPos = new THREE.Vector3(xPos, offsetY, zPos); 
             
             const midX = (setterPos.x + targetPos.x) / 2;
             const midZ = (setterPos.z + targetPos.z) / 2;

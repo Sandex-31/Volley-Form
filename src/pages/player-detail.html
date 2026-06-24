@@ -7,7 +7,7 @@
     <title>Player Details - Volley Tool</title>
     <link rel="stylesheet" href="../styles/styles.css">
     <link rel="stylesheet" href="../styles/navbar.css">
-    <link rel="stylesheet" href="../styles/player-detail.css?v=20260624_mobile_v3">
+    <link rel="stylesheet" href="../styles/player-detail.css?v=20260624_mobile_v4">
 </head>
 
 <body>
@@ -150,12 +150,30 @@
                     </div>
                 </div>
 
-                <div class="form-group" style="margin-bottom: 25px;">
+                <div class="form-group" style="margin-bottom: 15px;">
                     <label>Target Offset (Metri) - Distanza dalla rete/astina</label>
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <input type="range" id="setOffset" min="0.0" max="4.0" step="0.1" value="0.5" style="flex: 1;"
                             oninput="document.getElementById('offsetVal').textContent = this.value + 'm'">
                         <span id="offsetVal" style="color: #34d399; font-weight: bold; width: 50px;">0.5m</span>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Offset Orizzontale (Metri) - Spostamento Sinistra (-) / Destra (+)</label>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="range" id="setOffsetX" min="-2.0" max="2.0" step="0.1" value="0.0" style="flex: 1;"
+                            oninput="document.getElementById('offsetXValText').textContent = (this.value >= 0 ? '+' : '') + this.value + 'm'">
+                        <span id="offsetXValText" style="color: #fbbf24; font-weight: bold; width: 50px;">+0.0m</span>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 25px;">
+                    <label>Altezza Finale di Impatto (Metri) - Dove finisce verticalmente</label>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="range" id="setOffsetY" min="1.8" max="3.6" step="0.1" value="2.5" style="flex: 1;"
+                            oninput="document.getElementById('offsetYValText').textContent = this.value + 'm'">
+                        <span id="offsetYValText" style="color: #a78bfa; font-weight: bold; width: 50px;">2.5m</span>
                     </div>
                 </div>
 
@@ -188,7 +206,7 @@
     <script src="../services/match-service.js"></script>
 
     <!-- ===== PLAYER DETAIL MODULE ===== -->
-    <script src="../modules/players/player-detail.js?v=20260624_mobile_v3"></script>
+    <script src="../modules/players/player-detail.js?v=20260624_mobile_v4"></script>
 </body>
 
 </html>
