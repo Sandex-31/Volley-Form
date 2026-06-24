@@ -173,6 +173,29 @@
 .stat-card-primary .stat-value { color: #60a5fa; }
 
 /* SetOptics Dashboard */
+.setoptics-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.setoptics-header .section-title {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.btn-add-set {
+    padding: 8px 16px;
+    font-size: 14px;
+    margin-left: 20px;
+    white-space: nowrap;
+    max-height: 40px;
+    width: auto;
+    flex: none;
+}
+
 .setoptics-dashboard {
     display: flex;
     gap: 30px;
@@ -181,12 +204,14 @@
 }
 
 .setoptics-court-container {
+    position: relative;
+    height: 500px;
+    padding: 0;
     flex: 3;
     min-width: 600px;
     background: #151a24;
     border: 1px solid #2a3449;
     border-radius: 12px;
-    padding: 40px;
     overflow: hidden;
     display: flex;
     justify-content: center;
@@ -210,8 +235,6 @@
     border-bottom: 1px solid #2a3449;
     padding-bottom: 10px;
 }
-
-
 
 /* Modal Styles */
 .player-modal {
@@ -257,4 +280,146 @@
 
 .close-player-modal:hover {
     color: #ffffff;
+}
+
+/* Media Queries for Mobile Responsiveness */
+@media (max-width: 768px) {
+    .player-detail-container {
+        padding-top: 20px;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .profile-header {
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+
+    .profile-info-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .profile-photo-wrapper {
+        width: 100px;
+        height: 100px;
+    }
+
+    .profile-photo-wrapper .placeholder-avatar {
+        font-size: 36px;
+    }
+
+    .profile-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-text div[style*="display: flex"] {
+        flex-direction: column;
+        gap: 10px !important;
+        align-items: center !important;
+    }
+
+    .profile-text h1 {
+        font-size: 24px !important;
+    }
+
+    .badge-number {
+        font-size: 16px;
+        padding: 2px 8px;
+    }
+
+    .profile-meta {
+        margin-top: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .badge-role, .badge-height {
+        font-size: 12px;
+        padding: 4px 10px;
+    }
+
+    .btn-back {
+        width: 100%;
+        margin-bottom: 20px;
+        padding: 10px;
+    }
+
+    .section-title {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+
+    .general-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 15px 10px;
+    }
+
+    .stat-value {
+        font-size: 24px;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        font-size: 10px;
+        letter-spacing: 0.2px;
+    }
+
+    .setoptics-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        margin-bottom: 15px;
+    }
+
+    .btn-add-set {
+        margin-left: 0;
+        width: 100%;
+        max-height: none;
+        padding: 12px;
+    }
+
+    .setoptics-dashboard {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .setoptics-court-container {
+        min-width: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 280px; /* Reduced height to allow scrolling easily */
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .setoptics-court-container canvas {
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .setoptics-metrics-panel {
+        min-width: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 15px;
+    }
+    
+    .setoptics-metrics-panel h3 {
+        font-size: 16px;
+        margin-bottom: 15px;
+    }
 }

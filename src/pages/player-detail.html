@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Player Details - Volley Tool</title>
     <link rel="stylesheet" href="../styles/styles.css">
     <link rel="stylesheet" href="../styles/navbar.css">
-    <link rel="stylesheet" href="../styles/player-detail.css?v=20260623_final">
+    <link rel="stylesheet" href="../styles/player-detail.css?v=20260624_mobile_v3">
 </head>
+
 <body>
     <!-- ===== NAVIGATION BAR ===== -->
     <nav class="navbar">
-        <a href="index.html" class="navbar-brand"><img src="../assets/logo.png" alt="Wapatanka Logo" class="navbar-logo"> <span>Wapatanka</span></a>
+        <a href="index.html" class="navbar-brand"><img src="../assets/logo.png" alt="Wapatanka Logo"
+                class="navbar-logo"> <span>Wapatanka</span></a>
         <ul class="navbar-menu">
             <li class="navbar-item"><a href="index.html">🏠 Home</a></li>
             <li class="navbar-item"><a href="form.html">📋 Rate Form</a></li>
@@ -26,7 +29,7 @@
 
     <!-- ===== MAIN CONTENT CONTAINER ===== -->
     <div class="player-detail-container container">
-        
+
         <!-- Top Nav & Profile Header -->
         <div class="profile-header">
             <button onclick="window.location.href='players.html'" class="btn-back">← Torna al Roster</button>
@@ -73,24 +76,29 @@
 
         <!-- SetOptics Interactive Dashboard (For all players) -->
         <div class="section-container">
-            <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 class="section-title" style="margin-bottom: 0;">🏐 SetOptics Dashboard & Preferred Sets</h2>
-                <button onclick="PlayerDetailModule.openAddSetModal()" class="btn-primary" style="padding: 8px 16px; font-size: 14px; margin-left: 20px; white-space: nowrap; max-height: 40px;">➕ Aggiungi Alzata</button>
+            <div class="setoptics-header">
+                <h2 class="section-title">🏐 SetOptics Dashboard & Preferred Sets</h2>
+                <button onclick="PlayerDetailModule.openAddSetModal()" class="btn-primary btn-add-set">➕ Aggiungi
+                    Alzata</button>
             </div>
-            <p class="section-subtitle">Visualizza le traiettorie e i target (Apex, Offset) delle alzate preferite o simulate per questo giocatore.</p>
-            
+            <p class="section-subtitle">Visualizza le traiettorie e i target (Apex, Offset) delle alzate preferite o
+                simulate per questo giocatore.</p>
+
             <div class="setoptics-dashboard">
                 <!-- True 3D Court Container -->
-                <div id="setoptics3dContainer" class="setoptics-court-container" style="position: relative; height: 500px; padding: 0;">
+                <div id="setoptics3dContainer" class="setoptics-court-container">
                     <!-- The 3D canvas will be injected here -->
-                    <div id="loading3d" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #8892b0; font-weight: bold;">Loading 3D Court...</div>
+                    <div id="loading3d"
+                        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #8892b0; font-weight: bold;">
+                        Loading 3D Court...</div>
                 </div>
-                
+
                 <!-- Metrics Panel -->
                 <div class="setoptics-metrics-panel">
                     <h3>Dettagli Alzata Selezionata</h3>
                     <div id="selectedSetDetails">
-                        <p style="color: #8892b0; font-style: italic;">Seleziona una traiettoria dal campo per visualizzare i dettagli o aggiungi una nuova alzata preferita.</p>
+                        <p style="color: #8892b0; font-style: italic;">Seleziona una traiettoria dal campo per
+                            visualizzare i dettagli o aggiungi una nuova alzata preferita.</p>
                     </div>
                 </div>
             </div>
@@ -102,23 +110,25 @@
     <div id="preferredSetModal" class="player-modal">
         <div class="player-modal-content" style="max-width: 500px;">
             <span class="close-player-modal" onclick="PlayerDetailModule.closeModal()">&times;</span>
-            <h2 style="color: #f0f4f8; margin-bottom: 20px; font-size: 18px; font-weight: 700;">Configura Alzata Preferita</h2>
-            
+            <h2 style="color: #f0f4f8; margin-bottom: 20px; font-size: 18px; font-weight: 700;">Configura Alzata
+                Preferita</h2>
+
             <form id="preferredSetForm" onsubmit="PlayerDetailModule.savePreferredSet(event)">
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label>Tipo di Alzata</label>
-                    <select id="setTarget" required style="width: 100%; padding: 10px; background: #1a1f2b; border: 1px solid #3a4560; border-radius: 6px; color: #f0f4f8;">
+                    <select id="setTarget" required
+                        style="width: 100%; padding: 10px; background: #1a1f2b; border: 1px solid #3a4560; border-radius: 6px; color: #f0f4f8;">
                         <optgroup label="Ala (Posto 4 - Blu)">
-                            <option value="ala_s">Alta in 4 (S)</option>
-                            <option value="ala_5">Super in 4 (5)</option>
+                            <option value="ala_s">Super in 4 (S)</option>
+                            <option value="ala_5">Alta in 4 (5)</option>
                             <option value="ala_9">Mezza in 4 (9)</option>
-                            <option value="ala_c">Corta in 4 (C)</option>
                         </optgroup>
                         <optgroup label="Centrale (Verde)">
                             <option value="cen_1">Veloce Avanti (1)</option>
                             <option value="cen_2">Veloce Dietro (2)</option>
                             <option value="cen_7">Tesa Avanti (7)</option>
                             <option value="cen_b">Fast Dietro (B)</option>
+                            <option value="ala_c">Corta (C)</option>
                         </optgroup>
                         <optgroup label="Opposto (Posto 2 - Rosso)">
                             <option value="opp_4">Alta in 2 (4)</option>
@@ -130,11 +140,12 @@
                         </optgroup>
                     </select>
                 </div>
-                
+
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label>Apex Height (Metri) - Altezza massima della palla</label>
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <input type="range" id="setApex" min="2.4" max="4.5" step="0.05" value="3.0" style="flex: 1;" oninput="document.getElementById('apexVal').textContent = this.value + 'm'">
+                        <input type="range" id="setApex" min="2.4" max="4.5" step="0.05" value="3.0" style="flex: 1;"
+                            oninput="document.getElementById('apexVal').textContent = this.value + 'm'">
                         <span id="apexVal" style="color: #60a5fa; font-weight: bold; width: 50px;">3.0m</span>
                     </div>
                 </div>
@@ -142,13 +153,15 @@
                 <div class="form-group" style="margin-bottom: 25px;">
                     <label>Target Offset (Metri) - Distanza dalla rete/astina</label>
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <input type="range" id="setOffset" min="0.0" max="4.0" step="0.1" value="0.5" style="flex: 1;" oninput="document.getElementById('offsetVal').textContent = this.value + 'm'">
+                        <input type="range" id="setOffset" min="0.0" max="4.0" step="0.1" value="0.5" style="flex: 1;"
+                            oninput="document.getElementById('offsetVal').textContent = this.value + 'm'">
                         <span id="offsetVal" style="color: #34d399; font-weight: bold; width: 50px;">0.5m</span>
                     </div>
                 </div>
 
                 <div class="button-group" style="display: flex; justify-content: flex-end; gap: 10px;">
-                    <button type="button" class="btn-secondary" onclick="PlayerDetailModule.closeModal()">Annulla</button>
+                    <button type="button" class="btn-secondary"
+                        onclick="PlayerDetailModule.closeModal()">Annulla</button>
                     <button type="submit" class="btn-primary">Salva Alzata</button>
                 </div>
             </form>
@@ -175,6 +188,7 @@
     <script src="../services/match-service.js"></script>
 
     <!-- ===== PLAYER DETAIL MODULE ===== -->
-    <script src="../modules/players/player-detail.js?v=20260623_final"></script>
+    <script src="../modules/players/player-detail.js?v=20260624_mobile_v3"></script>
 </body>
+
 </html>

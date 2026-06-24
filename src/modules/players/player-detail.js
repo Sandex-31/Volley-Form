@@ -15,10 +15,10 @@ const PlayerDetailModule = {
     setterPos: { x: 280, y: 250 },
     
     targetsMap: {
-        'ala_s': { name: 'Alta in 4 (S)' },
-        'ala_5': { name: 'Super in 4 (5)' },
+        'ala_s': { name: 'Super in 4 (S)' },
+        'ala_5': { name: 'Alta in 4 (5)' },
         'ala_9': { name: 'Mezza in 4 (9)' },
-        'ala_c': { name: 'Corta in 4 (C)' },
+        'ala_c': { name: 'Corta (C)' },
         'cen_1': { name: 'Veloce Avanti (1)' },
         'cen_2': { name: 'Veloce Dietro (2)' },
         'cen_7': { name: 'Tesa Avanti (7)' },
