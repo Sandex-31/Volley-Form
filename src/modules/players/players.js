@@ -111,6 +111,15 @@ const PlayersModule = {
                 ${heightHtml}
                 ${actionHtml}
             `;
+            
+            card.style.cursor = 'pointer';
+            card.addEventListener('click', (e) => {
+                if (e.target.closest('.btn-player-edit') || e.target.closest('.btn-player-delete')) {
+                    return;
+                }
+                window.location.href = `player-detail.html?id=${player.id}`;
+            });
+            
             grid.appendChild(card);
         });
     },

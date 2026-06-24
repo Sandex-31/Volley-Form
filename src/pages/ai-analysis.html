@@ -85,10 +85,20 @@
                 <button onclick="window.location.reload()" style="background: rgba(124, 58, 237, 0.1); border: 1px solid #7c3aed; color: #a78bfa; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; transition: background 0.2s;" onmouseover="this.style.background='rgba(124, 58, 237, 0.2)'" onmouseout="this.style.background='rgba(124, 58, 237, 0.1)'">🔄 Analyze Another</button>
             </div>
             
-            <!-- Tab Controls -->
-            <div class="tabs-nav" style="display: flex; gap: 15px; margin-bottom: 25px; border-bottom: 1px solid #2a3449; padding-bottom: 10px;">
-                <button onclick="VideoAnalysis.switchTab('dashboard')" id="tabBtnDashboard" class="tab-btn active" style="background: none; border: none; color: #a78bfa; font-size: 16px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-bottom: 3px solid #7c3aed; transition: all 0.2s; outline: none;">📊 Dashboard Generale</button>
-                <button onclick="VideoAnalysis.switchTab('segments')" id="tabBtnSegments" class="tab-btn" style="background: none; border: none; color: #8892b0; font-size: 16px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-bottom: 3px solid transparent; transition: all 0.2s; outline: none;">🎥 Azioni Rilevate</button>
+            <!-- Tab Controls & Export -->
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a3449; margin-bottom: 25px; padding-bottom: 10px; flex-wrap: wrap; gap: 15px;">
+                <div class="tabs-nav" style="display: flex; gap: 15px;">
+                    <button onclick="VideoAnalysis.switchTab('dashboard')" id="tabBtnDashboard" class="tab-btn active" style="background: none; border: none; color: #a78bfa; font-size: 16px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-bottom: 3px solid #7c3aed; transition: all 0.2s; outline: none;">📊 Dashboard Generale</button>
+                    <button onclick="VideoAnalysis.switchTab('segments')" id="tabBtnSegments" class="tab-btn" style="background: none; border: none; color: #8892b0; font-size: 16px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-bottom: 3px solid transparent; transition: all 0.2s; outline: none;">🎥 Azioni Rilevate</button>
+                </div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button onclick="VideoAnalysis.exportSegmentationDataset()" class="btn-export-dataset" style="background: rgba(59, 130, 246, 0.1); border: 1px solid #3b82f6; color: #60a5fa; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; transition: background 0.2s; font-weight: 600;" onmouseover="this.style.background='rgba(59, 130, 246, 0.2)'" onmouseout="this.style.background='rgba(59, 130, 246, 0.1)'">
+                        📥 Dataset Segmentazione (JSON)
+                    </button>
+                    <button onclick="VideoAnalysis.exportDetailedAnalysisDataset()" class="btn-export-dataset" style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; color: #34d399; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; transition: background 0.2s; font-weight: 600;" onmouseover="this.style.background='rgba(16, 185, 129, 0.2)'" onmouseout="this.style.background='rgba(16, 185, 129, 0.1)'">
+                        📥 Dataset Analisi Dettagliata (JSON)
+                    </button>
+                </div>
             </div>
             
             <!-- Tab 1: Dashboard View (Aggregated Stats) -->
@@ -150,8 +160,9 @@
     <!-- ===== COMMON SERVICES ===== -->
     <script src="../services/firebase-service.js"></script>
     <script src="../services/match-service.js"></script>
+    <script src="../services/player-service.js"></script>
     
     <!-- ===== MODULES ===== -->
-    <script src="../modules/analysis/video-analysis.js"></script>
+    <script src="../modules/analysis/video-analysis.js?v=20260623"></script>
 </body>
 </html>
