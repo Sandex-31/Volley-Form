@@ -1,71 +1,190 @@
-/* Palla da volley 3D nella hero. Fallback all'immagine su problemi reali. */
+/**
+ * Scroll-driven 3D volleyball for the immersive home.
+ *
+ * A single Three.js sphere lives in a fixed, full-viewport stage (#ballStage)
+ * behind the content. A procedurally-built texture (white ball + red seams +
+ * the team logo stamped a few times around the equator) is mapped onto it, so
+ * the logo swings into view as the ball spins. Position, scale and rotation are
+ * driven by scroll progress and eased each frame for a fluid feel.
+ *
+ * Falls back to a static logo image on: prefers-reduced-motion, missing WebGL,
+ * Three.js not loaded (CDN blocked / SRI mismatch), or any runtime exception.
+ */
 (function () {
-  function showFallback() {
-    var img = document.querySelector('.hero-3d-fallback');
-    var canvasHost = document.getElementById('volleyballCanvas');
-    if (img) img.hidden = false;
-    if (canvasHost) canvasHost.style.display = 'none';
-  }
-  function reducedMotion() {
-    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  }
-  function webglOK() {
-    try { var c = document.createElement('canvas');
-      return !!(window.WebGLRenderingContext && (c.getContext('webgl') || c.getContext('experimental-webgl'))); }
-    catch (e) { return false; }
-  }
+    var LOGO_SRC = '../assets/logo-wapatanka.png';
+    var RED = '#B22823';
 
-  function start() {
-    var host = document.getElementById('volleyballCanvas');
-    if (!host) return;
-    if (reducedMotion() || typeof THREE === 'undefined' || !webglOK()) { showFallback(); return; }
-    try {
-      var w = host.clientWidth, h = host.clientHeight || 320;
-      var scene = new THREE.Scene();
-      var camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100); camera.position.z = 3.2;
-      var renderer = new THREE.WebGLRenderer({ antialias: window.devicePixelRatio < 2, alpha: true });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.setSize(w, h); host.appendChild(renderer.domElement);
+    function showFallback() {
+        var stage = document.getElementById('ballStage');
+        var img = document.querySelector('.ball-fallback');
+        if (stage) stage.style.display = 'none';
+        if (img) img.hidden = false;
+    }
 
-      // Palla: sfera bianca con "cuciture" navy/rosse via wireframe leggero sovrapposto
-      var geo = new THREE.SphereGeometry(1, 48, 48);
-      var ball = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .55, metalness: .05 }));
-      var seams = new THREE.Mesh(geo.clone(), new THREE.MeshBasicMaterial({ color: 0x0D1A3C, wireframe: true, transparent: true, opacity: .18 }));
-      seams.scale.setScalar(1.002);
-      var group = new THREE.Group(); group.add(ball); group.add(seams); scene.add(group);
+    function reducedMotion() {
+        return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }
 
-      scene.add(new THREE.AmbientLight(0xffffff, .75));
-      var key = new THREE.DirectionalLight(0xffffff, 1.1); key.position.set(3, 4, 5); scene.add(key);
-      var rim = new THREE.DirectionalLight(0xB22823, .5); rim.position.set(-4, -2, -3); scene.add(rim);
+    function webglOK() {
+        try {
+            var c = document.createElement('canvas');
+            return !!(window.WebGLRenderingContext && (c.getContext('webgl') || c.getContext('experimental-webgl')));
+        } catch (e) { return false; }
+    }
 
-      var targetX = 0, targetY = 0;
-      host.addEventListener('pointermove', function (e) {
-        var r = host.getBoundingClientRect();
-        targetY = ((e.clientX - r.left) / r.width - .5) * 0.6;
-        targetX = ((e.clientY - r.top) / r.height - .5) * 0.4;
-      });
+    /* Build the equirectangular ball texture onto a reusable canvas. */
+    function drawBall(ctx, w, h, logoImg) {
+        var cols = 6;
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, w, h);
 
-      var running = true;
-      document.addEventListener('visibilitychange', function () { running = !document.hidden; if (running) loop(); });
-      window.addEventListener('resize', function () {
-        var nw = host.clientWidth, nh = host.clientHeight || 320;
-        camera.aspect = nw / nh; camera.updateProjectionMatrix(); renderer.setSize(nw, nh);
-      });
+        // Subtle alternating panel tint for depth
+        for (var i = 0; i < cols; i++) {
+            if (i % 2 === 0) {
+                ctx.fillStyle = 'rgba(13,26,60,0.035)';
+                ctx.fillRect((i * w) / cols, 0, w / cols, h);
+            }
+        }
 
-      var spin = 0;
-      function loop() {
-        if (!running) return;
-        spin += 0.004;                                            // continuous idle spin
-        group.rotation.y = spin + targetY;                        // spin + horizontal parallax
-        group.rotation.x += (targetX - group.rotation.x) * 0.05;  // vertical parallax easing
-        renderer.render(scene, camera);
-        requestAnimationFrame(loop);
-      }
-      loop();
-    } catch (e) { showFallback(); }
-  }
+        // Red curved vertical seams
+        ctx.strokeStyle = RED;
+        ctx.lineWidth = Math.max(8, w * 0.007);
+        ctx.lineCap = 'round';
+        for (var s = 0; s <= cols; s++) {
+            var baseX = (s * w) / cols;
+            ctx.beginPath();
+            for (var y = 0; y <= h; y += 10) {
+                var off = Math.sin((y / h) * Math.PI * 2) * (w / cols) * 0.10;
+                var x = baseX + off;
+                if (y === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+        }
 
-  // Three.js è caricato con defer: attendere il load completo del documento.
-  if (document.readyState === 'complete') start();
-  else window.addEventListener('load', start);
+        // Stamp the team logo a few times around the equator
+        if (logoImg) {
+            var size = h * 0.44;
+            [0.17, 0.5, 0.83].forEach(function (u) {
+                var cx = u * w, cy = h * 0.5;
+                ctx.drawImage(logoImg, cx - size / 2, cy - size / 2, size, size);
+            });
+        }
+    }
+
+    function start() {
+        var stage = document.getElementById('ballStage');
+        if (!stage) return;
+        if (reducedMotion() || typeof THREE === 'undefined' || !webglOK()) { showFallback(); return; }
+
+        try {
+            var W = window.innerWidth, H = window.innerHeight;
+
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 100);
+            camera.position.z = 5;
+
+            var renderer = new THREE.WebGLRenderer({ antialias: window.devicePixelRatio < 2, alpha: true });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setSize(W, H);
+            renderer.setClearColor(0x000000, 0);
+            stage.appendChild(renderer.domElement);
+
+            // Texture canvas (reused; redrawn once the logo image loads)
+            var texCanvas = document.createElement('canvas');
+            texCanvas.width = 2048; texCanvas.height = 1024;
+            var tctx = texCanvas.getContext('2d');
+            drawBall(tctx, texCanvas.width, texCanvas.height, null);
+
+            var texture = new THREE.CanvasTexture(texCanvas);
+            if (renderer.capabilities.getMaxAnisotropy) texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+            if ('colorSpace' in texture && THREE.SRGBColorSpace) texture.colorSpace = THREE.SRGBColorSpace;
+
+            var geo = new THREE.SphereGeometry(1, 64, 64);
+            var mat = new THREE.MeshStandardMaterial({ map: texture, roughness: 0.62, metalness: 0.04 });
+            var ball = new THREE.Mesh(geo, mat);
+            var group = new THREE.Group();
+            group.add(ball);
+            scene.add(group);
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.85));
+            var key = new THREE.DirectionalLight(0xffffff, 1.05);
+            key.position.set(5, 5, 6);
+            scene.add(key);
+            var rim = new THREE.DirectionalLight(new THREE.Color(RED), 0.4);
+            rim.position.set(-5, -3, -4);
+            scene.add(rim);
+
+            // Load the logo, then redraw the texture with it stamped on
+            var logo = new Image();
+            logo.onload = function () {
+                drawBall(tctx, texCanvas.width, texCanvas.height, logo);
+                texture.needsUpdate = true;
+            };
+            logo.src = LOGO_SRC;
+
+            // Eased scroll-driven state
+            var cur = { x: 2.4, y: 0, scale: 1.55, rot: 0 };
+            var target = { x: 2.4, y: 0, scale: 1.55, rot: 0 };
+
+            function scrollProgress() {
+                var doc = document.documentElement;
+                var max = (doc.scrollHeight - window.innerHeight) || 1;
+                var p = window.scrollY / max;
+                return Math.max(0, Math.min(1, p));
+            }
+
+            function updateTargets() {
+                var p = scrollProgress();
+                // Keep the ball partly on-screen at any aspect ratio: tie the
+                // horizontal swing to the actual visible half-width.
+                var halfW = Math.tan((camera.fov * Math.PI / 180) / 2) * camera.position.z * camera.aspect;
+                var ampX = Math.min(2.6, halfW * 0.78);
+                target.x = ampX * Math.cos(p * Math.PI);        // right → centre → left
+                target.y = 0.45 * Math.sin(p * Math.PI * 2.2);  // gentle vertical drift
+                target.scale = 1.55 - 0.55 * p;                 // big in hero, shrinks
+                target.rot = p * Math.PI * 4;                   // logo swings by several times
+            }
+            updateTargets();
+
+            var running = true;
+            var idle = 0;
+
+            function loop() {
+                if (!running) return;
+                idle += 0.0016;
+                cur.x += (target.x - cur.x) * 0.08;
+                cur.y += (target.y - cur.y) * 0.08;
+                cur.scale += (target.scale - cur.scale) * 0.08;
+                cur.rot += (target.rot - cur.rot) * 0.08;
+
+                group.position.set(cur.x, cur.y, 0);
+                group.scale.setScalar(cur.scale);
+                group.rotation.y = cur.rot + idle * Math.PI * 2;
+                group.rotation.x = -0.18;
+
+                renderer.render(scene, camera);
+                requestAnimationFrame(loop);
+            }
+            loop();
+
+            window.addEventListener('scroll', updateTargets, { passive: true });
+            window.addEventListener('resize', function () {
+                W = window.innerWidth; H = window.innerHeight;
+                camera.aspect = W / H; camera.updateProjectionMatrix();
+                renderer.setSize(W, H);
+                updateTargets();
+            });
+            document.addEventListener('visibilitychange', function () {
+                running = !document.hidden;
+                if (running) loop();
+            });
+        } catch (e) {
+            showFallback();
+        }
+    }
+
+    if (document.readyState === 'complete') start();
+    else window.addEventListener('load', start);
 })();

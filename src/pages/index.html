@@ -40,74 +40,106 @@
         </div>
     </nav>
 
-    <!-- ===== MAIN CONTENT CONTAINER ===== -->
-    <div class="home-container container">
+    <!-- ===== FIXED 3D BALL STAGE (scroll-driven) ===== -->
+    <div id="ballStage" aria-hidden="true"></div>
+    <img class="ball-fallback" src="../assets/logo-wapatanka.png" alt="Wapatanka" hidden>
 
-        <!-- Welcome Hero Banner -->
-        <section class="hero reveal">
-            <div class="hero-copy">
-                <span class="hero-kicker">Volley Tool</span>
-                <h1>WAPATANKA</h1>
-                <p>Il gestionale ufficiale della squadra: feedback allenamenti, calendario partite, roster e statistiche di gioco.</p>
+    <!-- ===== IMMERSIVE SCROLL HOME ===== -->
+    <main class="scroll-home">
+
+        <!-- 1 · HERO -->
+        <section class="pane pane-hero" id="pane-hero">
+            <div class="pane-inner reveal">
+                <span class="pane-kicker">Volley Tool</span>
+                <h1 class="pane-title">WAPATANKA</h1>
+                <p class="pane-lead">Il gestionale ufficiale della squadra: feedback allenamenti, calendario
+                    partite, roster e statistiche di gioco — tutto in un posto.</p>
                 <div class="hero-cta">
                     <a href="form.html" class="btn-accent"><span data-icon="form"></span> Rate Today's Training</a>
                     <a href="match-table.html" class="btn-ghost"><span data-icon="matches"></span> View Matches</a>
                 </div>
-            </div>
-            <div class="hero-3d">
-                <div id="volleyballCanvas" role="img" aria-label="Palla da pallavolo 3D"></div>
-                <img class="hero-3d-fallback" src="../assets/logo-wapatanka.png" alt="Wapatanka" hidden>
+                <div class="scroll-cue"><span class="mouse"></span> Scroll</div>
             </div>
         </section>
 
-        <!-- Next Match Preview Widget -->
-        <div class="home-section reveal">
-            <div class="home-section-title">
-                <span>📅 Match Schedule</span>
-                <a href="match-table.html">Full Schedule →</a>
+        <!-- 2 · NEXT MATCH -->
+        <section class="pane" id="pane-match">
+            <div class="pane-inner reveal">
+                <span class="pane-kicker">Calendario</span>
+                <h2 class="pane-title">Prossima partita</h2>
+                <div id="matchPreviewContainer">
+                    <p class="preview-empty">Sincronizzazione calendario…</p>
+                </div>
+                <a href="match-table.html" class="pane-link">Calendario completo <span data-icon="arrow-right"></span></a>
             </div>
-            <div id="matchPreviewContainer">
-                <p style="color: #999; font-style: italic; text-align: center;">Syncing match schedule...</p>
-            </div>
-        </div>
+        </section>
 
-        <!-- Squad Roster Preview -->
-        <div class="home-section reveal">
-            <div class="home-section-title">
-                <span>👥 Roster Preview</span>
-                <a href="players.html">Manage Roster →</a>
+        <!-- 3 · SEASON STATS -->
+        <section class="pane" id="pane-stats">
+            <div class="pane-inner reveal">
+                <span class="pane-kicker">La stagione</span>
+                <h2 class="pane-title">I numeri</h2>
+                <p class="pane-lead">Il rendimento della squadra a colpo d'occhio.</p>
+                <div id="seasonStatsContainer" class="stats-tiles">
+                    <p class="preview-empty">Sincronizzazione statistiche…</p>
+                </div>
+                <a href="match-table.html" class="pane-link">Tutte le partite <span data-icon="arrow-right"></span></a>
             </div>
-            <div id="rosterPreviewGrid" class="roster-preview-grid">
-                <p style="color: #999; font-style: italic; text-align: center; grid-column: 1/-1;">Syncing team
-                    roster...</p>
+        </section>
+
+        <!-- 4 · ROSTER -->
+        <section class="pane" id="pane-roster">
+            <div class="pane-inner reveal">
+                <span class="pane-kicker">La squadra</span>
+                <h2 class="pane-title">Il roster</h2>
+                <div id="rosterPreviewGrid" class="roster-preview-grid">
+                    <p class="preview-empty">Sincronizzazione roster…</p>
+                </div>
+                <a href="players.html" class="pane-link">Gestisci roster <span data-icon="arrow-right"></span></a>
             </div>
-        </div>
+        </section>
 
-        <!-- Quick Navigation Cards Grid -->
-        <div class="home-grid reveal">
-            <a href="form.html" class="home-card" style="text-decoration: none;">
-                <div class="icon" data-icon="form"></div>
-                <h3>Rate Form</h3>
-                <p>Provide training feedback and rate exercise difficulty.</p>
-            </a>
-            <a href="public-exercises.html" class="home-card" style="text-decoration: none;">
-                <div class="icon" data-icon="exercises"></div>
-                <h3>Exercises</h3>
-                <p>View the full database of training exercises list.</p>
-            </a>
-            <a href="match-table.html" class="home-card" style="text-decoration: none;">
-                <div class="icon" data-icon="matches"></div>
-                <h3>Matches</h3>
-                <p>Track team schedule, set scores, and log statistics.</p>
-            </a>
-            <a href="players.html" class="home-card" style="text-decoration: none;">
-                <div class="icon" data-icon="players"></div>
-                <h3>Players</h3>
-                <p>Check the team roster, role definitions, and jersey numbers.</p>
-            </a>
-        </div>
+        <!-- 5 · EXPLORE -->
+        <section class="pane pane-explore" id="pane-explore">
+            <div class="pane-inner reveal">
+                <span class="pane-kicker">Strumenti</span>
+                <h2 class="pane-title">Esplora</h2>
+                <div class="explore-grid">
+                    <a href="form.html" class="home-card">
+                        <div class="icon" data-icon="form"></div>
+                        <h3>Rate Form</h3>
+                        <p>Provide training feedback and rate exercise difficulty.</p>
+                    </a>
+                    <a href="public-exercises.html" class="home-card">
+                        <div class="icon" data-icon="exercises"></div>
+                        <h3>Exercises</h3>
+                        <p>View the full database of training exercises.</p>
+                    </a>
+                    <a href="match-table.html" class="home-card">
+                        <div class="icon" data-icon="matches"></div>
+                        <h3>Matches</h3>
+                        <p>Track team schedule, set scores, and log statistics.</p>
+                    </a>
+                    <a href="players.html" class="home-card">
+                        <div class="icon" data-icon="players"></div>
+                        <h3>Players</h3>
+                        <p>Check the team roster, roles, and jersey numbers.</p>
+                    </a>
+                    <a href="ai-analysis.html" class="home-card">
+                        <div class="icon" data-icon="ai"></div>
+                        <h3>AI Analysis</h3>
+                        <p>Analyse match video with AI-powered insights.</p>
+                    </a>
+                    <a href="upload-exercises.html" class="home-card">
+                        <div class="icon" data-icon="manage"></div>
+                        <h3>Manage</h3>
+                        <p>Upload and manage the exercise database.</p>
+                    </a>
+                </div>
+            </div>
+        </section>
 
-    </div>
+    </main>
 
     <!-- ===== FIREBASE SDK ===== -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-compat.js"></script>
@@ -132,8 +164,9 @@
     <script src="../common/navbar.js"></script>
     <script src="../common/scroll-reveal.js"></script>
 
-    <!-- ===== HOME MODULE ===== -->
+    <!-- ===== HOME MODULES ===== -->
     <script src="../modules/home/home.js"></script>
+    <script src="../modules/home/home-stats.js"></script>
 
     <!-- ===== 3D VOLLEYBALL (Three.js pinned CDN + SRI, with robust fallback) ===== -->
     <script defer src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js" integrity="sha384-qOkzR5Ke/XkQxuGVJ9hpFEpDlcoLtWwVYhnJf06cLIZa2vaIptSqaubivErzmD5O" crossorigin="anonymous"></script>
