@@ -215,6 +215,65 @@
     gap: 10px;
 }
 
+/* ----- Pane horizontal placement (ball path complement) ----- */
+.pane--center {
+    text-align: center;
+}
+
+.pane--center .pane-inner {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.pane--center .hero-cta,
+.pane--center .stats-tiles,
+.pane--center .explore-grid,
+.pane--center .roster-preview-grid {
+    justify-content: center;
+}
+
+.pane--center .stats-tiles,
+.pane--center .explore-grid,
+.pane--center .roster-preview-grid,
+.pane--center .match-preview-card {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.pane--center .pane-inner::before {
+    inset: -60px -120px;
+    background: radial-gradient(120% 110% at 50% 50%,
+            var(--bg) 0%,
+            color-mix(in srgb, var(--bg) 82%, transparent) 42%,
+            transparent 74%);
+}
+
+.pane--right {
+    text-align: right;
+}
+
+.pane--right .pane-inner {
+    margin-left: auto;
+}
+
+.pane--right .hero-cta,
+.pane--right .stats-tiles {
+    justify-content: flex-end;
+}
+
+.pane--right .stats-tiles,
+.pane--right .match-preview-card {
+    margin-left: auto;
+}
+
+.pane--right .pane-inner::before {
+    inset: -60px -160px -60px -140px;
+    background: radial-gradient(120% 110% at 78% 50%,
+            var(--bg) 0%,
+            color-mix(in srgb, var(--bg) 82%, transparent) 42%,
+            transparent 76%);
+}
+
 /* ----- Season stats tiles ----- */
 .stats-tiles {
     display: grid;

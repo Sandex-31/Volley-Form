@@ -148,9 +148,9 @@
             // right (start) → top-centre exiting the top → far left → bottom-left.
             var PATH = [
                 { p: 0.00, x: 1.00, y: 0.00 },
-                { p: 0.30, x: 0.00, y: 1.25 },
-                { p: 0.64, x: -1.00, y: 0.05 },
-                { p: 1.00, x: -1.00, y: -0.95 }
+                { p: 0.30, x: 0.00, y: 0.60 },
+                { p: 0.64, x: -1.20, y: 0.05 },
+                { p: 0.80, x: -0.80, y: -0.70 }
             ];
 
             function pathAt(p) {
