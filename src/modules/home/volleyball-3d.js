@@ -63,20 +63,14 @@
             ctx.stroke();
         }
 
-        // Stamp the team logo twice around the equator, clipped to a circle so
-        // the logo's square white background is not visible on the ball.
+        // Stamp the full team logo (transparent PNG, wordmark included) twice
+        // around the equator. No clipping / white box — the seams show around it.
         if (logoImg) {
-            var size = h * 0.46;
-            var r = size / 2;
+            var lh = h * 0.62;
+            var lw = lh * (logoImg.width / logoImg.height);
             [0.25, 0.75].forEach(function (u) {
                 var cx = u * w, cy = h * 0.5;
-                ctx.save();
-                ctx.beginPath();
-                ctx.arc(cx, cy, r, 0, Math.PI * 2);
-                ctx.closePath();
-                ctx.clip();
-                ctx.drawImage(logoImg, cx - r, cy - r, size, size);
-                ctx.restore();
+                ctx.drawImage(logoImg, cx - lw / 2, cy - lh / 2, lw, lh);
             });
         }
     }
