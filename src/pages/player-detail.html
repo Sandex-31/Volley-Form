@@ -40,81 +40,79 @@
     </nav>
 
     <!-- ===== MAIN CONTENT CONTAINER ===== -->
-    <div class="player-detail-container container">
+    <div class="player-detail-container">
 
-        <!-- Top Nav & Profile Header -->
-        <div class="profile-header reveal">
-            <button onclick="window.location.href='players.html'" class="btn-back">← Torna al Roster</button>
-            <div class="profile-info-card">
-                <div class="profile-photo-wrapper">
-                    <img id="detailPlayerPhoto" src="" alt="Player Photo" style="display:none;">
-                    <div id="detailPlayerInitials" class="placeholder-avatar">?</div>
+        <a href="players.html" class="pd-back"><span data-icon="arrow-right" class="pd-back-ic"></span> Roster</a>
+
+        <!-- Profile header -->
+        <header class="pd-hero reveal">
+            <div class="pd-avatar">
+                <img id="detailPlayerPhoto" src="" alt="Player Photo" style="display:none;">
+                <div id="detailPlayerInitials" class="pd-avatar-initials">?</div>
+            </div>
+            <div class="pd-id">
+                <div class="pd-id-row">
+                    <h1 id="detailPlayerName">Loading…</h1>
+                    <span id="detailPlayerNumber" class="pd-number">#?</span>
                 </div>
-                <div class="profile-text">
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <h1 id="detailPlayerName">Loading...</h1>
-                        <span id="detailPlayerNumber" class="badge-number">#?</span>
-                    </div>
-                    <div class="profile-meta">
-                        <span id="detailPlayerRole" class="badge-role">Role</span>
-                        <span id="detailPlayerHeight" class="badge-height">Height: ? cm</span>
-                    </div>
+                <div class="pd-tags">
+                    <span id="detailPlayerRole" class="pd-role">Role</span>
+                    <span class="pd-dot"></span>
+                    <span id="detailPlayerHeight" class="pd-height">Height: ? cm</span>
                 </div>
             </div>
-        </div>
+        </header>
 
-        <!-- General Stats Panel -->
-        <div class="section-container reveal">
-            <h2 class="section-title">📊 Statistiche Generali (Carriera)</h2>
-            <div id="generalStatsGrid" class="general-stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value" id="statMatchesPlayed">0</div>
-                    <div class="stat-label">Partite Giocate</div>
+        <!-- Career stats -->
+        <section class="pd-section reveal">
+            <span class="pd-eyebrow">Carriera</span>
+            <div id="generalStatsGrid" class="pd-stats">
+                <div class="pd-stat">
+                    <div class="pd-stat-num" id="statMatchesPlayed">0</div>
+                    <div class="pd-stat-lbl">Partite giocate</div>
                 </div>
-                <div class="stat-card stat-card-success">
-                    <div class="stat-value" id="statTotalPoints">0</div>
-                    <div class="stat-label">Punti Totali Fatti</div>
+                <div class="pd-stat pd-stat--success">
+                    <div class="pd-stat-num" id="statTotalPoints">0</div>
+                    <div class="pd-stat-lbl">Punti fatti</div>
                 </div>
-                <div class="stat-card stat-card-danger">
-                    <div class="stat-value" id="statTotalErrors">0</div>
-                    <div class="stat-label">Errori Totali (Grave/Falli)</div>
+                <div class="pd-stat pd-stat--danger">
+                    <div class="pd-stat-num" id="statTotalErrors">0</div>
+                    <div class="pd-stat-lbl">Errori (grave/falli)</div>
                 </div>
-                <div class="stat-card stat-card-primary">
-                    <div class="stat-value" id="statTotalAces">0</div>
-                    <div class="stat-label">Ace al Servizio</div>
+                <div class="pd-stat pd-stat--accent">
+                    <div class="pd-stat-num" id="statTotalAces">0</div>
+                    <div class="pd-stat-lbl">Ace al servizio</div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- SetOptics Interactive Dashboard (For all players) -->
-        <div class="section-container reveal">
-            <div class="setoptics-header">
-                <h2 class="section-title">🏐 SetOptics Dashboard & Preferred Sets</h2>
-                <button onclick="PlayerDetailModule.openAddSetModal()" class="btn-primary btn-add-set">➕ Aggiungi
-                    Alzata</button>
+        <!-- SetOptics dashboard -->
+        <section class="pd-section reveal">
+            <div class="pd-section-head">
+                <div>
+                    <span class="pd-eyebrow">Analisi 3D</span>
+                    <h2 class="pd-h2">SetOptics</h2>
+                </div>
+                <button onclick="PlayerDetailModule.openAddSetModal()" class="btn-primary btn-add-set">
+                    <span data-icon="ball"></span> Aggiungi alzata
+                </button>
             </div>
-            <p class="section-subtitle">Visualizza le traiettorie e i target (Apex, Offset) delle alzate preferite o
-                simulate per questo giocatore.</p>
+            <p class="pd-lead">Traiettorie e target (apex, offset) delle alzate preferite o simulate per questo
+                giocatore.</p>
 
             <div class="setoptics-dashboard">
-                <!-- True 3D Court Container -->
                 <div id="setoptics3dContainer" class="setoptics-court-container">
-                    <!-- The 3D canvas will be injected here -->
-                    <div id="loading3d"
-                        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--text-muted); font-weight: bold;">
-                        Loading 3D Court...</div>
+                    <div id="loading3d" class="pd-loading3d">Loading 3D Court…</div>
                 </div>
-
-                <!-- Metrics Panel -->
                 <div class="setoptics-metrics-panel">
-                    <h3>Dettagli Alzata Selezionata</h3>
+                    <h3>Dettagli alzata</h3>
                     <div id="selectedSetDetails">
-                        <p style="color: var(--text-muted); font-style: italic;">Seleziona una traiettoria dal campo per
-                            visualizzare i dettagli o aggiungi una nuova alzata preferita.</p>
+                        <p class="pd-muted-italic">Seleziona una traiettoria dal campo per vederne i dettagli, o
+                            aggiungi una nuova alzata.</p>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
     </div>
 

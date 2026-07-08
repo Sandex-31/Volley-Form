@@ -163,9 +163,7 @@ const PlayerDetailModule = {
             if (!targetDef) return;
             
             const btn = document.createElement('button');
-            btn.className = 'btn-prev';
-            btn.style.width = '100%';
-            btn.style.textAlign = 'left';
+            btn.className = 'pd-set-btn';
             btn.innerHTML = `🏐 ${targetDef.name} (Apex: ${set.apex}m)`;
             btn.onclick = () => this.selectSet(index);
             setList.appendChild(btn);
