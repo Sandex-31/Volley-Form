@@ -207,7 +207,7 @@ const ExerciseUploadManager = {
         container.innerHTML = '';
 
         if (!exercises || exercises.length === 0) {
-            container.innerHTML = '<p style="color: #999; text-align: center; font-style: italic; padding: 20px;">No exercises scheduled</p>';
+            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; font-style: italic; padding: 20px;">No exercises scheduled</p>';
             return;
         }
 
@@ -222,12 +222,12 @@ const ExerciseUploadManager = {
             const hasDesc = typeof exercise === 'object' && exercise.description;
 
             exerciseEl.innerHTML = `
-                <span class="admin-drag-handle" title="Drag to reorder" style="cursor: grab; color: #999; font-size: 16px; margin-right: 10px; user-select: none;">☰</span>
+                <span class="admin-drag-handle" title="Drag to reorder" style="cursor: grab; color: var(--text-muted); font-size: 16px; margin-right: 10px; user-select: none;">☰</span>
                 <div class="exercise-name-display" style="display: inline-block; font-weight: bold; margin-bottom: 8px;">${exName}</div>
-                <div class="exercise-status ${hasVideo ? 'has-video' : ''}" style="font-size: 12px; color: ${hasVideo ? '#51a376' : '#999'};">
+                <div class="exercise-status ${hasVideo ? 'has-video' : ''}" style="font-size: 12px; color: ${hasVideo ? 'var(--success)' : 'var(--text-muted)'};">
                     ${hasVideo ? '✓ Video uploaded' : '✗ No video'}
                 </div>
-                <div class="exercise-status ${hasDesc ? 'has-description' : ''}" style="font-size: 12px; color: ${hasDesc ? '#5b7cfa' : '#999'}; margin-top: 4px;">
+                <div class="exercise-status ${hasDesc ? 'has-description' : ''}" style="font-size: 12px; color: ${hasDesc ? 'var(--accent)' : 'var(--text-muted)'}; margin-top: 4px;">
                     ${hasDesc ? '✓ Has description' : '✗ No description'}
                 </div>
                 <div class="admin-reorder-buttons" style="margin-top: 10px; display: inline-flex; gap: 4px;">
@@ -235,8 +235,8 @@ const ExerciseUploadManager = {
                     <button type="button" class="admin-btn-reorder" onclick="ExerciseUploadManager.moveExercise(${index}, 1)" ${index === exercises.length - 1 ? 'disabled' : ''} title="Move down" style="padding: 4px 8px; font-size: 10px;">▼</button>
                 </div>
                 <div style="margin-top: 10px;">
-                    <button class="btn-edit-exercise" onclick="ExerciseUploadManager.editExercise('${this.escapeQuote(exName)}')" style="padding: 6px 12px; font-size: 12px; background: #5b7cfa; color: white;">Edit</button>
-                    <button class="btn-remove-exercise" onclick="ExerciseUploadManager.deleteExercise('${this.escapeQuote(exName)}')" style="padding: 6px 12px; font-size: 12px; background: #c23030; color: white; margin-left: 5px;">Delete</button>
+                    <button class="btn-edit-exercise" onclick="ExerciseUploadManager.editExercise('${this.escapeQuote(exName)}')" style="padding: 6px 12px; font-size: 12px; background: var(--accent); color: white;">Edit</button>
+                    <button class="btn-remove-exercise" onclick="ExerciseUploadManager.deleteExercise('${this.escapeQuote(exName)}')" style="padding: 6px 12px; font-size: 12px; background: var(--danger); color: white; margin-left: 5px;">Delete</button>
                 </div>
             `;
             container.appendChild(exerciseEl);

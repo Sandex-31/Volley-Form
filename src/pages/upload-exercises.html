@@ -38,9 +38,9 @@
         </div>
     </nav>
 
-    <div class="container">
+    <div class="container reveal">
         <div class="header">
-            <h1>📹 Manage Exercises</h1>
+            <h1><span data-icon="manage"></span> Manage Exercises</h1>
             <p>Add, edit, and manage training exercises</p>
         </div>
 
@@ -51,7 +51,7 @@
 
         <!-- Login Section -->
         <div id="loginSection">
-            <h2 style="color: #f0f4f8; margin-bottom: 20px; font-size: 18px; font-weight: 700;">Admin Authentication
+            <h2 style="color: var(--text); margin-bottom: 20px; font-size: 18px; font-weight: 700;">Admin Authentication
             </h2>
             <div class="form-group">
                 <label for="adminPassword">Admin Password</label>
@@ -69,13 +69,13 @@
 
             <!-- Edit Exercise Section -->
             <div id="editSection"
-                style="display: none; margin-bottom: 30px; padding-bottom: 25px; border-bottom: 1px solid #3a4560;">
-                <h2 style="color: #f0f4f8; margin-bottom: 20px; font-size: 18px; font-weight: 700;">✏️ Edit Exercise
+                style="display: none; margin-bottom: 30px; padding-bottom: 25px; border-bottom: 1px solid var(--border-strong);">
+                <h2 style="color: var(--text); margin-bottom: 20px; font-size: 18px; font-weight: 700;">✏️ Edit Exercise
                 </h2>
 
                 <div class="form-group">
                     <label for="editExerciseName">Exercise Name</label>
-                    <input type="text" id="editExerciseName" readonly style="background: #1f2635; cursor: not-allowed;">
+                    <input type="text" id="editExerciseName" readonly style="background: var(--surface-2); cursor: not-allowed;">
                 </div>
 
                 <div class="form-group">
@@ -87,7 +87,7 @@
                 <div class="form-group">
                     <label for="editVideoInput">📹 Upload Video (MP4, Max 100 MB)</label>
                     <input type="file" id="editVideoInput" accept=".mp4,video/mp4">
-                    <small style="color: #999; display: block; margin-top: 8px;">
+                    <small style="color: var(--text-muted); display: block; margin-top: 8px;">
                         💡 Format: MP4 | Max size: 100 MB | Recommended: 1080p, landscape orientation
                     </small>
                 </div>
@@ -102,7 +102,7 @@
             </div>
 
             <!-- Add Exercise Section -->
-            <div class="section" style="margin-bottom: 30px; padding-bottom: 25px; border-bottom: 1px solid #3a4560;">
+            <div class="section" style="margin-bottom: 30px; padding-bottom: 25px; border-bottom: 1px solid var(--border-strong);">
                 <h2>➕ Schedule Exercise</h2>
                 <div class="form-group">
                     <label for="exerciseSelect">Select Preset Exercise</label>
@@ -113,7 +113,7 @@
                 <button type="button" class="btn-save" onclick="ExerciseUploadManager.addPresetExercise()"
                     style="margin-bottom: 15px;">+ Add Preset Exercise</button>
 
-                <div style="text-align: center; margin: 10px 0; color: #666;">- OR -</div>
+                <div style="text-align: center; margin: 10px 0; color: var(--text-muted);">- OR -</div>
 
                 <button type="button" class="btn-secondary" onclick="ExerciseUploadManager.addNewExercise()">➕ Create
                     Custom Exercise</button>
