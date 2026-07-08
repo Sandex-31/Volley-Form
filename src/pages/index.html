@@ -40,15 +40,27 @@
         </div>
     </nav>
 
+    <!-- ===== SCROLL PROGRESS BAR ===== -->
+    <div id="scrollProgress" aria-hidden="true"></div>
+
+    <!-- ===== PARALLAX BRAND AURORA ===== -->
+    <div id="bgFx" aria-hidden="true">
+        <span class="blob blob-1"></span>
+        <span class="blob blob-2"></span>
+    </div>
+
     <!-- ===== FIXED 3D BALL STAGE (scroll-driven) ===== -->
     <div id="ballStage" aria-hidden="true"></div>
     <img class="ball-fallback" src="../assets/logo-wapatanka.png" alt="Wapatanka" hidden>
+
+    <!-- ===== SECTION DOTS NAVIGATOR ===== -->
+    <nav id="sectionDots" aria-label="Sezioni" aria-hidden="false"></nav>
 
     <!-- ===== IMMERSIVE SCROLL HOME ===== -->
     <main class="scroll-home">
 
         <!-- 1 · HERO -->
-        <section class="pane pane-hero" id="pane-hero">
+        <section class="pane pane-hero" id="pane-hero" data-label="Hero">
             <div class="pane-inner reveal">
                 <span class="pane-kicker">Volley Tool</span>
                 <h1 class="pane-title">WAPATANKA</h1>
@@ -63,7 +75,7 @@
         </section>
 
         <!-- 2 · NEXT MATCH -->
-        <section class="pane pane--center" id="pane-match">
+        <section class="pane pane--center" id="pane-match" data-label="Prossima partita">
             <div class="pane-inner reveal">
                 <span class="pane-kicker">Calendario</span>
                 <h2 class="pane-title">Prossima partita</h2>
@@ -75,7 +87,7 @@
         </section>
 
         <!-- 3 · SEASON STATS -->
-        <section class="pane pane--right" id="pane-stats">
+        <section class="pane pane--right" id="pane-stats" data-label="Statistiche">
             <div class="pane-inner reveal">
                 <span class="pane-kicker">La stagione</span>
                 <h2 class="pane-title">I numeri</h2>
@@ -88,7 +100,7 @@
         </section>
 
         <!-- 4 · ROSTER -->
-        <section class="pane pane--center" id="pane-roster">
+        <section class="pane pane--center" id="pane-roster" data-label="Roster">
             <div class="pane-inner reveal">
                 <span class="pane-kicker">La squadra</span>
                 <h2 class="pane-title">Il roster</h2>
@@ -100,7 +112,7 @@
         </section>
 
         <!-- 5 · EXPLORE -->
-        <section class="pane pane-explore" id="pane-explore">
+        <section class="pane pane-explore" id="pane-explore" data-label="Esplora">
             <div class="pane-inner reveal">
                 <span class="pane-kicker">Strumenti</span>
                 <h2 class="pane-title">Esplora</h2>
@@ -167,6 +179,7 @@
     <!-- ===== HOME MODULES ===== -->
     <script src="../modules/home/home.js"></script>
     <script src="../modules/home/home-stats.js"></script>
+    <script src="../modules/home/home-scrollfx.js"></script>
 
     <!-- ===== 3D VOLLEYBALL (Three.js pinned CDN + SRI, with robust fallback) ===== -->
     <script defer src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js" integrity="sha384-qOkzR5Ke/XkQxuGVJ9hpFEpDlcoLtWwVYhnJf06cLIZa2vaIptSqaubivErzmD5O" crossorigin="anonymous"></script>

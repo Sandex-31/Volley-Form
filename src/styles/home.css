@@ -28,6 +28,99 @@
     opacity: .95;
 }
 
+/* Parallax brand aurora — living background behind the ball */
+#bgFx {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+#bgFx .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    will-change: transform;
+    animation: blobFloat 18s ease-in-out infinite alternate;
+}
+
+#bgFx .blob-1 {
+    top: -10vmax;
+    right: -6vmax;
+    width: 62vmax;
+    height: 62vmax;
+    background: radial-gradient(circle at 50% 50%, rgba(var(--accent-rgb), .30), transparent 68%);
+}
+
+#bgFx .blob-2 {
+    bottom: -14vmax;
+    left: -10vmax;
+    width: 56vmax;
+    height: 56vmax;
+    background: radial-gradient(circle at 50% 50%, rgba(64, 116, 214, .28), transparent 70%);
+    animation-delay: -9s;
+}
+
+@keyframes blobFloat {
+    from { translate: 0 0; }
+    to { translate: 3vmax -2vmax; }
+}
+
+:root[data-theme="dark"] #bgFx .blob-1 {
+    background: radial-gradient(circle at 50% 50%, rgba(var(--accent-rgb), .40), transparent 68%);
+}
+
+:root[data-theme="dark"] #bgFx .blob-2 {
+    background: radial-gradient(circle at 50% 50%, rgba(90, 140, 240, .34), transparent 70%);
+}
+
+/* Scroll progress bar (under the sticky navbar) */
+#scrollProgress {
+    position: fixed;
+    top: var(--nav-h);
+    left: 0;
+    height: 3px;
+    width: 0;
+    background: linear-gradient(90deg, var(--brand), var(--accent));
+    z-index: 1001;
+    transition: width .12s linear;
+    box-shadow: 0 0 12px rgba(var(--accent-rgb), .5);
+}
+
+/* Section dots navigator */
+#sectionDots {
+    position: fixed;
+    right: 22px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+#sectionDots button {
+    width: 11px;
+    height: 11px;
+    padding: 0;
+    border-radius: 50%;
+    border: 2px solid var(--border-strong);
+    background: transparent;
+    cursor: pointer;
+    transition: transform .25s var(--ease), background .25s var(--ease), border-color .25s var(--ease);
+}
+
+#sectionDots button:hover {
+    border-color: var(--accent);
+}
+
+#sectionDots button.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: scale(1.35);
+}
+
 /* Scroll container: a stack of full-page panes */
 .scroll-home {
     position: relative;
@@ -566,9 +659,12 @@
         opacity: .3;
         width: 70vw;
     }
+
+    #sectionDots { display: none; }
 }
 
 /* Reduced motion: no ball animation loop; keep layout usable */
 @media (prefers-reduced-motion: reduce) {
     .scroll-cue .mouse::after { animation: none; }
+    #bgFx .blob { animation: none; }
 }
