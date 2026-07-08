@@ -63,12 +63,20 @@
             ctx.stroke();
         }
 
-        // Stamp the team logo a few times around the equator
+        // Stamp the team logo twice around the equator, clipped to a circle so
+        // the logo's square white background is not visible on the ball.
         if (logoImg) {
-            var size = h * 0.44;
-            [0.17, 0.5, 0.83].forEach(function (u) {
+            var size = h * 0.46;
+            var r = size / 2;
+            [0.25, 0.75].forEach(function (u) {
                 var cx = u * w, cy = h * 0.5;
-                ctx.drawImage(logoImg, cx - size / 2, cy - size / 2, size, size);
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.clip();
+                ctx.drawImage(logoImg, cx - r, cy - r, size, size);
+                ctx.restore();
             });
         }
     }
@@ -135,16 +143,39 @@
                 return Math.max(0, Math.min(1, p));
             }
 
+            // Ball flight path as scroll waypoints. x,y are fractions of the
+            // visible half-width / half-height. Interpolated with smoothstep.
+            // right (start) → top-centre exiting the top → far left → bottom-left.
+            var PATH = [
+                { p: 0.00, x: 1.00, y: 0.00 },
+                { p: 0.30, x: 0.00, y: 1.25 },
+                { p: 0.64, x: -1.00, y: 0.05 },
+                { p: 1.00, x: -1.00, y: -0.95 }
+            ];
+
+            function pathAt(p) {
+                for (var i = 0; i < PATH.length - 1; i++) {
+                    var a = PATH[i], b = PATH[i + 1];
+                    if (p <= b.p || i === PATH.length - 2) {
+                        var t = (p - a.p) / (b.p - a.p);
+                        t = Math.max(0, Math.min(1, t));
+                        t = t * t * (3 - 2 * t); // smoothstep
+                        return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
+                    }
+                }
+                return { x: PATH[PATH.length - 1].x, y: PATH[PATH.length - 1].y };
+            }
+
             function updateTargets() {
                 var p = scrollProgress();
-                // Keep the ball partly on-screen at any aspect ratio: tie the
-                // horizontal swing to the actual visible half-width.
-                var halfW = Math.tan((camera.fov * Math.PI / 180) / 2) * camera.position.z * camera.aspect;
+                var halfH = Math.tan((camera.fov * Math.PI / 180) / 2) * camera.position.z;
+                var halfW = halfH * camera.aspect;
                 var ampX = Math.min(2.6, halfW * 0.78);
-                target.x = ampX * Math.cos(p * Math.PI);        // right → centre → left
-                target.y = 0.45 * Math.sin(p * Math.PI * 2.2);  // gentle vertical drift
-                target.scale = 1.55 - 0.55 * p;                 // big in hero, shrinks
-                target.rot = p * Math.PI * 4;                   // logo swings by several times
+                var pt = pathAt(p);
+                target.x = pt.x * ampX;
+                target.y = pt.y * halfH;
+                target.scale = 1.5 - 0.45 * p;   // big in hero, shrinks a bit
+                target.rot = p * Math.PI * 4;    // logo swings past as you scroll
             }
             updateTargets();
 
@@ -153,7 +184,7 @@
 
             function loop() {
                 if (!running) return;
-                idle += 0.0016;
+                idle += 0.00012; // very slow drift when the user is not scrolling
                 cur.x += (target.x - cur.x) * 0.08;
                 cur.y += (target.y - cur.y) * 0.08;
                 cur.scale += (target.scale - cur.scale) * 0.08;

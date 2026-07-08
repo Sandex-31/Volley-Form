@@ -21,7 +21,7 @@
 }
 .navbar-brand:hover { transform: scale(1.02); }
 .navbar-brand span { color: var(--brand); }
-.navbar-logo { height: 34px; width: auto; object-fit: contain; display: block; }
+.navbar-logo { height: 34px; width: 34px; object-fit: cover; border-radius: 50%; display: block; }
 
 .navbar-menu { display: flex; align-items: center; gap: 4px; list-style: none; }
 .navbar-item a {
