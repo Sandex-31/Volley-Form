@@ -3,27 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../common/theme-init.js"></script>
     <title>Wapatanka - Exercise Rating Form</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap">
+    <link rel="stylesheet" href="../styles/theme.css">
     <link rel="stylesheet" href="../styles/styles.css">
     <link rel="stylesheet" href="../styles/navbar.css">
 </head>
 <body>
     <!-- ===== NAVIGATION BAR ===== -->
-    <nav class="navbar">
-        <a href="index.html" class="navbar-brand"><img src="../assets/logo.png" alt="Wapatanka Logo" class="navbar-logo"> <span>Wapatanka</span></a>
-        <ul class="navbar-menu">
-            <li class="navbar-item"><a href="index.html">🏠 Home</a></li>
-            <li class="navbar-item active"><a href="form.html">📋 Rate Form</a></li>
-            <li class="navbar-item"><a href="public-exercises.html">💪 Exercises</a></li>
-            <li class="navbar-item"><a href="responses.html">📊 Responses</a></li>
-            <li class="navbar-item"><a href="match-table.html">🏆 Matches</a></li>
-            <li class="navbar-item"><a href="players.html">👥 Players</a></li>
-            <li class="navbar-item"><a href="ai-analysis.html">🎥 AI Analysis</a></li>
-            <li class="navbar-item"><a href="upload-exercises.html">⚙️ Manage</a></li>
+    <nav class="navbar" id="siteNav">
+        <a href="index.html" class="navbar-brand">
+            <img src="../assets/logo-emblem.png" alt="Wapatanka" class="navbar-logo"> <span>Wapatanka</span>
+        </a>
+        <ul class="navbar-menu" id="navMenu">
+            <li class="navbar-item"><a href="index.html"><span class="nav-ic" data-icon="home"></span> Home</a></li>
+            <li class="navbar-item active"><a href="form.html"><span class="nav-ic" data-icon="form"></span> Rate Form</a></li>
+            <li class="navbar-item"><a href="public-exercises.html"><span class="nav-ic" data-icon="exercises"></span> Exercises</a></li>
+            <li class="navbar-item"><a href="responses.html"><span class="nav-ic" data-icon="responses"></span> Responses</a></li>
+            <li class="navbar-item"><a href="match-table.html"><span class="nav-ic" data-icon="matches"></span> Matches</a></li>
+            <li class="navbar-item"><a href="players.html"><span class="nav-ic" data-icon="players"></span> Players</a></li>
+            <li class="navbar-item"><a href="ai-analysis.html"><span class="nav-ic" data-icon="ai"></span> AI Analysis</a></li>
+            <li class="navbar-item"><a href="upload-exercises.html"><span class="nav-ic" data-icon="manage"></span> Manage</a></li>
         </ul>
+        <div class="navbar-actions">
+            <button class="theme-toggle-btn" id="themeToggleBtn" onclick="ThemeToggle.toggle()" aria-label="Cambia tema" type="button">
+                <span class="icon-sun" data-icon="sun"></span><span class="icon-moon" data-icon="moon"></span>
+            </button>
+            <button class="navbar-toggle" id="navToggle" aria-label="Menu" aria-expanded="false" type="button">☰</button>
+        </div>
     </nav>
 
-    <div class="container">
+    <div class="container reveal">
         <div class="header">
             <h1>Wapatanka feedback</h1>
             <p>Complete all steps to submit your information</p>
@@ -60,7 +73,7 @@
         <form id="dataForm">
             <!-- STEP 1: Personal Information -->
             <div class="step-content active" data-step="1">
-                <h3 style="color: #d4d0d0; margin-bottom: 20px;">Personal Information</h3>
+                <h3 style="color: var(--text); margin-bottom: 20px;">Personal Information</h3>
                 
                 <div class="form-row">
                     <div class="form-group">
@@ -76,8 +89,8 @@
 
             <!-- STEP 2: Exercise Ratings -->
             <div class="step-content" data-step="2">
-                <h3 style="color: #d4d0d0; margin-bottom: 10px; font-size: 24px;">💪 Exercise Ratings</h3>
-                <p style="color: #666; margin-bottom: 25px; font-size: 14px;">How did each exercise feel? Drag the slider to rate from 😞 to 🤩</p>
+                <h3 style="color: var(--text); margin-bottom: 10px; font-size: 24px;">💪 Exercise Ratings</h3>
+                <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 14px;">How did each exercise feel? Drag the slider to rate from 😞 to 🤩</p>
                 
                 <div class="form-group" style="margin-bottom: 25px;">
                     <label for="exerciseDate">Date *</label>
@@ -93,8 +106,8 @@
 
             <!-- STEP 3: Notes -->
             <div class="step-content" data-step="3">
-                <h3 style="color: #d4d0d0; margin-bottom: 20px;">📝 Notes</h3>
-                <p style="color: #666; margin-bottom: 20px; font-size: 14px;">Write anything you'd want the others to know. (everything is totally anonymous and secure.)</p>
+                <h3 style="color: var(--text); margin-bottom: 20px;">📝 Notes</h3>
+                <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 14px;">Write anything you'd want the others to know. (everything is totally anonymous and secure.)</p>
                 
                 <div class="form-group">
                     <label for="notes">Your Notes</label>
@@ -127,6 +140,11 @@
     <!-- ===== DATA SERVICES ===== -->
     <script src="../services/firebase-service.js"></script>
     <script src="../services/exercise-service.js"></script>
+
+    <!-- ===== UI COMMON ===== -->
+    <script src="../common/icons.js"></script>
+    <script src="../common/navbar.js"></script>
+    <script src="../common/scroll-reveal.js"></script>
 
     <!-- ===== FORM MODULE ===== -->
     <script src="../modules/form/validation.js"></script>

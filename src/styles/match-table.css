@@ -3,11 +3,11 @@
 .matches-container {
     max-width: 950px;
     width: 100%;
-    background: #242d47;
+    background: var(--surface);
     border-radius: 10px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--shadow-lg);
     padding: 40px;
-    border: 1px solid #3a4560;
+    border: 1px solid var(--border);
 }
 
 .table-responsive {
@@ -15,27 +15,27 @@
     overflow-x: auto;
     margin-top: 25px;
     border-radius: 8px;
-    border: 1px solid #3a4560;
-    background: #1f2635;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
 }
 
 .match-table {
     width: 100%;
     border-collapse: collapse;
     text-align: left;
-    color: #d0d9e8;
+    color: var(--text-2);
     min-width: 600px;
 }
 
-.match-table th, 
+.match-table th,
 .match-table td {
     padding: 16px 20px;
-    border-bottom: 1px solid #3a4560;
+    border-bottom: 1px solid var(--border);
 }
 
 .match-table th {
-    background-color: #2d3854;
-    color: #f0f4f8;
+    background-color: var(--surface-2);
+    color: var(--text);
     font-weight: 700;
     font-size: 14px;
     text-transform: uppercase;
@@ -47,7 +47,7 @@
 }
 
 .match-table tbody tr:hover {
-    background-color: rgba(91, 124, 250, 0.08);
+    background-color: var(--surface-2);
 }
 
 .match-table tbody tr:last-child td {
@@ -66,24 +66,24 @@
 }
 
 .badge-won {
-    background-color: rgba(81, 163, 118, 0.15);
-    color: #69c896;
-    border: 1px solid rgba(81, 163, 118, 0.3);
-    box-shadow: 0 0 10px rgba(81, 163, 118, 0.1);
+    background-color: rgba(30, 142, 90, 0.15);
+    color: var(--success);
+    border: 1px solid rgba(30, 142, 90, 0.3);
+    box-shadow: 0 0 10px rgba(30, 142, 90, 0.1);
 }
 
 .badge-lost {
-    background-color: rgba(194, 48, 48, 0.15);
-    color: #ff6b6b;
-    border: 1px solid rgba(194, 48, 48, 0.3);
-    box-shadow: 0 0 10px rgba(194, 48, 48, 0.1);
+    background-color: rgba(192, 57, 43, 0.15);
+    color: var(--danger);
+    border: 1px solid rgba(192, 57, 43, 0.3);
+    box-shadow: 0 0 10px rgba(192, 57, 43, 0.1);
 }
 
 .badge-upcoming {
-    background-color: rgba(91, 124, 250, 0.15);
-    color: #748ffc;
-    border: 1px solid rgba(91, 124, 250, 0.3);
-    box-shadow: 0 0 10px rgba(91, 124, 250, 0.1);
+    background-color: rgba(var(--accent-rgb), 0.15);
+    color: var(--accent);
+    border: 1px solid rgba(var(--accent-rgb), 0.3);
+    box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.1);
 }
 
 /* Location Badge */
@@ -92,35 +92,35 @@
     font-size: 13px;
 }
 .loc-home {
-    color: #f0f4f8;
+    color: var(--text);
 }
 .loc-away {
-    color: #999;
+    color: var(--text-muted);
 }
 
 /* Scores */
 .score-main {
     font-size: 16px;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--text);
 }
 
 .score-details {
     display: block;
     font-size: 11px;
-    color: #8892b0;
+    color: var(--text-muted);
     margin-top: 4px;
 }
 
 .opponent-name {
     font-weight: 600;
-    color: #ffffff;
+    color: var(--text);
     font-size: 15px;
 }
 
 .match-date {
     font-size: 14px;
-    color: #d0d9e8;
+    color: var(--text-2);
 }
 
 /* Mobile adjustments */
@@ -128,8 +128,8 @@
     .matches-container {
         padding: 20px;
     }
-    
-    .match-table th, 
+
+    .match-table th,
     .match-table td {
         padding: 12px 14px;
     }

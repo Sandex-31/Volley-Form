@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../common/theme-init.js"></script>
+    <title>Player Details - Volley Tool</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap">
+    <link rel="stylesheet" href="../styles/theme.css">
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/navbar.css">
+    <link rel="stylesheet" href="../styles/player-detail.css?v=20260624_mobile_v4">
+</head>
+
+<body>
+    <!-- ===== NAVIGATION BAR ===== -->
+    <nav class="navbar" id="siteNav">
+        <a href="index.html" class="navbar-brand">
+            <img src="../assets/logo-emblem.png" alt="Wapatanka" class="navbar-logo"> <span>Wapatanka</span>
+        </a>
+        <ul class="navbar-menu" id="navMenu">
+            <li class="navbar-item"><a href="index.html"><span class="nav-ic" data-icon="home"></span> Home</a></li>
+            <li class="navbar-item"><a href="form.html"><span class="nav-ic" data-icon="form"></span> Rate Form</a></li>
+            <li class="navbar-item"><a href="public-exercises.html"><span class="nav-ic" data-icon="exercises"></span> Exercises</a></li>
+            <li class="navbar-item"><a href="responses.html"><span class="nav-ic" data-icon="responses"></span> Responses</a></li>
+            <li class="navbar-item"><a href="match-table.html"><span class="nav-ic" data-icon="matches"></span> Matches</a></li>
+            <li class="navbar-item active"><a href="players.html"><span class="nav-ic" data-icon="players"></span> Players</a></li>
+            <li class="navbar-item"><a href="ai-analysis.html"><span class="nav-ic" data-icon="ai"></span> AI Analysis</a></li>
+            <li class="navbar-item"><a href="upload-exercises.html"><span class="nav-ic" data-icon="manage"></span> Manage</a></li>
+        </ul>
+        <div class="navbar-actions">
+            <button class="theme-toggle-btn" id="themeToggleBtn" onclick="ThemeToggle.toggle()" aria-label="Cambia tema" type="button">
+                <span class="icon-sun" data-icon="sun"></span><span class="icon-moon" data-icon="moon"></span>
+            </button>
+            <button class="navbar-toggle" id="navToggle" aria-label="Menu" aria-expanded="false" type="button">☰</button>
+        </div>
+    </nav>
+
+    <!-- ===== MAIN CONTENT CONTAINER ===== -->
+    <div class="player-detail-container">
+
+        <a href="players.html" class="pd-back"><span data-icon="arrow-right" class="pd-back-ic"></span> Roster</a>
+
+        <!-- Profile header -->
+        <header class="pd-hero reveal">
+            <div class="pd-avatar">
+                <img id="detailPlayerPhoto" src="" alt="Player Photo" style="display:none;">
+                <div id="detailPlayerInitials" class="pd-avatar-initials">?</div>
+            </div>
+            <div class="pd-id">
+                <div class="pd-id-row">
+                    <h1 id="detailPlayerName">Loading…</h1>
+                    <span id="detailPlayerNumber" class="pd-number">#?</span>
+                </div>
+                <div class="pd-tags">
+                    <span id="detailPlayerRole" class="pd-role">Role</span>
+                    <span class="pd-dot"></span>
+                    <span id="detailPlayerHeight" class="pd-height">Height: ? cm</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Career stats -->
+        <section class="pd-section reveal">
+            <span class="pd-eyebrow">Carriera</span>
+            <div id="generalStatsGrid" class="pd-stats">
+                <div class="pd-stat">
+                    <div class="pd-stat-num" id="statMatchesPlayed">0</div>
+                    <div class="pd-stat-lbl">Partite giocate</div>
+                </div>
+                <div class="pd-stat pd-stat--success">
+                    <div class="pd-stat-num" id="statTotalPoints">0</div>
+                    <div class="pd-stat-lbl">Punti fatti</div>
+                </div>
+                <div class="pd-stat pd-stat--danger">
+                    <div class="pd-stat-num" id="statTotalErrors">0</div>
+                    <div class="pd-stat-lbl">Errori (grave/falli)</div>
+                </div>
+                <div class="pd-stat pd-stat--accent">
+                    <div class="pd-stat-num" id="statTotalAces">0</div>
+                    <div class="pd-stat-lbl">Ace al servizio</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SetOptics dashboard -->
+        <section class="pd-section reveal">
+            <div class="pd-section-head">
+                <div>
+                    <span class="pd-eyebrow">Analisi 3D</span>
+                    <h2 class="pd-h2">SetOptics</h2>
+                </div>
+                <button onclick="PlayerDetailModule.openAddSetModal()" class="btn-primary btn-add-set">
+                    <span data-icon="ball"></span> Aggiungi alzata
+                </button>
+            </div>
+            <p class="pd-lead">Traiettorie e target (apex, offset) delle alzate preferite o simulate per questo
+                giocatore.</p>
+
+            <div class="setoptics-dashboard">
+                <div id="setoptics3dContainer" class="setoptics-court-container">
+                    <div id="loading3d" class="pd-loading3d">Loading 3D Court…</div>
+                </div>
+                <div class="setoptics-metrics-panel">
+                    <h3>Dettagli alzata</h3>
+                    <div id="selectedSetDetails">
+                        <p class="pd-muted-italic">Seleziona una traiettoria dal campo per vederne i dettagli, o
+                            aggiungi una nuova alzata.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ===== PREFERRED SET MODAL ===== -->
+    <div id="preferredSetModal" class="player-modal">
+        <div class="player-modal-content" style="max-width: 500px;">
+            <span class="close-player-modal" onclick="PlayerDetailModule.closeModal()">&times;</span>
+            <h2 style="color: var(--text); margin-bottom: 20px; font-size: 18px; font-weight: 700;">Configura Alzata
+                Preferita</h2>
+
+            <form id="preferredSetForm" onsubmit="PlayerDetailModule.savePreferredSet(event)">
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Tipo di Alzata</label>
+                    <select id="setTarget" required
+                        style="width: 100%; padding: 10px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text);">
+                        <optgroup label="Ala (Posto 4 - Blu)">
+                            <option value="ala_s">Super in 4 (S)</option>
+                            <option value="ala_5">Alta in 4 (5)</option>
+                            <option value="ala_9">Mezza in 4 (9)</option>
+                        </optgroup>
+                        <optgroup label="Centrale (Verde)">
+                            <option value="cen_1">Veloce Avanti (1)</option>
+                            <option value="cen_2">Veloce Dietro (2)</option>
+                            <option value="cen_7">Tesa Avanti (7)</option>
+                            <option value="cen_b">Fast Dietro (B)</option>
+                            <option value="ala_c">Corta (C)</option>
+                        </optgroup>
+                        <optgroup label="Opposto (Posto 2 - Rosso)">
+                            <option value="opp_4">Alta in 2 (4)</option>
+                            <option value="opp_6">Super in 2 (6)</option>
+                        </optgroup>
+                        <optgroup label="Seconda Linea (Fucsia)">
+                            <option value="sec_0">Pipe (0)</option>
+                            <option value="sec_8">Seconda Linea P1 (8)</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Apex Height (Metri) - Altezza massima della palla</label>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="range" id="setApex" min="2.4" max="4.5" step="0.05" value="3.0" style="flex: 1;"
+                            oninput="document.getElementById('apexVal').textContent = this.value + 'm'">
+                        <span id="apexVal" style="color: var(--accent); font-weight: bold; width: 50px;">3.0m</span>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Target Offset (Metri) - Distanza dalla rete/astina</label>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="range" id="setOffset" min="0.0" max="4.0" step="0.1" value="0.5" style="flex: 1;"
+                            oninput="document.getElementById('offsetVal').textContent = this.value + 'm'">
+                        <span id="offsetVal" style="color: var(--success); font-weight: bold; width: 50px;">0.5m</span>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Offset Orizzontale (Metri) - Spostamento Sinistra (-) / Destra (+)</label>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="range" id="setOffsetX" min="-2.0" max="2.0" step="0.1" value="0.0" style="flex: 1;"
+                            oninput="document.getElementById('offsetXValText').textContent = (this.value >= 0 ? '+' : '') + this.value + 'm'">
+                        <span id="offsetXValText" style="color: var(--warning); font-weight: bold; width: 50px;">+0.0m</span>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 25px;">
+                    <label>Altezza Finale di Impatto (Metri) - Dove finisce verticalmente</label>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="range" id="setOffsetY" min="1.8" max="3.6" step="0.1" value="2.5" style="flex: 1;"
+                            oninput="document.getElementById('offsetYValText').textContent = this.value + 'm'">
+                        <span id="offsetYValText" style="color: var(--brand); font-weight: bold; width: 50px;">2.5m</span>
+                    </div>
+                </div>
+
+                <div class="button-group" style="display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" class="btn-secondary"
+                        onclick="PlayerDetailModule.closeModal()">Annulla</button>
+                    <button type="submit" class="btn-primary">Salva Alzata</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== FIREBASE SDK ===== -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <!-- ===== THREE.JS SDK ===== -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <!-- ===== CONFIGURATION & CONSTANTS ===== -->
+    <script src="../config/firebase.config.js"></script>
+    <script src="../config/constants.js"></script>
+
+    <!-- ===== COMMON SERVICES ===== -->
+    <script src="../common/logger.js"></script>
+    <script src="../common/ui-service.js"></script>
+    <script src="../services/firebase-service.js"></script>
+    <script src="../services/player-service.js"></script>
+    <script src="../services/match-service.js"></script>
+
+    <!-- ===== UI COMMON ===== -->
+    <script src="../common/icons.js"></script>
+    <script src="../common/navbar.js"></script>
+    <script src="../common/scroll-reveal.js"></script>
+
+    <!-- ===== PLAYER DETAIL MODULE ===== -->
+    <script src="../modules/players/player-detail.js?v=20260624_mobile_v4"></script>
+</body>
+
+</html>

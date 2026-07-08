@@ -6,8 +6,8 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #1a1f3a 0%, #16213e 100%);
+    font-family: var(--font-body), 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg);
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -17,13 +17,13 @@ body {
 
 /* ===== CONTAINER ===== */
 .container {
-    background: #242d47;
-    border-radius: 10px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
     padding: 40px;
     max-width: 700px;
     width: 100%;
-    border: 1px solid #3a4560;
+    border: 1px solid var(--border);
 }
 
 /* ===== HEADER ===== */
@@ -33,14 +33,15 @@ body {
 }
 
 .header h1 {
-    color: #f0f4f8;
+    color: var(--text);
+    font-family: var(--font-head);
     font-size: 28px;
     margin-bottom: 10px;
     font-weight: 700;
 }
 
 .header p {
-    color: #ffffff;
+    color: var(--text-2);
     font-size: 14px;
 }
 
@@ -52,7 +53,7 @@ body {
 label {
     display: block;
     margin-bottom: 8px;
-    color: #d0d9e8;
+    color: var(--text-2);
     font-weight: 600;
     font-size: 14px;
 }
@@ -64,13 +65,13 @@ textarea,
 select {
     width: 100%;
     padding: 12px 15px;
-    border: 2px solid #3a4560;
-    border-radius: 5px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
     font-size: 14px;
     font-family: inherit;
-    transition: border-color 0.3s, box-shadow 0.3s;
-    background: #2d3854;
-    color: #d0d9e8;
+    transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease), background 0.3s var(--ease);
+    background: var(--surface-2);
+    color: var(--text-2);
 }
 
 input[type="password"]:focus,
@@ -79,9 +80,9 @@ input[type="file"]:focus,
 textarea:focus,
 select:focus {
     outline: none;
-    border-color: #5b7cfa;
-    box-shadow: 0 0 0 3px rgba(91, 124, 250, 0.15);
-    background: #323d54;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.15);
+    background: var(--surface-2);
 }
 
 textarea {
@@ -91,24 +92,24 @@ textarea {
 }
 
 select option {
-    background: #2d3854;
-    color: #d0d9e8;
+    background: var(--surface-2);
+    color: var(--text-2);
 }
 
 input[type="file"]::file-selector-button {
-    background: linear-gradient(135deg, #5b7cfa 0%, #748ffc 100%);
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
     color: white;
     padding: 8px 16px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-weight: 600;
-    transition: all 0.3s;
+    transition: all 0.3s var(--ease);
 }
 
 input[type="file"]::file-selector-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(91, 124, 250, 0.3);
+    box-shadow: 0 5px 20px rgba(var(--accent-rgb), 0.3);
 }
 
 /* ===== BUTTONS ===== */
@@ -117,13 +118,13 @@ button {
     font-size: 14px;
     font-weight: 600;
     border: none;
-    border-radius: 5px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3s var(--ease);
 }
 
 .btn-save {
-    background: linear-gradient(135deg, #5b7cfa 0%, #748ffc 100%);
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
     color: white;
     width: 100%;
     padding: 12px 24px;
@@ -131,7 +132,7 @@ button {
 
 .btn-save:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(91, 124, 250, 0.3);
+    box-shadow: 0 5px 20px rgba(var(--accent-rgb), 0.3);
 }
 
 .btn-save:disabled {
@@ -141,14 +142,14 @@ button {
 }
 
 .btn-secondary {
-    background: #3a4560;
-    color: #d0d9e8;
+    background: var(--border);
+    color: var(--text-2);
     width: 100%;
     padding: 12px 24px;
 }
 
 .btn-secondary:hover {
-    background: #4a5575;
+    background: var(--border-strong);
 }
 
 .button-group {
@@ -165,14 +166,14 @@ button {
 /* ===== MESSAGES ===== */
 .error-message {
     display: none;
-    background: #c23030;
+    background: var(--danger);
     color: white;
     padding: 12px 15px;
-    border-radius: 5px;
+    border-radius: var(--radius-sm);
     margin-bottom: 20px;
     text-align: center;
     font-size: 14px;
-    border: 1px solid #e03131;
+    border: 1px solid var(--danger);
 }
 
 .error-message.show {
@@ -181,14 +182,14 @@ button {
 
 .success-message {
     display: none;
-    background: #51a376;
+    background: var(--success);
     color: white;
     padding: 12px 15px;
-    border-radius: 5px;
+    border-radius: var(--radius-sm);
     margin-bottom: 20px;
     text-align: center;
     font-size: 14px;
-    border: 1px solid #69c896;
+    border: 1px solid var(--success);
 }
 
 .success-message.show {
@@ -197,14 +198,14 @@ button {
 
 .info-message {
     display: none;
-    background: #5b7cfa;
+    background: var(--accent);
     color: white;
     padding: 12px 15px;
-    border-radius: 5px;
+    border-radius: var(--radius-sm);
     margin-bottom: 20px;
     text-align: center;
     font-size: 14px;
-    border: 1px solid #748ffc;
+    border: 1px solid var(--accent-hover);
 }
 
 .info-message.show {
@@ -220,21 +221,21 @@ button {
 .progress-bar {
     width: 100%;
     height: 8px;
-    background: #2d3854;
+    background: var(--surface-2);
     border-radius: 4px;
     overflow: hidden;
-    border: 1px solid #3a4560;
+    border: 1px solid var(--border);
 }
 
 .progress-fill {
     height: 100%;
-    background: linear-gradient(135deg, #5b7cfa 0%, #748ffc 100%);
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
     width: 0%;
-    transition: width 0.3s;
+    transition: width 0.3s var(--ease);
 }
 
 .progress-text {
-    color: #d0d9e8;
+    color: var(--text-2);
     font-size: 12px;
     margin-top: 8px;
     text-align: center;
@@ -244,32 +245,36 @@ button {
 .section {
     margin-top: 30px;
     padding-top: 20px;
-    border-top: 1px solid #3a4560;
+    border-top: 1px solid var(--border);
 }
 
 .section h2 {
-    color: #f0f4f8;
+    color: var(--text);
+    font-family: var(--font-head);
     font-size: 18px;
     margin-bottom: 15px;
     font-weight: 700;
 }
 
 .exercise-item-edit {
-    background: #2d3854;
+    background: var(--surface-2);
     padding: 15px;
-    border-radius: 5px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
     margin-bottom: 12px;
-    border: 1px solid #3a4560;
-    transition: all 0.3s;
+    border: 1px solid var(--border);
+    transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s var(--ease), background 0.25s var(--ease);
 }
 
 .exercise-item-edit:hover {
-    border-color: #5b7cfa;
-    background: #333d56;
+    border-color: var(--accent);
+    background: var(--surface-2);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
 }
 
 .exercise-name-display {
-    color: #f0f4f8;
+    color: var(--text);
     font-size: 14px;
     font-weight: 600;
     margin-bottom: 8px;
@@ -277,32 +282,32 @@ button {
 
 .exercise-status {
     font-size: 12px;
-    color: #999;
+    color: var(--text-muted);
     margin-top: 8px;
 }
 
 .exercise-status.has-video {
-    color: #51a376;
+    color: var(--success);
 }
 
 .exercise-status.has-description {
-    color: #5b7cfa;
+    color: var(--accent);
 }
 
 .btn-edit-exercise {
-    background: #5b7cfa;
+    background: var(--accent);
     color: white;
     padding: 6px 12px;
     font-size: 12px;
     border-radius: 4px;
     border: none;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3s var(--ease);
     margin-top: 10px;
 }
 
 .btn-edit-exercise:hover {
-    background: #748ffc;
+    background: var(--accent-hover);
 }
 
 /* ===== BACK LINK ===== */
@@ -312,7 +317,7 @@ button {
 }
 
 .back-link a {
-    color: #5b7cfa;
+    color: var(--accent);
     text-decoration: none;
     font-weight: 600;
 }

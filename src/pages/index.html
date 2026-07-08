@@ -4,7 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../common/theme-init.js"></script>
     <title>Wapatanka - Volley Tool</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap">
+    <link rel="stylesheet" href="../styles/theme.css">
     <link rel="stylesheet" href="../styles/styles.css">
     <link rel="stylesheet" href="../styles/navbar.css">
     <link rel="stylesheet" href="../styles/players.css">
@@ -13,86 +18,140 @@
 
 <body>
     <!-- ===== NAVIGATION BAR ===== -->
-    <nav class="navbar">
-        <a href="index.html" class="navbar-brand"><img src="../assets/logo.png" alt="Wapatanka Logo" class="navbar-logo"> <span>Wapatanka</span></a>
-        <ul class="navbar-menu">
-            <li class="navbar-item active"><a href="index.html">🏠 Home</a></li>
-            <li class="navbar-item"><a href="form.html">📋 Rate Form</a></li>
-            <li class="navbar-item"><a href="public-exercises.html">💪 Exercises</a></li>
-            <li class="navbar-item"><a href="responses.html">📊 Responses</a></li>
-            <li class="navbar-item"><a href="match-table.html">🏆 Matches</a></li>
-            <li class="navbar-item"><a href="players.html">👥 Players</a></li>
-            <li class="navbar-item"><a href="ai-analysis.html">🎥 AI Analysis</a></li>
-            <li class="navbar-item"><a href="upload-exercises.html">⚙️ Manage</a></li>
+    <nav class="navbar" id="siteNav">
+        <a href="index.html" class="navbar-brand">
+            <img src="../assets/logo-emblem.png" alt="Wapatanka" class="navbar-logo"> <span>Wapatanka</span>
+        </a>
+        <ul class="navbar-menu" id="navMenu">
+            <li class="navbar-item active"><a href="index.html"><span class="nav-ic" data-icon="home"></span> Home</a></li>
+            <li class="navbar-item"><a href="form.html"><span class="nav-ic" data-icon="form"></span> Rate Form</a></li>
+            <li class="navbar-item"><a href="public-exercises.html"><span class="nav-ic" data-icon="exercises"></span> Exercises</a></li>
+            <li class="navbar-item"><a href="responses.html"><span class="nav-ic" data-icon="responses"></span> Responses</a></li>
+            <li class="navbar-item"><a href="match-table.html"><span class="nav-ic" data-icon="matches"></span> Matches</a></li>
+            <li class="navbar-item"><a href="players.html"><span class="nav-ic" data-icon="players"></span> Players</a></li>
+            <li class="navbar-item"><a href="ai-analysis.html"><span class="nav-ic" data-icon="ai"></span> AI Analysis</a></li>
+            <li class="navbar-item"><a href="upload-exercises.html"><span class="nav-ic" data-icon="manage"></span> Manage</a></li>
         </ul>
+        <div class="navbar-actions">
+            <button class="theme-toggle-btn" id="themeToggleBtn" onclick="ThemeToggle.toggle()" aria-label="Cambia tema" type="button">
+                <span class="icon-sun" data-icon="sun"></span><span class="icon-moon" data-icon="moon"></span>
+            </button>
+            <button class="navbar-toggle" id="navToggle" aria-label="Menu" aria-expanded="false" type="button">☰</button>
+        </div>
     </nav>
 
-    <!-- ===== MAIN CONTENT CONTAINER ===== -->
-    <div class="home-container container">
+    <!-- ===== SCROLL PROGRESS BAR ===== -->
+    <div id="scrollProgress" aria-hidden="true"></div>
 
-        <!-- Welcome Hero Banner -->
-        <div class="welcome-hero">
-            <h1 style="display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap;"><img src="../assets/logo.png" alt="Wapatanka Logo" style="height: 50px; width: auto; object-fit: contain;"> WAPATANKA</h1>
-            <p>Welcome to the official Volley Tool for Wapatanka. Submit training feedback, view our scheduled match
-                schedule, review roster cards, and update game performance statistics.</p>
-            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                <a href="form.html" class="btn-save"
-                    style="width: auto; padding: 12px 24px; text-decoration: none; font-weight: 700;">📋 Rate Today's
-                    Training</a>
-                <a href="match-table.html" class="btn-secondary"
-                    style="width: auto; padding: 12px 24px; text-decoration: none; font-weight: 700; background: #3a4560; color: #d0d9e8;">🏆
-                    View Matches</a>
-            </div>
-        </div>
-
-        <!-- Next Match Preview Widget -->
-        <div class="home-section">
-            <div class="home-section-title">
-                <span>📅 Match Schedule</span>
-                <a href="match-table.html">Full Schedule →</a>
-            </div>
-            <div id="matchPreviewContainer">
-                <p style="color: #999; font-style: italic; text-align: center;">Syncing match schedule...</p>
-            </div>
-        </div>
-
-        <!-- Squad Roster Preview -->
-        <div class="home-section">
-            <div class="home-section-title">
-                <span>👥 Roster Preview</span>
-                <a href="players.html">Manage Roster →</a>
-            </div>
-            <div id="rosterPreviewGrid" class="roster-preview-grid">
-                <p style="color: #999; font-style: italic; text-align: center; grid-column: 1/-1;">Syncing team
-                    roster...</p>
-            </div>
-        </div>
-
-        <!-- Quick Navigation Cards Grid -->
-        <div class="home-grid">
-            <a href="form.html" class="home-card" style="text-decoration: none;">
-                <div class="icon">📋</div>
-                <h3>Rate Form</h3>
-                <p>Provide training feedback and rate exercise difficulty.</p>
-            </a>
-            <a href="public-exercises.html" class="home-card" style="text-decoration: none;">
-                <div class="icon">💪</div>
-                <h3>Exercises</h3>
-                <p>View the full database of training exercises list.</p>
-            </a>
-            <a href="match-table.html" class="home-card" style="text-decoration: none;">
-                <div class="icon">🏆</div>
-                <h3>Matches</h3>
-                <p>Track team schedule, set scores, and log statistics.</p>
-            </a>
-            <a href="players.html" class="home-card" style="text-decoration: none;">
-                <div class="icon">👥</div>
-                <h3>Players</h3>
-                <p>Check the team roster, role definitions, and jersey numbers.</p>
-            </a>
-        </div>
-
+    <!-- ===== PARALLAX BRAND AURORA ===== -->
+    <div id="bgFx" aria-hidden="true">
+        <span class="blob blob-1"></span>
+        <span class="blob blob-2"></span>
     </div>
+
+    <!-- ===== FIXED 3D BALL STAGE (scroll-driven) ===== -->
+    <div id="ballStage" aria-hidden="true"></div>
+    <img class="ball-fallback" src="../assets/logo-wapatanka.png" alt="Wapatanka" hidden>
+
+    <!-- ===== SECTION DOTS NAVIGATOR ===== -->
+    <nav id="sectionDots" aria-label="Sezioni" aria-hidden="false"></nav>
+
+    <!-- ===== IMMERSIVE SCROLL HOME ===== -->
+    <main class="scroll-home">
+
+        <!-- 1 · HERO -->
+        <section class="pane pane-hero" id="pane-hero" data-label="Hero">
+            <div class="pane-inner reveal">
+                <span class="pane-kicker">Volley Tool</span>
+                <h1 class="pane-title">WAPATANKA</h1>
+                <p class="pane-lead">Il gestionale ufficiale della squadra: feedback allenamenti, calendario
+                    partite, roster e statistiche di gioco — tutto in un posto.</p>
+                <div class="hero-cta">
+                    <a href="form.html" class="btn-accent"><span data-icon="form"></span> Rate Today's Training</a>
+                    <a href="match-table.html" class="btn-ghost"><span data-icon="matches"></span> View Matches</a>
+                </div>
+                <div class="scroll-cue"><span class="mouse"></span> Scroll</div>
+            </div>
+        </section>
+
+        <!-- 2 · NEXT MATCH -->
+        <section class="pane pane--center" id="pane-match" data-label="Prossima partita">
+            <div class="pane-inner reveal">
+                <span class="pane-kicker">Calendario</span>
+                <h2 class="pane-title">Prossima partita</h2>
+                <div id="matchPreviewContainer">
+                    <p class="preview-empty">Sincronizzazione calendario…</p>
+                </div>
+                <a href="match-table.html" class="pane-link">Calendario completo <span data-icon="arrow-right"></span></a>
+            </div>
+        </section>
+
+        <!-- 3 · SEASON STATS -->
+        <section class="pane pane--right" id="pane-stats" data-label="Statistiche">
+            <div class="pane-inner reveal">
+                <span class="pane-kicker">La stagione</span>
+                <h2 class="pane-title">I numeri</h2>
+                <p class="pane-lead">Il rendimento della squadra a colpo d'occhio.</p>
+                <div id="seasonStatsContainer" class="stats-tiles">
+                    <p class="preview-empty">Sincronizzazione statistiche…</p>
+                </div>
+                <a href="match-table.html" class="pane-link">Tutte le partite <span data-icon="arrow-right"></span></a>
+            </div>
+        </section>
+
+        <!-- 4 · ROSTER -->
+        <section class="pane pane--center" id="pane-roster" data-label="Roster">
+            <div class="pane-inner reveal">
+                <span class="pane-kicker">La squadra</span>
+                <h2 class="pane-title">Il roster</h2>
+                <div id="rosterPreviewGrid" class="roster-preview-grid">
+                    <p class="preview-empty">Sincronizzazione roster…</p>
+                </div>
+                <a href="players.html" class="pane-link">Gestisci roster <span data-icon="arrow-right"></span></a>
+            </div>
+        </section>
+
+        <!-- 5 · EXPLORE -->
+        <section class="pane pane-explore" id="pane-explore" data-label="Esplora">
+            <div class="pane-inner reveal">
+                <span class="pane-kicker">Strumenti</span>
+                <h2 class="pane-title">Esplora</h2>
+                <div class="explore-grid">
+                    <a href="form.html" class="home-card">
+                        <div class="icon" data-icon="form"></div>
+                        <h3>Rate Form</h3>
+                        <p>Provide training feedback and rate exercise difficulty.</p>
+                    </a>
+                    <a href="public-exercises.html" class="home-card">
+                        <div class="icon" data-icon="exercises"></div>
+                        <h3>Exercises</h3>
+                        <p>View the full database of training exercises.</p>
+                    </a>
+                    <a href="match-table.html" class="home-card">
+                        <div class="icon" data-icon="matches"></div>
+                        <h3>Matches</h3>
+                        <p>Track team schedule, set scores, and log statistics.</p>
+                    </a>
+                    <a href="players.html" class="home-card">
+                        <div class="icon" data-icon="players"></div>
+                        <h3>Players</h3>
+                        <p>Check the team roster, roles, and jersey numbers.</p>
+                    </a>
+                    <a href="ai-analysis.html" class="home-card">
+                        <div class="icon" data-icon="ai"></div>
+                        <h3>AI Analysis</h3>
+                        <p>Analyse match video with AI-powered insights.</p>
+                    </a>
+                    <a href="upload-exercises.html" class="home-card">
+                        <div class="icon" data-icon="manage"></div>
+                        <h3>Manage</h3>
+                        <p>Upload and manage the exercise database.</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
 
     <!-- ===== FIREBASE SDK ===== -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-compat.js"></script>
@@ -112,8 +171,19 @@
     <script src="../services/player-service.js"></script>
     <script src="../services/match-service.js"></script>
 
-    <!-- ===== HOME MODULE ===== -->
+    <!-- ===== UI COMMON ===== -->
+    <script src="../common/icons.js"></script>
+    <script src="../common/navbar.js"></script>
+    <script src="../common/scroll-reveal.js"></script>
+
+    <!-- ===== HOME MODULES ===== -->
     <script src="../modules/home/home.js"></script>
+    <script src="../modules/home/home-stats.js"></script>
+    <script src="../modules/home/home-scrollfx.js"></script>
+
+    <!-- ===== 3D VOLLEYBALL (Three.js pinned CDN + SRI, with robust fallback) ===== -->
+    <script defer src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js" integrity="sha384-qOkzR5Ke/XkQxuGVJ9hpFEpDlcoLtWwVYhnJf06cLIZa2vaIptSqaubivErzmD5O" crossorigin="anonymous"></script>
+    <script defer src="../modules/home/volleyball-3d.js"></script>
 </body>
 
 </html>

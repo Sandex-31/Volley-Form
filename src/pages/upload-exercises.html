@@ -4,29 +4,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../common/theme-init.js"></script>
     <title>Manage Exercises - Admin Panel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap">
+    <link rel="stylesheet" href="../styles/theme.css">
     <link rel="stylesheet" href="../styles/upload-exercises.css">
     <link rel="stylesheet" href="../styles/navbar.css">
 </head>
 
 <body>
     <!-- ===== NAVIGATION BAR ===== -->
-    <nav class="navbar">
-        <a href="index.html" class="navbar-brand"><img src="../assets/logo.png" alt="Wapatanka Logo" class="navbar-logo"> <span>Wapatanka</span></a>
-        <ul class="navbar-menu">
-            <li class="navbar-item"><a href="index.html">🏠 Home</a></li>
-            <li class="navbar-item"><a href="form.html">📋 Rate Form</a></li>
-            <li class="navbar-item"><a href="public-exercises.html">💪 Exercises</a></li>
-            <li class="navbar-item"><a href="responses.html">📊 Responses</a></li>
-            <li class="navbar-item"><a href="match-table.html">🏆 Matches</a></li>
-            <li class="navbar-item"><a href="players.html">👥 Players</a></li>
-            <li class="navbar-item active"><a href="upload-exercises.html">⚙️ Manage</a></li>
+    <nav class="navbar" id="siteNav">
+        <a href="index.html" class="navbar-brand">
+            <img src="../assets/logo-emblem.png" alt="Wapatanka" class="navbar-logo"> <span>Wapatanka</span>
+        </a>
+        <ul class="navbar-menu" id="navMenu">
+            <li class="navbar-item"><a href="index.html"><span class="nav-ic" data-icon="home"></span> Home</a></li>
+            <li class="navbar-item"><a href="form.html"><span class="nav-ic" data-icon="form"></span> Rate Form</a></li>
+            <li class="navbar-item"><a href="public-exercises.html"><span class="nav-ic" data-icon="exercises"></span> Exercises</a></li>
+            <li class="navbar-item"><a href="responses.html"><span class="nav-ic" data-icon="responses"></span> Responses</a></li>
+            <li class="navbar-item"><a href="match-table.html"><span class="nav-ic" data-icon="matches"></span> Matches</a></li>
+            <li class="navbar-item"><a href="players.html"><span class="nav-ic" data-icon="players"></span> Players</a></li>
+            <li class="navbar-item"><a href="ai-analysis.html"><span class="nav-ic" data-icon="ai"></span> AI Analysis</a></li>
+            <li class="navbar-item active"><a href="upload-exercises.html"><span class="nav-ic" data-icon="manage"></span> Manage</a></li>
         </ul>
+        <div class="navbar-actions">
+            <button class="theme-toggle-btn" id="themeToggleBtn" onclick="ThemeToggle.toggle()" aria-label="Cambia tema" type="button">
+                <span class="icon-sun" data-icon="sun"></span><span class="icon-moon" data-icon="moon"></span>
+            </button>
+            <button class="navbar-toggle" id="navToggle" aria-label="Menu" aria-expanded="false" type="button">☰</button>
+        </div>
     </nav>
 
-    <div class="container">
+    <div class="container reveal">
         <div class="header">
-            <h1>📹 Manage Exercises</h1>
+            <h1><span data-icon="manage"></span> Manage Exercises</h1>
             <p>Add, edit, and manage training exercises</p>
         </div>
 
@@ -37,7 +51,7 @@
 
         <!-- Login Section -->
         <div id="loginSection">
-            <h2 style="color: #f0f4f8; margin-bottom: 20px; font-size: 18px; font-weight: 700;">Admin Authentication
+            <h2 style="color: var(--text); margin-bottom: 20px; font-size: 18px; font-weight: 700;">Admin Authentication
             </h2>
             <div class="form-group">
                 <label for="adminPassword">Admin Password</label>
@@ -55,13 +69,13 @@
 
             <!-- Edit Exercise Section -->
             <div id="editSection"
-                style="display: none; margin-bottom: 30px; padding-bottom: 25px; border-bottom: 1px solid #3a4560;">
-                <h2 style="color: #f0f4f8; margin-bottom: 20px; font-size: 18px; font-weight: 700;">✏️ Edit Exercise
+                style="display: none; margin-bottom: 30px; padding-bottom: 25px; border-bottom: 1px solid var(--border);">
+                <h2 style="color: var(--text); margin-bottom: 20px; font-size: 18px; font-weight: 700;">✏️ Edit Exercise
                 </h2>
 
                 <div class="form-group">
                     <label for="editExerciseName">Exercise Name</label>
-                    <input type="text" id="editExerciseName" readonly style="background: #1f2635; cursor: not-allowed;">
+                    <input type="text" id="editExerciseName" readonly style="background: var(--surface-2); cursor: not-allowed;">
                 </div>
 
                 <div class="form-group">
@@ -73,7 +87,7 @@
                 <div class="form-group">
                     <label for="editVideoInput">📹 Upload Video (MP4, Max 100 MB)</label>
                     <input type="file" id="editVideoInput" accept=".mp4,video/mp4">
-                    <small style="color: #999; display: block; margin-top: 8px;">
+                    <small style="color: var(--text-muted); display: block; margin-top: 8px;">
                         💡 Format: MP4 | Max size: 100 MB | Recommended: 1080p, landscape orientation
                     </small>
                 </div>
@@ -88,7 +102,7 @@
             </div>
 
             <!-- Add Exercise Section -->
-            <div class="section" style="margin-bottom: 30px; padding-bottom: 25px; border-bottom: 1px solid #3a4560;">
+            <div class="section" style="margin-bottom: 30px; padding-bottom: 25px; border-bottom: 1px solid var(--border);">
                 <h2>➕ Schedule Exercise</h2>
                 <div class="form-group">
                     <label for="exerciseSelect">Select Preset Exercise</label>
@@ -99,7 +113,7 @@
                 <button type="button" class="btn-save" onclick="ExerciseUploadManager.addPresetExercise()"
                     style="margin-bottom: 15px;">+ Add Preset Exercise</button>
 
-                <div style="text-align: center; margin: 10px 0; color: #666;">- OR -</div>
+                <div style="text-align: center; margin: 10px 0; color: var(--text-muted);">- OR -</div>
 
                 <button type="button" class="btn-secondary" onclick="ExerciseUploadManager.addNewExercise()">➕ Create
                     Custom Exercise</button>
@@ -137,6 +151,11 @@
 
     <!-- ===== FORM VALIDATION ===== -->
     <script src="../modules/form/validation.js"></script>
+
+    <!-- ===== UI COMMON ===== -->
+    <script src="../common/icons.js"></script>
+    <script src="../common/navbar.js"></script>
+    <script src="../common/scroll-reveal.js"></script>
 
     <!-- ===== EXERCISE UPLOAD MODULE ===== -->
     <script src="../modules/exercises/upload-manager.js"></script>

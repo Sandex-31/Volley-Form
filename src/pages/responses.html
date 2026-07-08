@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../common/theme-init.js"></script>
     <title>Form Responses - Volleyball</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap">
+    <link rel="stylesheet" href="../styles/theme.css">
     <link rel="stylesheet" href="../styles/styles.css">
     <link rel="stylesheet" href="../styles/navbar.css">
     <style>
@@ -14,8 +19,8 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1f3a 0%, #16213e 100%);
+            font-family: var(--font-body), 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
             min-height: 100vh;
             padding: 40px 20px;
         }
@@ -26,29 +31,40 @@
         }
 
         .header {
-            background: #242d47;
+            background: var(--surface);
             padding: 30px;
-            border-radius: 10px;
-            border: 1px solid #3a4560;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
             margin-bottom: 30px;
             text-align: center;
         }
 
         .header h1 {
-            color: #f0f4f8;
+            color: var(--text);
+            font-family: var(--font-head);
             font-size: 32px;
             margin-bottom: 10px;
             font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .header h1 [data-icon] {
+            color: var(--accent);
+            display: inline-flex;
         }
 
         .header p {
-            color: #d0d9e8;
+            color: var(--text-2);
             font-size: 16px;
             margin-bottom: 5px;
         }
 
         .header .meta {
-            color: #999;
+            color: var(--text-muted);
             font-size: 14px;
             margin-top: 15px;
         }
@@ -60,18 +76,19 @@
         }
 
         .response-card {
-            background: #242d47;
-            border: 1px solid #3a4560;
-            border-radius: 10px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
             padding: 25px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s;
+            box-shadow: var(--shadow-sm);
+            transition: transform .25s var(--ease), box-shadow .25s var(--ease), border-color .25s var(--ease);
             text-align: left;
         }
 
         .response-card:hover {
-            border-color: #5b7cfa;
-            box-shadow: 0 8px 25px rgba(91, 124, 250, 0.15);
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: var(--shadow-md);
         }
 
         .response-header {
@@ -80,22 +97,22 @@
             align-items: start;
             margin-bottom: 20px;
             padding-bottom: 15px;
-            border-bottom: 1px solid #3a4560;
+            border-bottom: 1px solid var(--border);
         }
 
         .response-date {
-            color: #5b7cfa;
+            color: var(--accent);
             font-weight: 700;
             font-size: 16px;
         }
 
         .response-time {
-            color: #999;
+            color: var(--text-muted);
             font-size: 12px;
         }
 
         .response-index {
-            background: linear-gradient(135deg, #5b7cfa 0%, #748ffc 100%);
+            background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
             color: white;
             padding: 5px 12px;
             border-radius: 20px;
@@ -108,7 +125,7 @@
         }
 
         .response-section h3 {
-            color: #f0f4f8;
+            color: var(--text);
             font-size: 16px;
             margin-bottom: 12px;
             font-weight: 700;
@@ -124,14 +141,14 @@
         }
 
         .exercise-card {
-            background: #2d3854;
-            border: 1px solid #3a4560;
-            border-radius: 8px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
             padding: 15px;
         }
 
         .exercise-name {
-            color: #5b7cfa;
+            color: var(--accent);
             font-weight: 600;
             font-size: 14px;
             margin-bottom: 8px;
@@ -150,36 +167,34 @@
         }
 
         .rating-text {
-            color: #d0d9e8;
+            color: var(--text-muted);
             font-size: 12px;
-            color: #999;
         }
 
         .exercise-note {
-            color: #d0d9e8;
+            color: var(--text-muted);
             font-size: 12px;
-            color: #999;
         }
 
         .notes-section {
-            background: #2d3854;
-            border-left: 4px solid #5b7cfa;
+            background: var(--surface-2);
+            border-left: 4px solid var(--accent);
             padding: 15px;
-            border-radius: 5px;
-            color: #d0d9e8;
+            border-radius: var(--radius-sm);
+            color: var(--text-2);
             font-size: 14px;
             line-height: 1.6;
             font-style: italic;
         }
 
         .notes-section.empty {
-            color: #666;
+            color: var(--text-muted);
         }
 
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: #999;
+            color: var(--text-muted);
         }
 
         .empty-state-icon {
@@ -194,30 +209,38 @@
 </head>
 <body>
     <!-- ===== NAVIGATION BAR ===== -->
-    <nav class="navbar">
-        <a href="index.html" class="navbar-brand"><img src="../assets/logo.png" alt="Wapatanka Logo" class="navbar-logo"> <span>Wapatanka</span></a>
-        <ul class="navbar-menu">
-            <li class="navbar-item"><a href="index.html">🏠 Home</a></li>
-            <li class="navbar-item"><a href="form.html">📋 Rate Form</a></li>
-            <li class="navbar-item"><a href="public-exercises.html">💪 Exercises</a></li>
-            <li class="navbar-item active"><a href="responses.html">📊 Responses</a></li>
-            <li class="navbar-item"><a href="match-table.html">🏆 Matches</a></li>
-            <li class="navbar-item"><a href="players.html">👥 Players</a></li>
-            <li class="navbar-item"><a href="ai-analysis.html">🎥 AI Analysis</a></li>
-            <li class="navbar-item"><a href="upload-exercises.html">⚙️ Manage</a></li>
+    <nav class="navbar" id="siteNav">
+        <a href="index.html" class="navbar-brand">
+            <img src="../assets/logo-emblem.png" alt="Wapatanka" class="navbar-logo"> <span>Wapatanka</span>
+        </a>
+        <ul class="navbar-menu" id="navMenu">
+            <li class="navbar-item"><a href="index.html"><span class="nav-ic" data-icon="home"></span> Home</a></li>
+            <li class="navbar-item"><a href="form.html"><span class="nav-ic" data-icon="form"></span> Rate Form</a></li>
+            <li class="navbar-item"><a href="public-exercises.html"><span class="nav-ic" data-icon="exercises"></span> Exercises</a></li>
+            <li class="navbar-item active"><a href="responses.html"><span class="nav-ic" data-icon="responses"></span> Responses</a></li>
+            <li class="navbar-item"><a href="match-table.html"><span class="nav-ic" data-icon="matches"></span> Matches</a></li>
+            <li class="navbar-item"><a href="players.html"><span class="nav-ic" data-icon="players"></span> Players</a></li>
+            <li class="navbar-item"><a href="ai-analysis.html"><span class="nav-ic" data-icon="ai"></span> AI Analysis</a></li>
+            <li class="navbar-item"><a href="upload-exercises.html"><span class="nav-ic" data-icon="manage"></span> Manage</a></li>
         </ul>
+        <div class="navbar-actions">
+            <button class="theme-toggle-btn" id="themeToggleBtn" onclick="ThemeToggle.toggle()" aria-label="Cambia tema" type="button">
+                <span class="icon-sun" data-icon="sun"></span><span class="icon-moon" data-icon="moon"></span>
+            </button>
+            <button class="navbar-toggle" id="navToggle" aria-label="Menu" aria-expanded="false" type="button">☰</button>
+        </div>
     </nav>
 
-    <div class="container">
+    <div class="container reveal">
         <div class="header">
-            <h1>📊 Form Responses</h1>
+            <h1><span data-icon="responses"></span> Form Responses</h1>
             <p>View all submitted form responses</p>
-            <p class="meta">Total responses received: <span id="responseCount" style="color: #5b7cfa; font-weight: bold;">0</span></p>
+            <p class="meta">Total responses received: <span id="responseCount" style="color: var(--accent); font-weight: bold;">0</span></p>
         </div>
 
         <!-- Responses List Container -->
-        <div id="responsesList" class="responses-list">
-            <p class="loading" style="text-align: center; color: #999; font-style: italic;">Loading responses...</p>
+        <div id="responsesList" class="responses-list reveal">
+            <p class="loading" style="text-align: center; color: var(--text-muted); font-style: italic;">Loading responses...</p>
         </div>
 
     </div>
@@ -239,6 +262,11 @@
     <!-- ===== DATA SERVICES ===== -->
     <script src="../services/firebase-service.js"></script>
     <script src="../services/exercise-service.js"></script>
+
+    <!-- ===== UI COMMON ===== -->
+    <script src="../common/icons.js"></script>
+    <script src="../common/navbar.js"></script>
+    <script src="../common/scroll-reveal.js"></script>
 
     <!-- ===== RESPONSES MODULE ===== -->
     <script src="../modules/responses/responses.js"></script>

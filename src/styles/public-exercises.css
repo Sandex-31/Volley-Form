@@ -6,8 +6,8 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #1a1f3a 0%, #16213e 100%);
+    font-family: var(--font-body), 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg);
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -17,13 +17,13 @@ body {
 
 /* ===== CONTAINER ===== */
 .container {
-    background: #242d47;
-    border-radius: 10px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
     padding: 40px;
     max-width: 650px;
     width: 100%;
-    border: 1px solid #3a4560;
+    border: 1px solid var(--border);
 }
 
 /* ===== HEADER ===== */
@@ -33,14 +33,15 @@ body {
 }
 
 .header h1 {
-    color: #f0f4f8;
+    color: var(--text);
+    font-family: var(--font-head);
     font-size: 28px;
     margin-bottom: 10px;
     font-weight: 700;
 }
 
 .header p {
-    color: #ffffff;
+    color: var(--text-2);
     font-size: 14px;
 }
 
@@ -61,16 +62,16 @@ button {
 }
 
 .btn-admin {
-    background: #3a4560;
-    color: #d0d9e8;
+    background: var(--border);
+    color: var(--text-2);
 }
 
 .btn-admin:hover {
-    background: #4a5575;
+    background: var(--border-strong);
 }
 
 .btn-save {
-    background: linear-gradient(135deg, #5b7cfa 0%, #748ffc 100%);
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
     color: white;
     flex: 1;
     padding: 12px 24px;
@@ -78,22 +79,22 @@ button {
 
 .btn-save:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(91, 124, 250, 0.3);
+    box-shadow: 0 5px 20px rgba(var(--accent-rgb), 0.3);
 }
 
 .btn-cancel {
-    background: #3a4560;
-    color: #d0d9e8;
+    background: var(--border);
+    color: var(--text-2);
     flex: 1;
     padding: 12px 24px;
 }
 
 .btn-cancel:hover {
-    background: #4a5575;
+    background: var(--border-strong);
 }
 
 .btn-remove-exercise {
-    background: #c23030;
+    background: var(--danger);
     color: white;
     padding: 6px 12px;
     font-size: 12px;
@@ -104,7 +105,7 @@ button {
 }
 
 .btn-remove-exercise:hover {
-    background: #e03131;
+    filter: brightness(1.1);
 }
 
 /* ===== EXERCISES SECTION ===== */
@@ -113,7 +114,8 @@ button {
 }
 
 .exercises-section h2 {
-    color: #f0f4f8;
+    color: var(--text);
+    font-family: var(--font-head);
     font-size: 18px;
     margin-bottom: 15px;
     font-weight: 700;
@@ -127,11 +129,18 @@ button {
 
 /* ===== EXERCISE ITEM ===== */
 .exercise-item {
-    background: linear-gradient(135deg, #5b7cfa 0%, #748ffc 100%);
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(91, 124, 250, 0.2);
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    box-shadow: var(--shadow-sm);
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+
+.exercise-item:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--accent);
 }
 
 .exercise-item-header {
@@ -144,7 +153,7 @@ button {
 }
 
 .exercise-item-header:hover {
-    background: linear-gradient(135deg, #6b8cfa 0%, #848ffc 100%);
+    filter: brightness(1.08);
 }
 
 .exercise-item-name {
@@ -206,7 +215,7 @@ button {
 }
 
 .no-video-message {
-    color: #999;
+    color: var(--text-muted);
     font-size: 13px;
     text-align: center;
     padding: 30px 20px;
@@ -217,7 +226,7 @@ button {
 .empty-state {
     text-align: center;
     padding: 40px 20px;
-    color: #999;
+    color: var(--text-muted);
 }
 
 .empty-state-icon {
@@ -237,7 +246,7 @@ button {
 label {
     display: block;
     margin-bottom: 8px;
-    color: #d0d9e8;
+    color: var(--text-2);
     font-weight: 600;
     font-size: 14px;
 }
@@ -246,26 +255,26 @@ input[type="password"],
 select {
     width: 100%;
     padding: 12px 15px;
-    border: 2px solid #3a4560;
+    border: 2px solid var(--border);
     border-radius: 5px;
     font-size: 14px;
     font-family: inherit;
     transition: border-color 0.3s, box-shadow 0.3s;
-    background: #2d3854;
-    color: #d0d9e8;
+    background: var(--surface-2);
+    color: var(--text-2);
 }
 
 input[type="password"]:focus,
 select:focus {
     outline: none;
-    border-color: #5b7cfa;
-    box-shadow: 0 0 0 3px rgba(91, 124, 250, 0.15);
-    background: #323d54;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.15);
+    background: var(--surface-2);
 }
 
 select option {
-    background: #2d3854;
-    color: #d0d9e8;
+    background: var(--surface-2);
+    color: var(--text-2);
 }
 
 /* ===== MODAL ===== */
@@ -285,21 +294,22 @@ select option {
 }
 
 .modal-content {
-    background-color: #242d47;
+    background-color: var(--surface);
     margin: auto;
     padding: 40px;
-    border-radius: 10px;
-    border: 1px solid #3a4560;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
     width: 90%;
     max-width: 500px;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    box-shadow: var(--shadow-lg);
 }
 
 .close-modal {
-    color: #999;
+    color: var(--text-muted);
     float: right;
     font-size: 28px;
     font-weight: bold;
@@ -307,11 +317,12 @@ select option {
 }
 
 .close-modal:hover {
-    color: #fff;
+    color: var(--text);
 }
 
 .modal h2 {
-    color: #f0f4f8;
+    color: var(--text);
+    font-family: var(--font-head);
     margin-bottom: 20px;
     font-size: 20px;
 }
@@ -319,14 +330,14 @@ select option {
 /* ===== MESSAGES ===== */
 .error-message {
     display: none;
-    background: #c23030;
+    background: var(--danger);
     color: white;
     padding: 12px 15px;
     border-radius: 5px;
     margin-bottom: 20px;
     text-align: center;
     font-size: 14px;
-    border: 1px solid #e03131;
+    border: 1px solid var(--danger);
 }
 
 .error-message.show {
@@ -335,14 +346,14 @@ select option {
 
 .success-message {
     display: none;
-    background: #51a376;
+    background: var(--success);
     color: white;
     padding: 12px 15px;
     border-radius: 5px;
     margin-bottom: 20px;
     text-align: center;
     font-size: 14px;
-    border: 1px solid #69c896;
+    border: 1px solid var(--success);
 }
 
 .success-message.show {
@@ -362,7 +373,7 @@ select option {
 }
 
 .back-link a {
-    color: #5b7cfa;
+    color: var(--brand);
     text-decoration: none;
     font-weight: 600;
 }
@@ -377,30 +388,30 @@ select option {
     align-items: center;
     gap: 8px;
     padding: 10px 12px;
-    background: #2d3854;
+    background: var(--surface-2);
     border-radius: 5px;
     margin-bottom: 8px;
-    border: 1px solid #3a4560;
+    border: 1px solid var(--border);
     transition: all 0.3s;
 }
 
 .admin-exercise-item:hover {
-    background: #333d56;
-    border-color: #5b7cfa;
+    background: var(--surface-2);
+    border-color: var(--accent);
 }
 
 .admin-exercise-item.dragging {
     opacity: 0.5;
-    background: #1f2635;
+    background: var(--surface-2);
 }
 
 .admin-exercise-item.drag-over {
-    border: 2px dashed #5b7cfa;
+    border: 2px dashed var(--accent);
 }
 
 .admin-drag-handle {
     cursor: grab;
-    color: #999;
+    color: var(--text-muted);
     font-size: 16px;
     padding: 2px 6px;
     user-select: none;
@@ -413,7 +424,7 @@ select option {
 
 .admin-exercise-name {
     flex: 1;
-    color: #d0d9e8;
+    color: var(--text-2);
     font-size: 12px;
     word-break: break-word;
 }
@@ -425,8 +436,8 @@ select option {
 }
 
 .admin-btn-reorder {
-    background: #3a4560;
-    color: #d0d9e8;
+    background: var(--border);
+    color: var(--text-2);
     padding: 4px 6px;
     font-size: 11px;
     border-radius: 3px;
@@ -442,7 +453,7 @@ select option {
 }
 
 .admin-btn-reorder:hover:not(:disabled) {
-    background: #5b7cfa;
+    background: var(--accent);
     color: white;
 }
 

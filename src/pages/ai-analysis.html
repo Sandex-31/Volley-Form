@@ -3,49 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../common/theme-init.js"></script>
     <title>AI Video Analysis - Volley Tool</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap">
+    <link rel="stylesheet" href="../styles/theme.css">
     <link rel="stylesheet" href="../styles/styles.css">
     <link rel="stylesheet" href="../styles/navbar.css">
     <link rel="stylesheet" href="../styles/video-analysis.css">
 </head>
 <body>
+    <!-- ===== LIVING BRAND AURORA (behind everything) ===== -->
+    <div id="bgFx" aria-hidden="true">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
     <!-- ===== NAVIGATION BAR ===== -->
-    <nav class="navbar">
-        <a href="index.html" class="navbar-brand"><img src="../assets/logo.png" alt="Wapatanka Logo" class="navbar-logo"> <span>Wapatanka</span></a>
-        <ul class="navbar-menu">
-            <li class="navbar-item"><a href="index.html">🏠 Home</a></li>
-            <li class="navbar-item"><a href="form.html">📋 Rate Form</a></li>
-            <li class="navbar-item"><a href="public-exercises.html">💪 Exercises</a></li>
-            <li class="navbar-item"><a href="responses.html">📊 Responses</a></li>
-            <li class="navbar-item"><a href="match-table.html">🏆 Matches</a></li>
-            <li class="navbar-item"><a href="players.html">👥 Players</a></li>
-            <li class="navbar-item"><a href="upload-exercises.html">⚙️ Manage</a></li>
-            <li class="navbar-item active"><a href="ai-analysis.html">🎥 AI Analysis</a></li>
+    <nav class="navbar" id="siteNav">
+        <a href="index.html" class="navbar-brand">
+            <img src="../assets/logo-emblem.png" alt="Wapatanka" class="navbar-logo"> <span>Wapatanka</span>
+        </a>
+        <ul class="navbar-menu" id="navMenu">
+            <li class="navbar-item"><a href="index.html"><span class="nav-ic" data-icon="home"></span> Home</a></li>
+            <li class="navbar-item"><a href="form.html"><span class="nav-ic" data-icon="form"></span> Rate Form</a></li>
+            <li class="navbar-item"><a href="public-exercises.html"><span class="nav-ic" data-icon="exercises"></span> Exercises</a></li>
+            <li class="navbar-item"><a href="responses.html"><span class="nav-ic" data-icon="responses"></span> Responses</a></li>
+            <li class="navbar-item"><a href="match-table.html"><span class="nav-ic" data-icon="matches"></span> Matches</a></li>
+            <li class="navbar-item"><a href="players.html"><span class="nav-ic" data-icon="players"></span> Players</a></li>
+            <li class="navbar-item active"><a href="ai-analysis.html"><span class="nav-ic" data-icon="ai"></span> AI Analysis</a></li>
+            <li class="navbar-item"><a href="upload-exercises.html"><span class="nav-ic" data-icon="manage"></span> Manage</a></li>
         </ul>
+        <div class="navbar-actions">
+            <button class="theme-toggle-btn" id="themeToggleBtn" onclick="ThemeToggle.toggle()" aria-label="Cambia tema" type="button">
+                <span class="icon-sun" data-icon="sun"></span><span class="icon-moon" data-icon="moon"></span>
+            </button>
+            <button class="navbar-toggle" id="navToggle" aria-label="Menu" aria-expanded="false" type="button">☰</button>
+        </div>
     </nav>
 
     <!-- ===== MAIN CONTENT CONTAINER ===== -->
-    <div class="analysis-container container">
-        <div class="header">
-            <h1>🎥 AI Video Analysis</h1>
-            <p>Upload a match video or paste a YouTube link to automatically extract statistics and events using Computer Vision.</p>
+    <div class="analysis-container">
+        <div class="header reveal">
+            <span class="ai-kicker">Intelligence</span>
+            <h1><span data-icon="ai"></span> AI Video Analysis</h1>
+            <p>Carica una partita o incolla un link YouTube: la Computer Vision estrae azioni, punti ed errori, giocatore per giocatore, e li trasforma in statistiche pronte all'uso.</p>
         </div>
 
-        <div class="analysis-card">
+        <div class="analysis-card reveal">
             <!-- Review Past Analyses Dropdown -->
-            <div class="form-group" style="margin-bottom: 25px; border-bottom: 1px solid #2a3449; padding-bottom: 20px;">
+            <div class="form-group" style="margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 20px;">
                 <label for="pastAnalysisSelect">📂 Review Past Analyses</label>
                 <select id="pastAnalysisSelect">
                     <option value="">-- Loading past analyses... --</option>
                 </select>
-                <small style="color: #8892b0; margin-top: 5px; display: block;">Select a previously completed video analysis to view its dashboard instantly.</small>
+                <small style="color: var(--text-muted); margin-top: 5px; display: block;">Select a previously completed video analysis to view its dashboard instantly.</small>
             </div>
 
             <form id="aiAnalysisForm" onsubmit="VideoAnalysis.startAnalysis(event)">
                 <div class="form-group" style="margin-bottom: 20px;">
                     <label for="videoLink">YouTube Video Link *</label>
                     <input type="url" id="videoLink" required placeholder="https://www.youtube.com/watch?v=...">
-                    <small style="color: #8892b0; margin-top: 5px; display: block;">Paste the link to the full match video on YouTube.</small>
+                    <small style="color: var(--text-muted); margin-top: 5px; display: block;">Paste the link to the full match video on YouTube.</small>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 25px;">
@@ -53,13 +73,13 @@
                     <select id="matchSelect">
                         <option value="">-- None / Training Session --</option>
                     </select>
-                    <small style="color: #8892b0; margin-top: 5px; display: block;">If selected, the AI will save the extracted stats directly to this match.</small>
+                    <small style="color: var(--text-muted); margin-top: 5px; display: block;">If selected, the AI will save the extracted stats directly to this match.</small>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 25px;">
                     <label for="customName">Custom Analysis Name (Optional)</label>
                     <input type="text" id="customName" placeholder="e.g. Training Session - Attacks, or Match vs Opponent B">
-                    <small style="color: #8892b0; margin-top: 5px; display: block;">A friendly name to identify this analysis in the past reviews history dropdown.</small>
+                    <small style="color: var(--text-muted); margin-top: 5px; display: block;">A friendly name to identify this analysis in the past reviews history dropdown.</small>
                 </div>
 
                 <button type="submit" id="startAnalysisBtn" class="btn-ai-analysis">🚀 Start AI Analysis</button>
@@ -67,46 +87,56 @@
 
             <!-- Progress Tracker -->
             <div id="analysisProgressContainer" class="progress-container" style="display: none;">
-                <h3 style="color: #e2e8f0; margin-bottom: 10px;">Analysis in Progress...</h3>
+                <h3 style="color: var(--text); margin-bottom: 10px;">Analysis in Progress...</h3>
                 <div class="progress-bar-bg">
                     <div id="progressBarFill" class="progress-bar-fill" style="width: 0%;"></div>
                 </div>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                    <span id="progressStatusText" style="color: #8892b0; font-size: 14px;">Initializing...</span>
-                    <span id="progressPercentage" style="color: #5b7cfa; font-weight: bold; font-size: 14px;">0%</span>
+                    <span id="progressStatusText" style="color: var(--text-muted); font-size: 14px;">Initializing...</span>
+                    <span id="progressPercentage" style="color: var(--brand); font-weight: bold; font-size: 14px;">0%</span>
                 </div>
             </div>
         </div>
 
         <!-- Analysis Results Dashboard -->
-        <div id="analysisResultsContainer" class="results-container" style="display: none; margin-top: 30px;">
-            <div class="results-header" style="margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a3449; padding-bottom: 15px;">
-                <h2 style="color: #e2e8f0; font-size: 22px; margin: 0; display: flex; align-items: center; gap: 10px;">📊 AI Analysis Dashboard</h2>
-                <button onclick="window.location.reload()" style="background: rgba(124, 58, 237, 0.1); border: 1px solid #7c3aed; color: #a78bfa; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; transition: background 0.2s;" onmouseover="this.style.background='rgba(124, 58, 237, 0.2)'" onmouseout="this.style.background='rgba(124, 58, 237, 0.1)'">🔄 Analyze Another</button>
+        <div id="analysisResultsContainer" class="results-container reveal" style="display: none; margin-top: 30px;">
+            <div class="results-header" style="margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 15px;">
+                <h2 style="color: var(--text); font-size: 22px; margin: 0; display: flex; align-items: center; gap: 10px;">📊 AI Analysis Dashboard</h2>
+                <button onclick="window.location.reload()" class="btn-analyze-another">🔄 Analyze Another</button>
             </div>
-            
-            <!-- Tab Controls -->
-            <div class="tabs-nav" style="display: flex; gap: 15px; margin-bottom: 25px; border-bottom: 1px solid #2a3449; padding-bottom: 10px;">
-                <button onclick="VideoAnalysis.switchTab('dashboard')" id="tabBtnDashboard" class="tab-btn active" style="background: none; border: none; color: #a78bfa; font-size: 16px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-bottom: 3px solid #7c3aed; transition: all 0.2s; outline: none;">📊 Dashboard Generale</button>
-                <button onclick="VideoAnalysis.switchTab('segments')" id="tabBtnSegments" class="tab-btn" style="background: none; border: none; color: #8892b0; font-size: 16px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-bottom: 3px solid transparent; transition: all 0.2s; outline: none;">🎥 Azioni Rilevate</button>
+
+            <!-- Tab Controls & Export -->
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); margin-bottom: 25px; padding-bottom: 10px; flex-wrap: wrap; gap: 15px;">
+                <div class="tabs-nav" style="display: flex; gap: 15px;">
+                    <button onclick="VideoAnalysis.switchTab('dashboard')" id="tabBtnDashboard" class="tab-btn active">📊 Dashboard Generale</button>
+                    <button onclick="VideoAnalysis.switchTab('segments')" id="tabBtnSegments" class="tab-btn">🎥 Azioni Rilevate</button>
+                </div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button onclick="VideoAnalysis.exportSegmentationDataset()" class="btn-export-dataset" style="background: var(--accent); border: 1px solid var(--accent); color: #fff; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; transition: background 0.2s; font-weight: 600;" onmouseover="this.style.background='var(--accent-hover)'" onmouseout="this.style.background='var(--accent)'">
+                        📥 Dataset Segmentazione (JSON)
+                    </button>
+                    <button onclick="VideoAnalysis.exportDetailedAnalysisDataset()" class="btn-export-dataset" style="background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); color: var(--success); border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; transition: background 0.2s; font-weight: 600;" onmouseover="this.style.background='rgba(16, 185, 129, 0.2)'" onmouseout="this.style.background='rgba(16, 185, 129, 0.1)'">
+                        📥 Dataset Analisi Dettagliata (JSON)
+                    </button>
+                </div>
             </div>
-            
+
             <!-- Tab 1: Dashboard View (Aggregated Stats) -->
             <div id="dashboardView" class="tab-content-view">
                 <div style="margin-bottom: 35px;">
-                    <h3 style="color: #e2e8f0; font-size: 18px; margin-bottom: 15px; border-left: 4px solid #7c3aed; padding-left: 10px;">👥 Player Actions & Performance</h3>
+                    <h3 class="dashboard-subhead">👥 Player Actions & Performance</h3>
                     <div id="statsGrid" class="stats-grid">
                         <!-- Cards will be populated dynamically -->
                     </div>
                 </div>
             </div>
-            
+
             <!-- Tab 2: Segments View (Master-Detail) -->
             <div id="segmentsView" class="tab-content-view" style="display: none;">
                 <!-- Filter and Search controls -->
-                <div class="segments-controls" style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; align-items: center; background: #1a1f2b; padding: 15px; border-radius: 8px; border: 1px solid #2a3449;">
+                <div class="segments-controls" style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; align-items: center; background: var(--surface-2); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
                     <div style="flex: 1; min-width: 250px;">
-                        <input type="text" id="segmentSearchInput" oninput="VideoAnalysis.filterSegments()" placeholder="🔍 Cerca nelle descrizioni (es. battuta, punto, Luca)..." style="width: 100%; padding: 10px 14px; background: #242d47; border: 1px solid #3a4560; border-radius: 6px; color: #f0f4f8; font-size: 14px; outline: none; transition: border-color 0.2s;">
+                        <input type="text" id="segmentSearchInput" oninput="VideoAnalysis.filterSegments()" placeholder="🔍 Cerca nelle descrizioni (es. battuta, punto, Luca)..." style="width: 100%; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 14px; outline: none; transition: border-color 0.2s;">
                     </div>
                     <div style="display: flex; gap: 8px; flex-wrap: wrap;" id="segmentTypeFilters">
                         <button onclick="VideoAnalysis.setFilterType('all')" class="filter-btn active" data-type="all">Tutte</button>
@@ -120,12 +150,12 @@
                 <!-- Master-Detail Layout Panel -->
                 <div class="master-detail-container" style="display: flex; gap: 20px; height: 600px; max-height: 80vh; min-height: 450px;">
                     <!-- Master Panel (Left side list) -->
-                    <div class="master-panel" id="masterPanelList" style="flex: 1; max-width: 320px; min-width: 250px; background: #1a1f2b; border: 1px solid #2a3449; border-radius: 8px; overflow-y: auto; display: flex; flex-direction: column;">
+                    <div class="master-panel" id="masterPanelList" style="flex: 1; max-width: 320px; min-width: 250px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; overflow-y: auto; display: flex; flex-direction: column;">
                         <!-- Segment list items will be populated dynamically -->
                     </div>
 
                     <!-- Detail Panel (Right side preview) -->
-                    <div class="detail-panel" id="detailPanelContent" style="flex: 2; background: #1a1f2b; border: 1px solid #2a3449; border-radius: 8px; overflow-y: auto; display: flex; flex-direction: column; padding: 20px; justify-content: center; align-items: center; color: #8892b0;">
+                    <div class="detail-panel" id="detailPanelContent" style="flex: 2; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; overflow-y: auto; display: flex; flex-direction: column; padding: 20px; justify-content: center; align-items: center; color: var(--text-muted);">
                         <div style="text-align: center;">
                             <span style="font-size: 48px; display: block; margin-bottom: 15px;">🎥</span>
                             Seleziona un'azione dalla lista a sinistra per visualizzare il video e le statistiche dettagliate.
@@ -150,8 +180,14 @@
     <!-- ===== COMMON SERVICES ===== -->
     <script src="../services/firebase-service.js"></script>
     <script src="../services/match-service.js"></script>
+    <script src="../services/player-service.js"></script>
     
+    <!-- ===== UI COMMON ===== -->
+    <script src="../common/icons.js"></script>
+    <script src="../common/navbar.js"></script>
+    <script src="../common/scroll-reveal.js"></script>
+
     <!-- ===== MODULES ===== -->
-    <script src="../modules/analysis/video-analysis.js"></script>
+    <script src="../modules/analysis/video-analysis.js?v=20260623"></script>
 </body>
 </html>

@@ -1,0 +1,94 @@
+/* ===== WAPATANKA THEME TOKENS — single source of truth ===== */
+:root {
+  color-scheme: light;
+
+  /* Brand (dal logo) */
+  --brand:        #0D1A3C;   /* navy */
+  --brand-strong: #16264F;   /* navy schiarito per gradienti */
+  --accent:       #B22823;   /* rosso */
+  --accent-hover: #9A211C;
+  --accent-rgb:   178, 40, 35;
+  --brand-rgb:    13, 26, 60;
+  --success-rgb:  30, 142, 90;
+  --danger-rgb:   192, 57, 43;
+
+  /* Neutri — tema chiaro */
+  --bg:            #F4F6FB;
+  --surface:       #FFFFFF;
+  --surface-2:     #F0F3F9;
+  --border:        #E2E7F0;
+  --border-strong: #C9D2E3;
+  --text:          #0D1A3C;
+  --text-2:        #3B475F;
+  --text-muted:    #6B7688;
+
+  /* Semantici */
+  --success: #1E8E5A;
+  --danger:  #C0392B;
+  --warning: #C9820A;
+
+  /* Forma */
+  --radius:    16px;
+  --radius-sm: 10px;
+  --nav-h:     64px;
+
+  /* Ombre (morbide, due livelli) */
+  --shadow-sm: 0 1px 2px rgba(13,26,60,.06), 0 2px 6px rgba(13,26,60,.06);
+  --shadow-md: 0 4px 12px rgba(13,26,60,.08), 0 8px 24px rgba(13,26,60,.08);
+  --shadow-lg: 0 12px 32px rgba(13,26,60,.12), 0 24px 48px rgba(13,26,60,.10);
+
+  /* Tipografia */
+  --font-head: 'Sora', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
+
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg:            #0A142E;
+  --surface:       #101B38;
+  --surface-2:     #16223F;
+  --border:        #23304F;
+  --border-strong: #35456A;
+  --text:          #E8ECF4;
+  --text-2:        #B7C1D6;
+  --text-muted:    #8592AD;
+
+  --brand:        #6D8BE0;   /* navy schiarito per leggibilità su scuro */
+  --brand-strong: #8AA3EC;
+  --accent:       #D94A44;   /* rosso schiarito (AA su scuro) */
+  --accent-hover: #E4635E;
+  --accent-rgb:   217, 74, 68;
+  --brand-rgb:    109, 139, 224;
+  --success-rgb:  67, 192, 138;
+  --danger-rgb:   240, 107, 107;
+
+  --success: #43C08A;
+  --danger:  #F06B6B;
+  --warning: #E6B23A;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+  --shadow-md: 0 6px 20px rgba(0,0,0,.45);
+  --shadow-lg: 0 16px 40px rgba(0,0,0,.55);
+}
+
+/* Reveal-on-scroll utility */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .6s var(--ease), transform .6s var(--ease);
+  will-change: opacity, transform;
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Rispetto accessibilità movimento */
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  * { animation-duration: .001ms !important; animation-iteration-count: 1 !important; }
+}
