@@ -43,7 +43,7 @@ const ExerciseDisplay = {
                     <div class="empty-state-text">No exercises scheduled for today</div>
                 </div>
             `;
-            UIService.updateStatusIndicator('✅ Real-time sync active', '#51a376');
+            UIService.updateStatusIndicator('✅ Real-time sync active', 'var(--success)');
             return;
         }
 
@@ -82,7 +82,7 @@ const ExerciseDisplay = {
             container.appendChild(exerciseItem);
         });
 
-        UIService.updateStatusIndicator('✅ Real-time sync active', '#51a376');
+        UIService.updateStatusIndicator('✅ Real-time sync active', 'var(--success)');
     },
 
     /**
