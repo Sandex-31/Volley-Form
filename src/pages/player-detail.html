@@ -43,7 +43,7 @@
     <div class="player-detail-container container">
 
         <!-- Top Nav & Profile Header -->
-        <div class="profile-header">
+        <div class="profile-header reveal">
             <button onclick="window.location.href='players.html'" class="btn-back">← Torna al Roster</button>
             <div class="profile-info-card">
                 <div class="profile-photo-wrapper">
@@ -64,7 +64,7 @@
         </div>
 
         <!-- General Stats Panel -->
-        <div class="section-container">
+        <div class="section-container reveal">
             <h2 class="section-title">📊 Statistiche Generali (Carriera)</h2>
             <div id="generalStatsGrid" class="general-stats-grid">
                 <div class="stat-card">
@@ -87,7 +87,7 @@
         </div>
 
         <!-- SetOptics Interactive Dashboard (For all players) -->
-        <div class="section-container">
+        <div class="section-container reveal">
             <div class="setoptics-header">
                 <h2 class="section-title">🏐 SetOptics Dashboard & Preferred Sets</h2>
                 <button onclick="PlayerDetailModule.openAddSetModal()" class="btn-primary btn-add-set">➕ Aggiungi
@@ -101,7 +101,7 @@
                 <div id="setoptics3dContainer" class="setoptics-court-container">
                     <!-- The 3D canvas will be injected here -->
                     <div id="loading3d"
-                        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #8892b0; font-weight: bold;">
+                        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--text-muted); font-weight: bold;">
                         Loading 3D Court...</div>
                 </div>
 
@@ -109,7 +109,7 @@
                 <div class="setoptics-metrics-panel">
                     <h3>Dettagli Alzata Selezionata</h3>
                     <div id="selectedSetDetails">
-                        <p style="color: #8892b0; font-style: italic;">Seleziona una traiettoria dal campo per
+                        <p style="color: var(--text-muted); font-style: italic;">Seleziona una traiettoria dal campo per
                             visualizzare i dettagli o aggiungi una nuova alzata preferita.</p>
                     </div>
                 </div>
@@ -122,14 +122,14 @@
     <div id="preferredSetModal" class="player-modal">
         <div class="player-modal-content" style="max-width: 500px;">
             <span class="close-player-modal" onclick="PlayerDetailModule.closeModal()">&times;</span>
-            <h2 style="color: #f0f4f8; margin-bottom: 20px; font-size: 18px; font-weight: 700;">Configura Alzata
+            <h2 style="color: var(--text); margin-bottom: 20px; font-size: 18px; font-weight: 700;">Configura Alzata
                 Preferita</h2>
 
             <form id="preferredSetForm" onsubmit="PlayerDetailModule.savePreferredSet(event)">
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label>Tipo di Alzata</label>
                     <select id="setTarget" required
-                        style="width: 100%; padding: 10px; background: #1a1f2b; border: 1px solid #3a4560; border-radius: 6px; color: #f0f4f8;">
+                        style="width: 100%; padding: 10px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text);">
                         <optgroup label="Ala (Posto 4 - Blu)">
                             <option value="ala_s">Super in 4 (S)</option>
                             <option value="ala_5">Alta in 4 (5)</option>
@@ -158,7 +158,7 @@
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <input type="range" id="setApex" min="2.4" max="4.5" step="0.05" value="3.0" style="flex: 1;"
                             oninput="document.getElementById('apexVal').textContent = this.value + 'm'">
-                        <span id="apexVal" style="color: #60a5fa; font-weight: bold; width: 50px;">3.0m</span>
+                        <span id="apexVal" style="color: var(--accent); font-weight: bold; width: 50px;">3.0m</span>
                     </div>
                 </div>
 
@@ -167,7 +167,7 @@
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <input type="range" id="setOffset" min="0.0" max="4.0" step="0.1" value="0.5" style="flex: 1;"
                             oninput="document.getElementById('offsetVal').textContent = this.value + 'm'">
-                        <span id="offsetVal" style="color: #34d399; font-weight: bold; width: 50px;">0.5m</span>
+                        <span id="offsetVal" style="color: var(--success); font-weight: bold; width: 50px;">0.5m</span>
                     </div>
                 </div>
 
@@ -176,7 +176,7 @@
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <input type="range" id="setOffsetX" min="-2.0" max="2.0" step="0.1" value="0.0" style="flex: 1;"
                             oninput="document.getElementById('offsetXValText').textContent = (this.value >= 0 ? '+' : '') + this.value + 'm'">
-                        <span id="offsetXValText" style="color: #fbbf24; font-weight: bold; width: 50px;">+0.0m</span>
+                        <span id="offsetXValText" style="color: var(--warning); font-weight: bold; width: 50px;">+0.0m</span>
                     </div>
                 </div>
 
@@ -185,7 +185,7 @@
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <input type="range" id="setOffsetY" min="1.8" max="3.6" step="0.1" value="2.5" style="flex: 1;"
                             oninput="document.getElementById('offsetYValText').textContent = this.value + 'm'">
-                        <span id="offsetYValText" style="color: #a78bfa; font-weight: bold; width: 50px;">2.5m</span>
+                        <span id="offsetYValText" style="color: var(--brand); font-weight: bold; width: 50px;">2.5m</span>
                     </div>
                 </div>
 

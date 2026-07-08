@@ -144,15 +144,15 @@ const PlayerDetailModule = {
     renderSetOpticsDashboard: function() {
         if (this.playerData.preferredSets.length === 0) {
             document.getElementById('selectedSetDetails').innerHTML = `
-                <p style="color: #8892b0; font-style: italic;">Questo giocatore non ha ancora nessuna alzata preferita configurata.</p>
-                <p style="color: #8892b0; font-size: 14px; margin-top: 10px;">Clicca su "Aggiungi Alzata" per iniziare.</p>
+                <p style="color: var(--text-muted); font-style: italic;">Questo giocatore non ha ancora nessuna alzata preferita configurata.</p>
+                <p style="color: var(--text-muted); font-size: 14px; margin-top: 10px;">Clicca su "Aggiungi Alzata" per iniziare.</p>
             `;
             if (typeof THREE !== 'undefined') SetOptics3D.renderSets([], this.targetsMap);
             return;
         }
 
         document.getElementById('selectedSetDetails').innerHTML = `
-            <p style="color: #8892b0; font-style: italic;">Seleziona un'alzata dalla lista qui sotto (o dal campo se interattivo) per l'animazione 3D e i dettagli.</p>
+            <p style="color: var(--text-muted); font-style: italic;">Seleziona un'alzata dalla lista qui sotto (o dal campo se interattivo) per l'animazione 3D e i dettagli.</p>
             <div id="setList" style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;"></div>
         `;
         
@@ -190,38 +190,38 @@ const PlayerDetailModule = {
         const offsetYVal = set.offsetY !== undefined ? set.offsetY : 2.5;
 
         document.getElementById('selectedSetDetails').innerHTML = `
-            <div style="background: #242d47; padding: 15px; border-radius: 8px; border: 1px solid #3a4560;">
+            <div style="background: var(--surface-2); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h4 style="color: #60a5fa; margin: 0; font-size: 16px;">${targetDef.name}</h4>
+                    <h4 style="color: var(--brand); margin: 0; font-size: 16px;">${targetDef.name}</h4>
                     <button onclick="PlayerDetailModule.renderSetOpticsDashboard()" 
-                            style="margin-left: 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #a0aec0; padding: 4px 10px; border-radius: 6px; font-size: 14px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center;"
+                            style="margin-left: 15px; background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); padding: 4px 10px; border-radius: 6px; font-size: 14px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center;"
                             title="Torna alla Lista"
-                            onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.color='#fff';"
-                            onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.color='#a0aec0';">
+                            onmouseover="this.style.background='var(--border)'; this.style.color='var(--text)';"
+                            onmouseout="this.style.background='var(--surface)'; this.style.color='var(--text-muted)';">
                         ←
                     </button>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px;">
                     <div>
-                        <span style="color: #8892b0; font-size: 10px; text-transform: uppercase; display: block;">Apex Max</span>
-                        <div style="font-size: 16px; font-weight: bold; color: #f0f4f8;">${set.apex} m</div>
+                        <span style="color: var(--text-muted); font-size: 10px; text-transform: uppercase; display: block;">Apex Max</span>
+                        <div style="font-size: 16px; font-weight: bold; color: var(--text);">${set.apex} m</div>
                     </div>
                     <div>
-                        <span style="color: #8892b0; font-size: 10px; text-transform: uppercase; display: block;">Distanza Rete (Z)</span>
-                        <div style="font-size: 16px; font-weight: bold; color: #f0f4f8;">${set.offset} m</div>
+                        <span style="color: var(--text-muted); font-size: 10px; text-transform: uppercase; display: block;">Distanza Rete (Z)</span>
+                        <div style="font-size: 16px; font-weight: bold; color: var(--text);">${set.offset} m</div>
                     </div>
                     <div>
-                        <span style="color: #8892b0; font-size: 10px; text-transform: uppercase; display: block;">Offset Orizz. (X)</span>
-                        <div style="font-size: 16px; font-weight: bold; color: #f0f4f8;">${offsetXVal >= 0 ? '+' : ''}${offsetXVal} m</div>
+                        <span style="color: var(--text-muted); font-size: 10px; text-transform: uppercase; display: block;">Offset Orizz. (X)</span>
+                        <div style="font-size: 16px; font-weight: bold; color: var(--text);">${offsetXVal >= 0 ? '+' : ''}${offsetXVal} m</div>
                     </div>
                     <div>
-                        <span style="color: #8892b0; font-size: 10px; text-transform: uppercase; display: block;">Altezza Impatto (Y)</span>
-                        <div style="font-size: 16px; font-weight: bold; color: #f0f4f8;">${offsetYVal} m</div>
+                        <span style="color: var(--text-muted); font-size: 10px; text-transform: uppercase; display: block;">Altezza Impatto (Y)</span>
+                        <div style="font-size: 16px; font-weight: bold; color: var(--text);">${offsetYVal} m</div>
                     </div>
                 </div>
                 <div style="display: flex; gap: 10px; margin-top: 15px;">
                     <button onclick="PlayerDetailModule.openEditSetModal(${index})" class="btn-primary" style="flex: 1; padding: 8px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold;">✏️ Modifica</button>
-                    <button onclick="PlayerDetailModule.deleteSet(${index})" class="btn-danger" style="flex: 1; padding: 8px; border-radius: 6px; border: none; background: rgba(239, 68, 68, 0.2); color: #ef4444; cursor: pointer; font-weight: bold;">🗑️ Elimina</button>
+                    <button onclick="PlayerDetailModule.deleteSet(${index})" class="btn-danger" style="flex: 1; padding: 8px; border-radius: 6px; border: 1px solid var(--danger); background: rgba(192, 57, 43, 0.14); color: var(--danger); cursor: pointer; font-weight: bold;">🗑️ Elimina</button>
                 </div>
             </div>
         `;
@@ -313,7 +313,7 @@ const PlayerDetailModule = {
         if (success) {
             this.renderSetOpticsDashboard();
             document.getElementById('selectedSetDetails').innerHTML = `
-                <p style="color: #8892b0; font-style: italic;">Seleziona una traiettoria dal campo per visualizzare i dettagli.</p>
+                <p style="color: var(--text-muted); font-style: italic;">Seleziona una traiettoria dal campo per visualizzare i dettagli.</p>
             `;
         } else {
             alert("Errore durante l'eliminazione.");
