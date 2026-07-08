@@ -256,6 +256,56 @@
     font-weight: 700;
 }
 
+/* Empty states and helper links (roster preview / next match widget) */
+.preview-empty {
+    grid-column: 1/-1;
+    padding: 20px;
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.preview-link,
+.more-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.preview-link {
+    margin-left: 5px;
+}
+
+.player-preview-card.more {
+    justify-content: center;
+    border-style: dashed;
+    border-color: var(--border-strong);
+    text-decoration: none;
+}
+
+.more-count {
+    font-size: 20px;
+    color: var(--accent);
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+.more-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.match-preview-kicker {
+    font-family: var(--font-head);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
 /* Next Match Preview Widget */
 .match-preview-card {
     background: var(--surface-2);

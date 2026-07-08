@@ -30,9 +30,9 @@ const HomeModule = {
 
             if (!players || players.length === 0) {
                 grid.innerHTML = `
-                    <div style="grid-column: 1/-1; padding: 20px; text-align: center; color: #8892b0; font-style: italic;">
-                        No squad players registered yet. 
-                        <a href="players.html" style="color: #5b7cfa; text-decoration: none; font-weight: 600; margin-left: 5px;">Register players →</a>
+                    <div class="preview-empty">
+                        No squad players registered yet.
+                        <a href="players.html" class="preview-link">Register players →</a>
                     </div>
                 `;
                 return;
@@ -65,16 +65,12 @@ const HomeModule = {
             if (players.length > 5) {
                 const moreCard = document.createElement('a');
                 moreCard.href = 'players.html';
-                moreCard.className = 'player-preview-card';
-                moreCard.style.textDecoration = 'none';
-                moreCard.style.justifyContent = 'center';
-                moreCard.style.borderStyle = 'dashed';
-                moreCard.style.borderColor = '#4a5575';
-                
+                moreCard.className = 'player-preview-card more';
+
                 moreCard.innerHTML = `
-                    <div style="font-size: 20px; color: #5b7cfa; margin-bottom: 5px; font-weight: bold;">+${players.length - 5}</div>
-                    <div style="font-size: 12px; font-weight: 600; color: #8892b0;">More Players</div>
-                    <div style="font-size: 10px; color: #5b7cfa; margin-top: 5px;">View Roster →</div>
+                    <div class="more-count">+${players.length - 5}</div>
+                    <div class="more-label">More Players</div>
+                    <div class="more-link">View Roster →</div>
                 `;
                 grid.appendChild(moreCard);
             }
@@ -93,7 +89,7 @@ const HomeModule = {
 
             if (!matches || matches.length === 0) {
                 container.innerHTML = `
-                    <div style="padding: 20px; text-align: center; color: #8892b0; font-style: italic; border: 1px solid #3a4560; border-radius: 8px; background: #1f2635;">
+                    <div class="preview-empty">
                         No matches scheduled yet.
                     </div>
                 `;
@@ -134,10 +130,10 @@ const HomeModule = {
             container.innerHTML = `
                 <div class="match-preview-card">
                     <div class="match-preview-info">
-                        <div style="font-size: 11px; font-weight: 700; color: #748ffc; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">${titleText}</div>
+                        <div class="match-preview-kicker">${titleText}</div>
                         <h4>vs ${this.escapeHtml(targetMatch.opponent)}</h4>
                         <p>📅 ${dateDisplay} &nbsp;|&nbsp; 📍 ${locText}</p>
-                        ${targetMatch.status !== 'Upcoming' ? `<p style="margin-top: 5px; color: #f0f4f8;">Score: <strong>${targetMatch.score}</strong> (${targetMatch.sets})</p>` : ''}
+                        ${targetMatch.status !== 'Upcoming' ? `<p style="margin-top: 5px;">Score: <strong>${targetMatch.score}</strong> (${targetMatch.sets})</p>` : ''}
                     </div>
                     <span class="badge ${statusBadgeClass}">${targetMatch.status}</span>
                 </div>
