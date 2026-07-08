@@ -252,7 +252,7 @@ const VideoAnalysis = {
             fill.style.background = 'var(--danger)';
         } else {
             statusText.style.color = 'var(--text-muted)';
-            fill.style.background = 'linear-gradient(90deg, var(--brand), #7c3aed)';
+            fill.style.background = 'linear-gradient(90deg, var(--brand), var(--accent))';
         }
     },
 
@@ -273,8 +273,8 @@ const VideoAnalysis = {
         
         if (tabId === 'dashboard') {
             dashboardBtn.classList.add('active');
-            dashboardBtn.style.color = '#a78bfa';
-            dashboardBtn.style.borderBottom = '3px solid #7c3aed';
+            dashboardBtn.style.color = 'var(--accent)';
+            dashboardBtn.style.borderBottom = '3px solid var(--accent)';
             
             segmentsBtn.classList.remove('active');
             segmentsBtn.style.color = 'var(--text-muted)';
@@ -284,8 +284,8 @@ const VideoAnalysis = {
             segmentsView.style.display = 'none';
         } else {
             segmentsBtn.classList.add('active');
-            segmentsBtn.style.color = '#a78bfa';
-            segmentsBtn.style.borderBottom = '3px solid #7c3aed';
+            segmentsBtn.style.color = 'var(--accent)';
+            segmentsBtn.style.borderBottom = '3px solid var(--accent)';
             
             dashboardBtn.classList.remove('active');
             dashboardBtn.style.color = 'var(--text-muted)';
@@ -304,8 +304,8 @@ const VideoAnalysis = {
             const parent = btn.parentElement;
             if (parent) {
                 parent.innerHTML = `
-                    <div style="color: #a78bfa; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                        <div class="spinner-mini" style="border: 2px solid rgba(167, 139, 250, 0.1); border-top: 2px solid #a78bfa; border-radius: 50%; width: 14px; height: 14px; animation: spin 1s linear infinite;"></div>
+                    <div style="color: var(--accent); font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <div class="spinner-mini" style="border: 2px solid rgba(var(--accent-rgb), 0.12); border-top: 2px solid var(--accent); border-radius: 50%; width: 14px; height: 14px; animation: spin 1s linear infinite;"></div>
                         ⏳ Analisi statistica in corso...
                     </div>
                 `;
@@ -489,9 +489,9 @@ const VideoAnalysis = {
         // Add manual action button at the top
         const addBtn = document.createElement('button');
         addBtn.onclick = () => this.showAddSegmentForm();
-        addBtn.style.cssText = "background: rgba(124, 58, 237, 0.15); border: 1px dashed #7c3aed; color: #a78bfa; padding: 10px; margin: 10px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; text-align: center; transition: background 0.2s;";
-        addBtn.onmouseover = () => addBtn.style.background = 'rgba(124, 58, 237, 0.25)';
-        addBtn.onmouseout = () => addBtn.style.background = 'rgba(124, 58, 237, 0.15)';
+        addBtn.style.cssText = "background: rgba(var(--accent-rgb), 0.15); border: 1px dashed var(--accent); color: var(--accent); padding: 10px; margin: 10px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; text-align: center; transition: background 0.2s;";
+        addBtn.onmouseover = () => addBtn.style.background = 'rgba(var(--accent-rgb), 0.25)';
+        addBtn.onmouseout = () => addBtn.style.background = 'rgba(var(--accent-rgb), 0.15)';
         addBtn.innerHTML = '➕ Aggiungi Nuova Azione';
         listContainer.appendChild(addBtn);
         
@@ -613,7 +613,7 @@ const VideoAnalysis = {
                 <div style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px; text-align: center;">
                     <button onclick="VideoAnalysis.analyzeSegment('${this.currentJobId}', '${seg.segment_id}', '${this.currentVideoUrl}', ${seg.start_time}, ${seg.end_time}, '${seg.action_type}', this)" 
                             class="btn-ai-analysis" 
-                            style="font-size: 14px; padding: 10px 20px; border-radius: 6px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; width: auto; background: linear-gradient(135deg, #7c3aed, var(--accent));">
+                            style="font-size: 14px; padding: 10px 20px; border-radius: 6px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; width: auto; background: linear-gradient(135deg, var(--brand), var(--accent));">
                         🔍 Avvia Analisi Statistica
                     </button>
                     <p style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">Usa l'IA per riconoscere i giocatori (altezza, ruolo, volto) ed estrarre i punti/errori.</p>
@@ -621,8 +621,8 @@ const VideoAnalysis = {
             `;
         } else if (seg.analysis_status === 'processing') {
             detailsHtml = `
-                <div style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px; color: #a78bfa; font-weight: bold; font-size: 13px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 10px; flex-direction: column; padding: 25px 0;">
-                    <div class="spinner-mini" style="border: 3px solid rgba(167, 139, 250, 0.1); border-top: 3px solid #a78bfa; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite;"></div>
+                <div style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px; color: var(--accent); font-weight: bold; font-size: 13px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 10px; flex-direction: column; padding: 25px 0;">
+                    <div class="spinner-mini" style="border: 3px solid rgba(var(--accent-rgb), 0.12); border-top: 3px solid var(--accent); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite;"></div>
                     <span>⏳ Analisi di riconoscimento in corso...</span>
                 </div>
             `;
@@ -679,7 +679,7 @@ const VideoAnalysis = {
                         <span>Ruolo: <strong>${d.position || 'N/D'}</strong></span>
                         <span>Altezza: <strong>${d.height_cm ? d.height_cm + ' cm' : 'N/D'}</strong></span>
                     </div>
-                    <div style="font-size: 13px; color: var(--text-2); border-left: 3px solid #7c3aed; padding-left: 10px; font-style: italic; margin-top: 6px; line-height: 1.45;">
+                    <div style="font-size: 13px; color: var(--text-2); border-left: 3px solid var(--accent); padding-left: 10px; font-style: italic; margin-top: 6px; line-height: 1.45;">
                         ${d.event_description || ''}
                     </div>
                     
@@ -834,8 +834,8 @@ const VideoAnalysis = {
         }
         
         const editFormHtml = `
-            <div style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px; text-align: left; background: var(--surface-2); padding: 20px; border-radius: 8px; border: 1px solid #7c3aed; display: flex; flex-direction: column; gap: 15px;">
-                <h3 style="color: #a78bfa; font-size: 16px; margin: 0 0 5px 0; display: flex; align-items: center; gap: 8px;">✏️ Correggi Rilevazione & Risultati (Azione #${this.currentSegments.indexOf(seg) + 1})</h3>
+            <div style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px; text-align: left; background: var(--surface-2); padding: 20px; border-radius: 8px; border: 1px solid var(--accent); display: flex; flex-direction: column; gap: 15px;">
+                <h3 style="color: var(--accent); font-size: 16px; margin: 0 0 5px 0; display: flex; align-items: center; gap: 8px;">✏️ Correggi Rilevazione & Risultati (Azione #${this.currentSegments.indexOf(seg) + 1})</h3>
                 
                 <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                     <div style="flex: 1; min-width: 140px; display: flex; flex-direction: column; gap: 5px;">
@@ -1098,8 +1098,8 @@ const VideoAnalysis = {
         }
         
         const addFormHtml = `
-            <div style="background: var(--surface-2); padding: 20px; border-radius: 8px; border: 1px solid #7c3aed; display: flex; flex-direction: column; gap: 15px; text-align: left;">
-                <h3 style="color: #a78bfa; font-size: 16px; margin: 0; display: flex; align-items: center; gap: 8px;">➕ Aggiungi Nuova Azione Manualmente</h3>
+            <div style="background: var(--surface-2); padding: 20px; border-radius: 8px; border: 1px solid var(--accent); display: flex; flex-direction: column; gap: 15px; text-align: left;">
+                <h3 style="color: var(--accent); font-size: 16px; margin: 0; display: flex; align-items: center; gap: 8px;">➕ Aggiungi Nuova Azione Manualmente</h3>
                 
                 <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                     <div style="flex: 1; min-width: 140px; display: flex; flex-direction: column; gap: 5px;">
@@ -1189,7 +1189,7 @@ const VideoAnalysis = {
 
                 <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 5px;">
                     <button onclick="window.location.reload()" style="background: none; border: 1px solid var(--border); color: var(--text-muted); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s;" onmouseover="this.style.color='var(--text)'; this.style.borderColor='var(--text-muted)';" onmouseout="this.style.color='var(--text-muted)'; this.style.borderColor='var(--border)';">Annulla</button>
-                    <button onclick="VideoAnalysis.saveNewSegment()" style="background: linear-gradient(135deg, #7c3aed, var(--accent)); border: none; color: #ffffff; padding: 8px 20px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: all 0.2s;" onmouseover="this.style.opacity='0.9';" onmouseout="this.style.opacity='1';">Salva Nuova Azione</button>
+                    <button onclick="VideoAnalysis.saveNewSegment()" style="background: linear-gradient(135deg, var(--brand), var(--accent)); border: none; color: #ffffff; padding: 8px 20px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: all 0.2s;" onmouseover="this.style.opacity='0.9';" onmouseout="this.style.opacity='1';">Salva Nuova Azione</button>
                 </div>
             </div>
         `;

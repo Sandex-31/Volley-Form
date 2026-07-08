@@ -14,6 +14,12 @@
     <link rel="stylesheet" href="../styles/video-analysis.css">
 </head>
 <body>
+    <!-- ===== LIVING BRAND AURORA (behind everything) ===== -->
+    <div id="bgFx" aria-hidden="true">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
     <!-- ===== NAVIGATION BAR ===== -->
     <nav class="navbar" id="siteNav">
         <a href="index.html" class="navbar-brand">
@@ -38,10 +44,11 @@
     </nav>
 
     <!-- ===== MAIN CONTENT CONTAINER ===== -->
-    <div class="analysis-container container">
+    <div class="analysis-container">
         <div class="header reveal">
+            <span class="ai-kicker">Intelligence</span>
             <h1><span data-icon="ai"></span> AI Video Analysis</h1>
-            <p>Upload a match video or paste a YouTube link to automatically extract statistics and events using Computer Vision.</p>
+            <p>Carica una partita o incolla un link YouTube: la Computer Vision estrae azioni, punti ed errori, giocatore per giocatore, e li trasforma in statistiche pronte all'uso.</p>
         </div>
 
         <div class="analysis-card reveal">
@@ -95,14 +102,14 @@
         <div id="analysisResultsContainer" class="results-container reveal" style="display: none; margin-top: 30px;">
             <div class="results-header" style="margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 15px;">
                 <h2 style="color: var(--text); font-size: 22px; margin: 0; display: flex; align-items: center; gap: 10px;">📊 AI Analysis Dashboard</h2>
-                <button onclick="window.location.reload()" style="background: rgba(124, 58, 237, 0.1); border: 1px solid #7c3aed; color: #a78bfa; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; transition: background 0.2s;" onmouseover="this.style.background='rgba(124, 58, 237, 0.2)'" onmouseout="this.style.background='rgba(124, 58, 237, 0.1)'">🔄 Analyze Another</button>
+                <button onclick="window.location.reload()" class="btn-analyze-another">🔄 Analyze Another</button>
             </div>
 
             <!-- Tab Controls & Export -->
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); margin-bottom: 25px; padding-bottom: 10px; flex-wrap: wrap; gap: 15px;">
                 <div class="tabs-nav" style="display: flex; gap: 15px;">
-                    <button onclick="VideoAnalysis.switchTab('dashboard')" id="tabBtnDashboard" class="tab-btn active" style="background: none; border: none; color: #a78bfa; font-size: 16px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-bottom: 3px solid #7c3aed; transition: all 0.2s; outline: none;">📊 Dashboard Generale</button>
-                    <button onclick="VideoAnalysis.switchTab('segments')" id="tabBtnSegments" class="tab-btn" style="background: none; border: none; color: var(--text-muted); font-size: 16px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-bottom: 3px solid transparent; transition: all 0.2s; outline: none;">🎥 Azioni Rilevate</button>
+                    <button onclick="VideoAnalysis.switchTab('dashboard')" id="tabBtnDashboard" class="tab-btn active">📊 Dashboard Generale</button>
+                    <button onclick="VideoAnalysis.switchTab('segments')" id="tabBtnSegments" class="tab-btn">🎥 Azioni Rilevate</button>
                 </div>
                 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                     <button onclick="VideoAnalysis.exportSegmentationDataset()" class="btn-export-dataset" style="background: var(--accent); border: 1px solid var(--accent); color: #fff; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; transition: background 0.2s; font-weight: 600;" onmouseover="this.style.background='var(--accent-hover)'" onmouseout="this.style.background='var(--accent)'">
@@ -117,7 +124,7 @@
             <!-- Tab 1: Dashboard View (Aggregated Stats) -->
             <div id="dashboardView" class="tab-content-view">
                 <div style="margin-bottom: 35px;">
-                    <h3 style="color: var(--text); font-size: 18px; margin-bottom: 15px; border-left: 4px solid #7c3aed; padding-left: 10px;">👥 Player Actions & Performance</h3>
+                    <h3 class="dashboard-subhead">👥 Player Actions & Performance</h3>
                     <div id="statsGrid" class="stats-grid">
                         <!-- Cards will be populated dynamically -->
                     </div>
