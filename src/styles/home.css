@@ -613,15 +613,15 @@
 }
 
 .badge-won {
-    background-color: rgba(30, 142, 90, 0.15);
+    background-color: rgba(var(--success-rgb), 0.15);
     color: var(--success);
-    border: 1px solid rgba(30, 142, 90, 0.3);
+    border: 1px solid rgba(var(--success-rgb), 0.3);
 }
 
 .badge-lost {
-    background-color: rgba(192, 57, 43, 0.15);
+    background-color: rgba(var(--danger-rgb), 0.15);
     color: var(--danger);
-    border: 1px solid rgba(192, 57, 43, 0.3);
+    border: 1px solid rgba(var(--danger-rgb), 0.3);
 }
 
 .badge-upcoming {

@@ -8,6 +8,9 @@
   --accent:       #B22823;   /* rosso */
   --accent-hover: #9A211C;
   --accent-rgb:   178, 40, 35;
+  --brand-rgb:    13, 26, 60;
+  --success-rgb:  30, 142, 90;
+  --danger-rgb:   192, 57, 43;
 
   /* Neutri — tema chiaro */
   --bg:            #F4F6FB;
@@ -57,6 +60,9 @@
   --accent:       #D94A44;   /* rosso schiarito (AA su scuro) */
   --accent-hover: #E4635E;
   --accent-rgb:   217, 74, 68;
+  --brand-rgb:    109, 139, 224;
+  --success-rgb:  67, 192, 138;
+  --danger-rgb:   240, 107, 107;
 
   --success: #43C08A;
   --danger:  #F06B6B;
