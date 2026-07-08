@@ -168,7 +168,10 @@
                 var pt = pathAt(p);
                 target.x = pt.x * ampX;
                 target.y = pt.y * halfH;
-                target.scale = 1.5 - 0.45 * p;   // big in hero, shrinks a bit
+                // Big in hero, shrinks a bit with scroll. On phones the ball
+                // would dominate the narrow viewport, so scale it right down.
+                var mobile = window.innerWidth <= 820;
+                target.scale = (1.5 - 0.45 * p) * (mobile ? 0.55 : 1);
                 target.rot = p * Math.PI * 4;    // logo swings past as you scroll
             }
             updateTargets();

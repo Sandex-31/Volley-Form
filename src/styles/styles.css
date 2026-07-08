@@ -4,6 +4,14 @@
     box-sizing: border-box;
 }
 
+/* Never allow horizontal scrolling: the mobile nav drawer sits off-canvas to
+   the right (transform: translateX(100%)) and any pane overflow must be clipped
+   rather than becoming a swipe that reveals the closed menu. */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
 body {
     font-family: var(--font-body);
     background: var(--bg);
