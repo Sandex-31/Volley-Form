@@ -65,7 +65,7 @@ textarea,
 select {
     width: 100%;
     padding: 12px 15px;
-    border: 2px solid var(--border-strong);
+    border: 2px solid var(--border);
     border-radius: var(--radius-sm);
     font-size: 14px;
     font-family: inherit;
@@ -82,7 +82,7 @@ select:focus {
     outline: none;
     border-color: var(--accent);
     box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.15);
-    background: var(--surface);
+    background: var(--surface-2);
 }
 
 textarea {
@@ -224,7 +224,7 @@ button {
     background: var(--surface-2);
     border-radius: 4px;
     overflow: hidden;
-    border: 1px solid var(--border-strong);
+    border: 1px solid var(--border);
 }
 
 .progress-fill {
@@ -245,7 +245,7 @@ button {
 .section {
     margin-top: 30px;
     padding-top: 20px;
-    border-top: 1px solid var(--border-strong);
+    border-top: 1px solid var(--border);
 }
 
 .section h2 {
@@ -262,13 +262,13 @@ button {
     border-radius: var(--radius);
     box-shadow: var(--shadow-sm);
     margin-bottom: 12px;
-    border: 1px solid var(--border-strong);
+    border: 1px solid var(--border);
     transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s var(--ease), background 0.25s var(--ease);
 }
 
 .exercise-item-edit:hover {
     border-color: var(--accent);
-    background: var(--surface);
+    background: var(--surface-2);
     box-shadow: var(--shadow-md);
     transform: translateY(-2px);
 }
