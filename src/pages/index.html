@@ -44,22 +44,24 @@
     <div class="home-container container">
 
         <!-- Welcome Hero Banner -->
-        <div class="welcome-hero">
-            <h1 style="display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap;"><img src="../assets/logo.png" alt="Wapatanka Logo" style="height: 50px; width: auto; object-fit: contain;"> WAPATANKA</h1>
-            <p>Welcome to the official Volley Tool for Wapatanka. Submit training feedback, view our scheduled match
-                schedule, review roster cards, and update game performance statistics.</p>
-            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                <a href="form.html" class="btn-save"
-                    style="width: auto; padding: 12px 24px; text-decoration: none; font-weight: 700;">📋 Rate Today's
-                    Training</a>
-                <a href="match-table.html" class="btn-secondary"
-                    style="width: auto; padding: 12px 24px; text-decoration: none; font-weight: 700; background: #3a4560; color: #d0d9e8;">🏆
-                    View Matches</a>
+        <section class="hero reveal">
+            <div class="hero-copy">
+                <span class="hero-kicker">Volley Tool</span>
+                <h1>WAPATANKA</h1>
+                <p>Il gestionale ufficiale della squadra: feedback allenamenti, calendario partite, roster e statistiche di gioco.</p>
+                <div class="hero-cta">
+                    <a href="form.html" class="btn-accent"><span data-icon="form"></span> Rate Today's Training</a>
+                    <a href="match-table.html" class="btn-ghost"><span data-icon="matches"></span> View Matches</a>
+                </div>
             </div>
-        </div>
+            <div class="hero-3d">
+                <div id="volleyballCanvas" role="img" aria-label="Palla da pallavolo 3D"></div>
+                <img class="hero-3d-fallback" src="../assets/logo-wapatanka.png" alt="Wapatanka" hidden>
+            </div>
+        </section>
 
         <!-- Next Match Preview Widget -->
-        <div class="home-section">
+        <div class="home-section reveal">
             <div class="home-section-title">
                 <span>📅 Match Schedule</span>
                 <a href="match-table.html">Full Schedule →</a>
@@ -70,7 +72,7 @@
         </div>
 
         <!-- Squad Roster Preview -->
-        <div class="home-section">
+        <div class="home-section reveal">
             <div class="home-section-title">
                 <span>👥 Roster Preview</span>
                 <a href="players.html">Manage Roster →</a>
@@ -82,24 +84,24 @@
         </div>
 
         <!-- Quick Navigation Cards Grid -->
-        <div class="home-grid">
+        <div class="home-grid reveal">
             <a href="form.html" class="home-card" style="text-decoration: none;">
-                <div class="icon">📋</div>
+                <div class="icon" data-icon="form"></div>
                 <h3>Rate Form</h3>
                 <p>Provide training feedback and rate exercise difficulty.</p>
             </a>
             <a href="public-exercises.html" class="home-card" style="text-decoration: none;">
-                <div class="icon">💪</div>
+                <div class="icon" data-icon="exercises"></div>
                 <h3>Exercises</h3>
                 <p>View the full database of training exercises list.</p>
             </a>
             <a href="match-table.html" class="home-card" style="text-decoration: none;">
-                <div class="icon">🏆</div>
+                <div class="icon" data-icon="matches"></div>
                 <h3>Matches</h3>
                 <p>Track team schedule, set scores, and log statistics.</p>
             </a>
             <a href="players.html" class="home-card" style="text-decoration: none;">
-                <div class="icon">👥</div>
+                <div class="icon" data-icon="players"></div>
                 <h3>Players</h3>
                 <p>Check the team roster, role definitions, and jersey numbers.</p>
             </a>
