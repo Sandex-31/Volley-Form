@@ -5,11 +5,12 @@
 }
 
 .analysis-card {
-    background-color: #1f2635;
-    border-radius: 12px;
+    background-color: var(--surface);
+    border-radius: var(--radius);
     padding: 30px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    border: 1px solid #2a3449;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    transition: box-shadow 0.25s var(--ease), border-color 0.25s var(--ease);
 }
 
 .btn-ai-analysis {
@@ -31,7 +32,7 @@
 }
 
 .btn-ai-analysis:disabled {
-    background: #3a4560;
+    background: var(--border);
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
@@ -40,33 +41,33 @@
 .progress-container {
     margin-top: 30px;
     padding-top: 25px;
-    border-top: 1px solid #3a4560;
+    border-top: 1px solid var(--border);
 }
 
 .progress-bar-bg {
     width: 100%;
     height: 12px;
-    background-color: #1a1f2b;
+    background-color: var(--surface-2);
     border-radius: 6px;
     overflow: hidden;
     position: relative;
-    border: 1px solid #2a3449;
+    border: 1px solid var(--border);
 }
 
 .progress-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, #5b7cfa, #7c3aed);
+    background: linear-gradient(90deg, var(--brand), #7c3aed);
     width: 0%;
     transition: width 0.5s ease-in-out;
     border-radius: 6px;
 }
 
 .results-container {
-    background-color: #1f2635;
-    border-radius: 12px;
+    background-color: var(--surface);
+    border-radius: var(--radius);
     padding: 30px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    border: 1px solid #2a3449;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
     animation: fadeIn 0.5s ease-in-out;
 }
 
@@ -84,30 +85,31 @@
 }
 
 .player-stat-card {
-    background-color: #1a1f2b;
-    border-radius: 10px;
-    border: 1px solid #2a3449;
+    background-color: var(--surface-2);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
     padding: 20px;
-    transition: transform 0.2s, border-color 0.2s;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 
 .player-stat-card:hover {
     transform: translateY(-3px);
     border-color: #7c3aed;
+    box-shadow: var(--shadow-sm);
 }
 
 .player-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #2a3449;
+    border-bottom: 1px solid var(--border);
     padding-bottom: 10px;
     margin-bottom: 12px;
 }
 
 .player-card-name {
     font-weight: 700;
-    color: #f7fafc;
+    color: var(--text);
     font-size: 16px;
 }
 
@@ -125,7 +127,7 @@
     justify-content: space-between;
     font-size: 13px;
     margin-bottom: 6.5px;
-    color: #cbd5e0;
+    color: var(--text-2);
 }
 
 .stat-item-val {
@@ -133,11 +135,11 @@
 }
 
 .stat-item-val.success {
-    color: #10b981;
+    color: var(--success);
 }
 
 .stat-item-val.error {
-    color: #ef4444;
+    color: var(--danger);
 }
 
 /* Highlights Slicing Layout */
@@ -149,9 +151,9 @@
 }
 
 .highlight-card {
-    background-color: #1a1f2b;
-    border-radius: 10px;
-    border: 1px solid #2a3449;
+    background-color: var(--surface-2);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -161,7 +163,7 @@
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
-    background-color: #0d1117;
+    background-color: var(--surface-2);
 }
 
 .highlight-video {
@@ -180,7 +182,7 @@
 .highlight-title {
     font-weight: 700;
     font-size: 14px;
-    color: #f7fafc;
+    color: var(--text);
     margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
@@ -195,15 +197,15 @@
     font-weight: 700;
 }
 
-.badge-attack { background-color: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+.badge-attack { background-color: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
 .badge-defense { background-color: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
-.badge-serve { background-color: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
-.badge-block { background-color: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+.badge-serve { background-color: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+.badge-block { background-color: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
 .badge-other { background-color: rgba(107, 114, 128, 0.15); color: #9ca3af; border: 1px solid rgba(107, 114, 128, 0.3); }
 
 .highlight-desc {
     font-size: 13px;
-    color: #a0aec0;
+    color: var(--text-muted);
     line-height: 1.4;
     margin-bottom: 15px;
     flex-grow: 1;
@@ -214,8 +216,8 @@
     align-items: center;
     gap: 8px;
     font-size: 12px;
-    color: #e2e8f0;
-    border-top: 1px solid #2a3449;
+    color: var(--text);
+    border-top: 1px solid var(--border);
     padding-top: 10px;
     margin-top: auto;
 }
@@ -224,7 +226,7 @@
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #7c3aed, #5b7cfa);
+    background: linear-gradient(135deg, #7c3aed, var(--brand));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -235,9 +237,9 @@
 
 /* Master-Detail Rallies Browser Styles */
 .filter-btn {
-    background: #242d47;
-    border: 1px solid #3a4560;
-    color: #8892b0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
     padding: 6px 14px;
     border-radius: 20px;
     font-size: 13px;
@@ -247,8 +249,8 @@
 }
 
 .filter-btn:hover {
-    border-color: #5b7cfa;
-    color: #cbd5e0;
+    border-color: var(--accent);
+    color: var(--text-2);
 }
 
 .filter-btn.active {
@@ -260,7 +262,7 @@
 
 .segment-list-item {
     padding: 12px 15px;
-    border-bottom: 1px solid #2a3449;
+    border-bottom: 1px solid var(--border);
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -270,7 +272,7 @@
 }
 
 .segment-list-item:hover {
-    background-color: rgba(91, 124, 250, 0.05);
+    background-color: rgba(var(--accent-rgb), 0.05);
 }
 
 .segment-list-item.selected {
@@ -283,16 +285,16 @@
 }
 
 .master-panel::-webkit-scrollbar-track {
-    background: #1a1f2b;
+    background: var(--surface-2);
 }
 
 .master-panel::-webkit-scrollbar-thumb {
-    background: #3a4560;
+    background: var(--border);
     border-radius: 3px;
 }
 
 .master-panel::-webkit-scrollbar-thumb:hover {
-    background: #5b7cfa;
+    background: var(--accent);
 }
 
 .status-badge {
@@ -303,7 +305,7 @@
     text-transform: uppercase;
 }
 
-.status-badge.pending { background: #2d3748; color: #a0aec0; }
+.status-badge.pending { background: var(--surface-2); color: var(--text-muted); }
 .status-badge.processing { background: rgba(167, 139, 250, 0.15); color: #a78bfa; }
-.status-badge.completed { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-.status-badge.failed { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+.status-badge.completed { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+.status-badge.failed { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
