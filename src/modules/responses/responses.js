@@ -140,7 +140,7 @@ const ResponsesModule = {
                 <div class="response-section">
                     <h3>💪 Exercises & Ratings</h3>
                     <div class="exercises-grid">
-                        ${exercisesHtml || '<p style="color: #999; font-style: italic;">No exercises recorded</p>'}
+                        ${exercisesHtml || '<p style="color: var(--text-muted); font-style: italic;">No exercises recorded</p>'}
                     </div>
                 </div>
 
