@@ -88,9 +88,19 @@ imposta `data-theme` su `<html>`, lo persiste in `localStorage`, e rispetta
 - Layout a due colonne: a sinistra titolo + sottotitolo + CTA (Rate Training /
   View Matches); a destra **palla da volley Three.js** (bianca con cuciture
   navy/rosse coerenti col pallone del logo) che ruota lenta e reagisce al mouse (parallax).
-- Three.js caricato via CDN con `defer`; init in nuovo file `src/modules/home/volleyball-3d.js`.
-- **Fallback**: se Three.js non carica o `prefers-reduced-motion` / mobile a
-  basse prestazioni → immagine/animazione CSS statica al posto del canvas.
+- Three.js caricato via CDN con **versione pinnata** (vedi sezione Dipendenze),
+  `defer`; init in nuovo file `src/modules/home/volleyball-3d.js`.
+- **Strategia fallback** (nessuna esclusione per classe di dispositivo — i
+  telefoni provano a caricare la scena; fallback solo in caso di problemi reali):
+  1. Se `prefers-reduced-motion: reduce` → salta il 3D a priori.
+  2. Altrimenti si tenta di inizializzare la scena su tutti i dispositivi,
+     telefoni inclusi.
+  3. Fallback all'immagine/animazione CSS statica **solo** se: WebGL non
+     disponibile (`getContext('webgl')` fallisce), lo script Three.js non carica
+     (errore o timeout), o l'init lancia un'eccezione.
+  - Accorgimenti prestazionali (non gating, sempre attivi): `devicePixelRatio`
+    limitato (max ~2), `antialias` off su schermi ad alta densità, animazione in
+    pausa quando la tab non è visibile (`visibilitychange`).
 - Micro-animazioni d'ingresso a cascata (fade/slide-in) su titolo, testo, bottoni.
 
 ### Card (home + pagine)
@@ -121,8 +131,16 @@ navbar e hero. Il file sorgente in root resta finché non confermata la sostituz
 - `src/assets/logo-wapatanka.png` — nuovo logo
 
 **Dipendenze esterne (CDN, no npm sul frontend)**
-- Three.js (solo `index.html`)
-- Google Fonts: Sora/Space Grotesk + Inter (tutte le pagine)
+- **Three.js — versione PINNATA a un tag esatto** (es. `three@0.160.0`), mai
+  `latest`/major flottante, così un cambio di versione sul CDN non rompe la scena
+  senza preavviso. Caricato solo in `index.html` da un CDN che espone build
+  con hash immutabile (es. `https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js`).
+  Aggiungere attributo **`integrity` (SRI)** + `crossorigin="anonymous"`
+  calcolando l'hash sha384 della build pinnata in fase di implementazione
+  (jsdelivr/unpkg supportano SRI). Se in futuro serve un modulo aggiuntivo
+  (es. controlli orbit), pinnare alla **stessa** versione esatta.
+- Google Fonts: Sora/Space Grotesk + Inter (tutte le pagine) — anch'essi con
+  URL versionato fornito da Google Fonts.
 
 ## Ordine di implementazione
 
