@@ -72,7 +72,7 @@ imposta `data-theme` su `<html>`, lo persiste in `localStorage`, e rispetta
 ## Componenti
 
 ### Tipografia
-- Titoli: **Sora** (o Space Grotesk) — geometrico, sportivo, peso 700–800.
+- Titoli: **Sora** (default; Space Grotesk come alternativa equivalente) — geometrico, sportivo, peso 700–800.
 - Testo: **Inter**. Gerarchia chiara di dimensioni/pesi definita in `theme.css`.
 - Caricamento via `<link>` Google Fonts con `display=swap`; fallback sans-serif di sistema.
 
@@ -97,7 +97,9 @@ imposta `data-theme` su `<html>`, lo persiste in `localStorage`, e rispetta
 - Raggi coerenti (~16px), ombre morbide a due livelli.
 - Hover: `translateY(-6px)` + scala lieve + bordo/ombra accento.
 - **Icone SVG inline** leggere al posto delle emoji (volley, calendario,
-  roster, statistiche, ecc.). Set di icone in un partial condiviso o inline nelle pagine.
+  roster, statistiche, ecc.). Stack vanilla senza partial server-side: le icone
+  sono SVG inline nel markup, con un helper JS condiviso opzionale
+  (`src/common/icons.js`) che restituisce l'SVG per nome per evitare duplicazione.
 
 ### Animazioni / accessibilità
 - `IntersectionObserver` per reveal-on-scroll delle sezioni (script condiviso leggero).
