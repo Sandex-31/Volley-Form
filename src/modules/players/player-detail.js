@@ -326,23 +326,24 @@ const SetOptics3D = {
     pathsGroup: null, animationFrameId: null,
     ball: null, currentCurve: null, ballProgress: 0,
     ballTrail: [], trailGroup: null,
+    // Light, brand-cohesive palette (navy lines / red trajectories / light court)
     BRAND: {
-        bg: '#0a0a0f',
-        surface: '#1a1a2e',
-        surfaceLight: '#252540',
-        cobalt: '#0761b2',
-        accent: '#4f9cf7',
-        accentDim: '#2d6bc4',
-        muted: '#a0a0b8',
-        court: '#14233f',
-        courtLine: '#3a5680',
-        net: '#cfe0f5',
-        setter: '#4f9cf7',
-        ball: '#ffd24a',
-        arc: '#4f9cf7',
-        antennaRed: '#e23b2e',
-        antennaWhite: '#f2f2f2',
-        pole: '#d8dde6',
+        bg: '#eef1f7',
+        surface: '#f4f6fb',
+        surfaceLight: '#ffffff',
+        cobalt: '#0d1a3c',
+        accent: '#b22823',
+        accentDim: '#9a211c',
+        muted: '#6b7688',
+        court: '#e3e9f2',
+        courtLine: '#0d1a3c',
+        net: '#334a73',
+        setter: '#0d1a3c',
+        ball: '#0d1a3c',
+        arc: '#b22823',
+        antennaRed: '#b22823',
+        antennaWhite: '#ffffff',
+        pole: '#c9d2e3',
     },
     
     init: function(containerId) {
@@ -376,10 +377,10 @@ const SetOptics3D = {
         container.addEventListener('click', this.onCanvasClick.bind(this), false);
 
         
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.55);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
         this.scene.add(ambientLight);
-        
-        const hemiLight = new THREE.HemisphereLight('#9ec6e8', '#0a0a0f', 0.5);
+
+        const hemiLight = new THREE.HemisphereLight('#ffffff', '#c9d2e3', 0.65);
         this.scene.add(hemiLight);
         
         const dirLight = new THREE.DirectionalLight(0xffffff, 1.15);

@@ -219,21 +219,21 @@
     perspective: 1500px;
 }
 
-/* NOTE: this container frames the Three.js "SetOptics3D" canvas, an intentionally
-   dark 3D scene (see SetOptics3D.BRAND in player-detail.js). Its dark backdrop is
-   deliberate so the 3D court reads against the light page — do not tokenize it. */
+/* Frames the Three.js "SetOptics3D" canvas. The 3D scene now uses a light,
+   brand-cohesive palette (see SetOptics3D.BRAND), so the frame matches the page. */
 .setoptics-court-container {
     position: relative;
     height: 480px;
     flex: 3;
     min-width: 560px;
-    background: #0f1420;
-    border: 1px solid #232c40;
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
+    box-shadow: var(--shadow-sm);
 }
 
 .pd-loading3d {
@@ -241,7 +241,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: rgba(230, 236, 244, 0.5);
+    color: var(--text-muted);
     font-family: var(--font-head);
     font-weight: 600;
     font-size: 14px;
