@@ -12,8 +12,10 @@
     <link rel="stylesheet" href="../styles/styles.css">
     <link rel="stylesheet" href="../styles/navbar.css">
     <link rel="stylesheet" href="../styles/players.css">
+    <link rel="stylesheet" href="../styles/home.css">
     <link rel="stylesheet" href="../styles/match-table.css">
     <link rel="stylesheet" href="../styles/match-stats.css">
+    <link rel="stylesheet" href="../styles/tactics-board.css">
 </head>
 <body>
     <!-- ===== NAVIGATION BAR ===== -->
@@ -39,39 +41,135 @@
         </div>
     </nav>
 
-    <!-- ===== MAIN CONTENT CONTAINER ===== -->
-    <div class="matches-container container reveal">
-        <div class="header">
-            <h1><span data-icon="matches"></span> Volleyball Matches</h1>
-            <p>Track team schedules, set scores, and game results</p>
-        </div>
+    <!-- ===== SCROLL PROGRESS BAR ===== -->
+    <div id="scrollProgress" aria-hidden="true"></div>
 
-        <!-- Admin Action Header (Hidden for public, toggled by JS) -->
-        <div id="matchAdminActions" class="players-header-actions" style="display: none;">
-            <button class="btn-save" onclick="MatchManager.openAddModal()" style="width: auto; padding: 10px 20px;">➕ Add Match</button>
-        </div>
-
-        <!-- Dynamic Matches Table -->
-        <div class="table-responsive">
-            <table class="match-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Opponent</th>
-                        <th>Location</th>
-                        <th>Score</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="matchesTableBody">
-                    <tr id="loadingRow">
-                        <td colspan="6" style="text-align: center; color: var(--text-muted); font-style: italic;">Loading matches from database...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    <!-- ===== PARALLAX BRAND AURORA ===== -->
+    <div id="bgFx" aria-hidden="true">
+        <span class="blob blob-1"></span>
+        <span class="blob blob-2"></span>
     </div>
+
+    <!-- ===== SECTION DOTS NAVIGATOR ===== -->
+    <nav id="sectionDots" aria-label="Sezioni" aria-hidden="false"></nav>
+
+    <!-- ===== IMMERSIVE SCROLL MATCHES ===== -->
+    <main class="scroll-home">
+
+        <!-- 1 · HERO -->
+        <section class="pane pane-hero" id="pane-hero" data-label="Hero">
+            <div class="pane-inner reveal">
+                <span class="pane-kicker">Calendario</span>
+                <h1 class="pane-title">MATCHES</h1>
+                <p class="pane-lead">Calendario, punteggi e statistiche di ogni partita. In fondo alla pagina
+                    trovi la lavagna tattica: schiera il roster, traccia le azioni, cancella e ricomincia.</p>
+                <div class="hero-cta">
+                    <a href="#pane-matches" class="btn-accent"><span data-icon="matches"></span> Vai al calendario</a>
+                    <a href="#pane-board" class="btn-ghost"><span data-icon="ball"></span> Apri la lavagna</a>
+                </div>
+                <div class="scroll-cue"><span class="mouse"></span> Scroll</div>
+            </div>
+        </section>
+
+        <!-- 2 · MATCHES TABLE -->
+        <section class="pane pane--center pane-matches" id="pane-matches" data-label="Calendario">
+            <div class="pane-inner reveal">
+                <span class="pane-kicker">La stagione</span>
+                <h2 class="pane-title">Calendario</h2>
+
+                <div class="matches-container">
+                    <!-- Admin Action Header (Hidden for public, toggled by JS) -->
+                    <div id="matchAdminActions" class="players-header-actions" style="display: none;">
+                        <button class="btn-save" onclick="MatchManager.openAddModal()" style="width: auto; padding: 10px 20px;">➕ Add Match</button>
+                    </div>
+
+                    <!-- Dynamic Matches Table -->
+                    <div class="table-responsive">
+                        <table class="match-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Opponent</th>
+                                    <th>Location</th>
+                                    <th>Score</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="matchesTableBody">
+                                <tr id="loadingRow">
+                                    <td colspan="6" style="text-align: center; color: var(--text-muted); font-style: italic;">Loading matches from database...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3 · SEASON STATS -->
+        <section class="pane pane--center" id="pane-stats" data-label="Statistiche">
+            <div class="pane-inner reveal">
+                <span class="pane-kicker">A colpo d'occhio</span>
+                <h2 class="pane-title">I numeri</h2>
+                <div id="seasonStatsContainer" class="stats-tiles">
+                    <p class="preview-empty">Sincronizzazione statistiche…</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4 · TACTICS BOARD -->
+        <section class="pane pane--center pane-board" id="pane-board" data-label="Lavagna">
+            <div class="pane-inner reveal">
+                <span class="pane-kicker">Tattiche</span>
+                <h2 class="pane-title">La lavagna</h2>
+                <p class="pane-lead">Trascina i giocatori dalla panchina al campo, disegna frecce e traiettorie.
+                    Niente viene salvato: alla ricarica la lavagna torna pulita.</p>
+
+                <div class="tb-toolbar" id="tbToolbar">
+                    <button type="button" class="tb-mode active" data-mode="full" aria-pressed="true">Campo intero</button>
+                    <button type="button" class="tb-mode" data-mode="half" aria-pressed="false">Metà campo</button>
+                    <span class="tb-sep" aria-hidden="true"></span>
+                    <button type="button" class="tb-tool active" data-tool="move" aria-pressed="true">Sposta</button>
+                    <button type="button" class="tb-tool" data-tool="arrow" aria-pressed="false">Freccia</button>
+                    <button type="button" class="tb-tool" data-tool="pen" aria-pressed="false">Penna</button>
+                    <span class="tb-sep" aria-hidden="true"></span>
+                    <button type="button" class="tb-btn" id="tbUndo">Annulla</button>
+                    <button type="button" class="tb-btn tb-btn-danger" id="tbClear">Pulisci</button>
+                </div>
+
+                <div class="tb-stage">
+                    <aside class="tb-bench">
+                        <h3>Roster</h3>
+                        <div id="tbBenchRoster" class="tb-bench-list">
+                            <p class="tb-empty">Sincronizzazione roster…</p>
+                        </div>
+                        <h3>Avversari</h3>
+                        <div id="tbBenchOpp" class="tb-bench-list"></div>
+                    </aside>
+
+                    <div class="tb-court" id="tbCourt" data-tool="move" data-mode="full">
+                        <!-- Layer 1 · court markings, drawn by TacticsBoard.renderField() -->
+                        <svg class="tb-field" id="tbField" viewBox="0 0 900 1800" aria-hidden="true"></svg>
+
+                        <!-- Layer 2 · arrows + pen strokes -->
+                        <svg class="tb-ink" id="tbInk" viewBox="0 0 900 1800" aria-hidden="true">
+                            <defs>
+                                <marker id="tbArrowHead" markerWidth="5" markerHeight="5" refX="4" refY="2.5"
+                                    orient="auto" markerUnits="strokeWidth">
+                                    <path class="tb-arrow-head" d="M0,0 L5,2.5 L0,5 z"></path>
+                                </marker>
+                            </defs>
+                        </svg>
+
+                        <!-- Layer 3 · draggable discs -->
+                        <div class="tb-tokens" id="tbTokens"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
 
     <!-- ===== MATCH ADMIN MODAL ===== -->
     <div id="matchAdminModal" class="player-modal">
@@ -250,8 +348,13 @@
     <script src="../common/navbar.js"></script>
     <script src="../common/scroll-reveal.js"></script>
 
+    <!-- ===== SHARED HOME SCROLL FX (progress bar, section dots, season tiles) ===== -->
+    <script src="../modules/home/home-stats.js"></script>
+    <script src="../modules/home/home-scrollfx.js"></script>
+
     <!-- ===== MATCH STATS & MANAGER MODULES ===== -->
     <script src="../modules/matches/match-manager.js"></script>
     <script src="../modules/matches/match-stats.js"></script>
+    <script src="../modules/matches/tactics-board.js"></script>
 </body>
 </html>

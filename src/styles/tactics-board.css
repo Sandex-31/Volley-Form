@@ -1,0 +1,368 @@
+/* ===== TACTICS BOARD ===== */
+
+.pane-board .pane-inner {
+    max-width: 1180px;
+}
+
+/* ----- Toolbar ----- */
+
+.tb-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 22px;
+}
+
+.tb-tool,
+.tb-mode,
+.tb-btn {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-2);
+    background: color-mix(in srgb, var(--surface) 78%, transparent);
+    backdrop-filter: blur(6px);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 9px 18px;
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+}
+
+.tb-tool:hover,
+.tb-mode:hover,
+.tb-btn:hover {
+    border-color: var(--border-strong);
+    color: var(--text);
+}
+
+.tb-tool.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+    box-shadow: 0 0 14px rgba(var(--accent-rgb), 0.28);
+}
+
+/* Court mode is a view switch, not a tool — kept on brand, not accent. */
+.tb-mode.active {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: white;
+}
+
+.tb-btn-danger:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.tb-sep {
+    width: 1px;
+    height: 22px;
+    background: var(--border);
+    margin: 0 6px;
+}
+
+/* ----- Stage: bench + court ----- */
+
+/* minmax(0, 1fr), never a bare 1fr: the bench is a nowrap row of chips, so its
+   min-content width is the whole roster. A bare 1fr would size the column to
+   that and push the centred court off screen. */
+.tb-stage {
+    display: grid;
+    grid-template-columns: minmax(190px, 230px) minmax(0, 1fr);
+    gap: 28px;
+    align-items: start;
+    text-align: left;
+}
+
+.tb-bench {
+    min-width: 0;
+    background: color-mix(in srgb, var(--surface) 78%, transparent);
+    backdrop-filter: blur(6px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 16px;
+}
+
+.tb-bench h3 {
+    font-family: var(--font-head);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 10px;
+}
+
+.tb-bench h3 + .tb-bench-list {
+    margin-bottom: 20px;
+}
+
+.tb-bench-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tb-empty {
+    font-size: 13px;
+    font-style: italic;
+    color: var(--text-muted);
+}
+
+/* ----- Bench chips ----- */
+
+.tb-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    font-family: var(--font-body);
+    text-align: left;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    padding: 6px 8px;
+    cursor: grab;
+    touch-action: none;
+    transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.tb-chip:hover {
+    background: var(--surface-2);
+    border-color: var(--border);
+}
+
+.tb-chip.is-placed {
+    display: none;
+}
+
+.tb-chip-num {
+    display: grid;
+    place-items: center;
+    flex: 0 0 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-family: var(--font-head);
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    background: var(--brand);
+}
+
+.tb-chip--opp .tb-chip-num {
+    background: var(--accent);
+}
+
+.tb-chip-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-2);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ----- Court ----- */
+
+/* Width is the only definite dimension; height always follows from aspect-ratio,
+   so the court can never be squashed. --tb-ratio is width/height per mode.
+   container-type lets the discs size themselves in cqw, keeping them proportional
+   to the court instead of a fixed pixel size that looks huge on a small board. */
+.tb-court {
+    --tb-ratio: 0.5;
+    --tb-max-h: 88vh;
+    --tb-cap-h: 1000px;
+
+    position: relative;
+    container-type: inline-size;
+    aspect-ratio: 900 / 1800;
+    width: min(100%,
+            calc(var(--tb-max-h) * var(--tb-ratio)),
+            calc(var(--tb-cap-h) * var(--tb-ratio)));
+    max-width: 100%;
+    height: auto;
+    justify-self: center;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    background: var(--surface-2);
+
+    /* Touching the court must still scroll the page — only the discs and the
+       drawing tools swallow the gesture. */
+    touch-action: pan-y;
+}
+
+.tb-court[data-mode="half"] {
+    --tb-ratio: 1;
+    aspect-ratio: 1 / 1;
+}
+
+.tb-court[data-tool="arrow"],
+.tb-court[data-tool="pen"] {
+    cursor: crosshair;
+    touch-action: none;
+}
+
+.tb-field,
+.tb-ink {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.tb-ink {
+    pointer-events: none;
+}
+
+/* Court markings */
+.tb-floor {
+    fill: var(--surface-2);
+}
+
+.tb-line {
+    fill: none;
+    stroke: var(--border-strong);
+    stroke-width: 5;
+}
+
+.tb-net {
+    stroke: var(--text-muted);
+    stroke-width: 7;
+    stroke-dasharray: 14 10;
+}
+
+/* Strokes */
+.tb-path {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.tb-path--arrow {
+    stroke: var(--accent);
+    stroke-width: 9;
+}
+
+/* Markers don't inherit from the referencing path, so the head is coloured directly. */
+.tb-arrow-head {
+    fill: var(--accent);
+}
+
+.tb-path--pen {
+    stroke: var(--brand);
+    stroke-width: 7;
+    opacity: 0.85;
+}
+
+/* ----- Tokens ----- */
+
+.tb-tokens {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+/* 8cqw ≈ 0.72m on a 9m-wide court. max() keeps a usable touch target on phones. */
+.tb-token {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: grid;
+    place-items: center;
+    width: max(28px, 8cqw);
+    height: max(28px, 8cqw);
+    border-radius: 50%;
+    border: 2px solid var(--surface);
+    box-shadow: var(--shadow-sm);
+    cursor: grab;
+    touch-action: none;
+    pointer-events: auto;
+    user-select: none;
+}
+
+/* While drawing, strokes pass straight through the discs. */
+.tb-court[data-tool="arrow"] .tb-token,
+.tb-court[data-tool="pen"] .tb-token {
+    pointer-events: none;
+}
+
+.tb-token.is-dragging {
+    cursor: grabbing;
+    box-shadow: var(--shadow-lg);
+    z-index: 3;
+}
+
+.tb-token--us {
+    background: var(--brand);
+}
+
+.tb-token--opp {
+    background: var(--accent);
+}
+
+/* A volleyball reads white in both themes, so this one disc is not theme-flipped. */
+.tb-token--ball {
+    width: max(16px, 4.6cqw);
+    height: max(16px, 4.6cqw);
+    background: radial-gradient(circle at 35% 30%,
+            white 0%,
+            color-mix(in srgb, white 88%, var(--border-strong)) 55%,
+            color-mix(in srgb, white 55%, var(--border-strong)) 100%);
+    border-color: var(--text-muted);
+}
+
+.tb-token-num {
+    font-family: var(--font-head);
+    font-size: max(11px, 3.4cqw);
+    font-weight: 700;
+    color: white;
+    line-height: 1;
+}
+
+.tb-token-name {
+    position: absolute;
+    top: calc(100% + 3px);
+    font-size: max(9px, 1.9cqw);
+    font-weight: 600;
+    color: var(--text-2);
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+/* ----- Mobile ----- */
+
+@media (max-width: 860px) {
+    .tb-stage {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 18px;
+    }
+
+    /* A full court is twice as tall as it is wide, so on a phone letting it take
+       the full width pushes most of it below the fold. Cap the height instead:
+       the court stays entirely on screen. Half court still fills the width. */
+    .tb-court {
+        --tb-max-h: 62vh;
+    }
+
+    /* Bench becomes a horizontal rail so the page never scrolls sideways. */
+    .tb-bench-list {
+        flex-direction: row;
+        overflow-x: auto;
+        padding-bottom: 4px;
+    }
+
+    /* Horizontal drags scroll the rail; vertical drags pull a player onto the court. */
+    .tb-chip {
+        width: auto;
+        flex: 0 0 auto;
+        touch-action: pan-x;
+    }
+
+    .tb-token-name {
+        display: none;
+    }
+}

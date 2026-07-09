@@ -1,13 +1,36 @@
 /* ===== MATCHES PAGE & TABLE STYLES ===== */
 
+/* Hero CTAs are anchor jumps between panes. */
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+/* The matches pane hosts a wide card, so it overrides the default text column. */
+.pane-matches .pane-inner {
+    max-width: 1000px;
+}
+
 .matches-container {
     max-width: 950px;
     width: 100%;
-    background: var(--surface);
-    border-radius: 10px;
+    margin: 0 auto;
+    text-align: left;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(6px);
+    border-radius: var(--radius);
     box-shadow: var(--shadow-lg);
-    padding: 40px;
+    padding: 32px;
     border: 1px solid var(--border);
+}
+
+.matches-container .table-responsive {
+    margin-top: 0;
+}
+
+.matches-container .players-header-actions {
+    margin-bottom: 20px;
 }
 
 .table-responsive {
