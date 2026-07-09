@@ -29,6 +29,7 @@ const APP_CONSTANTS = {
         FORM_SUBMISSIONS: 'formSubmissions',
         SELECTED_EXERCISES: 'selectedExercises',
         MATCH_STATS: 'matchStats',
+        MATCH_LINEUPS: 'matchLineups',
         PLAYERS: 'players',
         MATCHES: 'matches'
     },

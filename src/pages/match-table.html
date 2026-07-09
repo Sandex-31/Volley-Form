@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="../styles/home.css">
     <link rel="stylesheet" href="../styles/match-table.css">
     <link rel="stylesheet" href="../styles/match-stats.css">
+    <link rel="stylesheet" href="../styles/match-lineups.css">
     <link rel="stylesheet" href="../styles/tactics-board.css">
 </head>
 <body>
@@ -170,6 +171,27 @@
         </section>
 
     </main>
+
+    <!-- ===== TOAST TARGETS (UIService.showMessage writes here) ===== -->
+    <div class="matches-toasts" aria-live="polite">
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+    </div>
+
+    <!-- ===== SET LINEUPS MODAL ===== -->
+    <div id="lineupModal" class="stats-modal">
+        <div class="stats-modal-content lineup-modal-content">
+            <span class="close-stats-modal" onclick="MatchLineups.closeModal()">&times;</span>
+
+            <div class="stats-modal-header" style="margin-bottom: 20px;">
+                <h2 id="lineupMatchOpponent">Formazioni</h2>
+                <p id="lineupMatchDate">Date</p>
+            </div>
+
+            <div id="lineupSetTabs" class="lineup-set-tabs"></div>
+            <div id="lineupSetBody"></div>
+        </div>
+    </div>
 
     <!-- ===== MATCH ADMIN MODAL ===== -->
     <div id="matchAdminModal" class="player-modal">
@@ -355,6 +377,7 @@
     <!-- ===== MATCH STATS & MANAGER MODULES ===== -->
     <script src="../modules/matches/match-manager.js"></script>
     <script src="../modules/matches/match-stats.js"></script>
+    <script src="../modules/matches/match-lineups.js"></script>
     <script src="../modules/matches/tactics-board.js"></script>
 </body>
 </html>

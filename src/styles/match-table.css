@@ -7,6 +7,24 @@
     }
 }
 
+/* UIService writes into #errorMessage / #successMessage. On this page they must
+   float above the modals (z-index 2000), not sit inside a scroll pane. */
+.matches-toasts {
+    position: fixed;
+    top: calc(var(--nav-h) + 12px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3000;
+    width: min(92vw, 440px);
+    pointer-events: none;
+}
+
+.matches-toasts .error-message,
+.matches-toasts .success-message {
+    margin-bottom: 8px;
+    box-shadow: var(--shadow-lg);
+}
+
 /* The matches pane hosts a wide card, so it overrides the default text column. */
 .pane-matches .pane-inner {
     max-width: 1000px;

@@ -1,0 +1,334 @@
+/* ===== MATCH LINEUPS MODAL ===== */
+
+.lineup-modal-content {
+    max-width: 640px;
+    width: 100%;
+}
+
+/* ----- Set tabs ----- */
+
+.lineup-set-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 14px;
+}
+
+.lineup-tab {
+    font-family: var(--font-head);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-2);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 18px;
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+}
+
+.lineup-tab:hover {
+    border-color: var(--border-strong);
+    color: var(--text);
+}
+
+.lineup-tab.active {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: white;
+}
+
+/* A set with no lineup yet: available, but not yet played. */
+.lineup-tab.pending {
+    border-style: dashed;
+    color: var(--text-muted);
+}
+
+.lineup-tab.pending.active {
+    color: white;
+    border-style: solid;
+}
+
+/* ----- Court grid: P4 P3 P2 / P5 P6 P1 ----- */
+
+.lineup-court {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface-2);
+    margin-bottom: 16px;
+}
+
+/* The net is at the top: mark the front row. */
+.lineup-court::before {
+    content: '';
+    grid-column: 1 / -1;
+    height: 3px;
+    border-radius: 2px;
+    background: repeating-linear-gradient(90deg,
+            var(--text-muted) 0 10px,
+            transparent 10px 18px);
+}
+
+.lineup-slot {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: left;
+}
+
+.lineup-slot-pos {
+    font-family: var(--font-head);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--accent);
+}
+
+.lineup-slot-hint {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.lineup-select,
+.lineup-input {
+    width: 100%;
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px;
+}
+
+.lineup-select:focus,
+.lineup-input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.lineup-libero-row {
+    max-width: 260px;
+    margin-bottom: 18px;
+}
+
+/* ----- Read-only court: the six currently on court ----- */
+
+.lineup-court--readonly .lineup-disc {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 12px 6px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+}
+
+/* A player who came off the bench, not one of the starting six. */
+.lineup-disc.is-substituted {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px rgba(var(--accent-rgb), 0.25);
+}
+
+.lineup-disc-pos {
+    font-family: var(--font-head);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+}
+
+.lineup-disc-num {
+    font-family: var(--font-head);
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--brand);
+    line-height: 1.1;
+}
+
+.lineup-disc-name {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-2);
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+.lineup-libero-tag {
+    font-size: 13px;
+    color: var(--text-2);
+    margin-bottom: 18px;
+}
+
+/* ----- Substitution form ----- */
+
+.lineup-sub-form {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.lineup-sub-form h4,
+.lineup-log-title {
+    font-family: var(--font-head);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 12px;
+    text-align: left;
+}
+
+.lineup-sub-fields {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.lineup-sub-fields label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ----- Substitution log ----- */
+
+.lineup-sub-log {
+    list-style: none;
+    margin: 0 0 18px;
+    padding: 0;
+    text-align: left;
+}
+
+.lineup-sub-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    font-size: 13px;
+    color: var(--text-2);
+}
+
+.lineup-sub-row + .lineup-sub-row {
+    margin-top: 6px;
+}
+
+.lineup-sub-score {
+    flex: 0 0 auto;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--accent);
+    background: rgba(var(--accent-rgb), 0.10);
+    border-radius: 999px;
+    padding: 3px 10px;
+}
+
+.lineup-sub-out {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+.lineup-sub-in {
+    font-weight: 600;
+    color: var(--text);
+}
+
+.lineup-sub-arrow {
+    display: inline-flex;
+    color: var(--text-muted);
+}
+
+.lineup-sub-arrow svg {
+    width: 14px;
+    height: 14px;
+}
+
+.lineup-undo {
+    margin-left: auto;
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--danger);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px 12px;
+    cursor: pointer;
+}
+
+.lineup-undo:hover {
+    border-color: var(--danger);
+}
+
+/* ----- Misc ----- */
+
+.lineup-hint {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+.lineup-error {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--danger);
+    background: rgba(var(--danger-rgb), 0.08);
+    border: 1px solid rgba(var(--danger-rgb), 0.25);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    text-align: left;
+}
+
+.lineup-empty {
+    font-size: 13px;
+    font-style: italic;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+    text-align: left;
+}
+
+.lineup-reset {
+    text-align: left;
+}
+
+@media (max-width: 600px) {
+    .lineup-sub-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .lineup-court {
+        gap: 6px;
+        padding: 12px;
+    }
+
+    .lineup-disc-num {
+        font-size: 17px;
+    }
+}

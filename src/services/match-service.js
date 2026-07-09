@@ -85,6 +85,10 @@ const MatchService = {
             // Clean up related match statistics as well
             const statsPath = `${APP_CONSTANTS.FIREBASE_REFS.MATCH_STATS}/${matchId}`;
             await FirebaseService.delete(statsPath);
+
+            // ...and the set lineups, which would otherwise be orphaned
+            const lineupsPath = `${APP_CONSTANTS.FIREBASE_REFS.MATCH_LINEUPS}/${matchId}`;
+            await FirebaseService.delete(lineupsPath);
             return true;
         } catch (error) {
             Logger.error(`Error deleting match ${matchId}: ${error.message}`);
@@ -183,6 +187,86 @@ const MatchService = {
                 Logger.error(`Failed to load all stats for match ${matchId}: ${error.message}`);
             }
         );
+    },
+
+    /* ===== SET LINEUPS & SUBSTITUTIONS ===== */
+
+    /**
+     * Live subscription to every set lineup of a match.
+     * Shape: { <setNumber>: { lineup: [6 playerIds], libero, subs: {...} } }
+     */
+    subscribeToLineups: function (matchId, callback, errorCallback = null) {
+        if (!FirebaseService.isReady() || !matchId) {
+            Logger.error('Firebase not initialized');
+            if (errorCallback) errorCallback(new Error('Firebase non inizializzato'));
+            return null;
+        }
+        const path = `${APP_CONSTANTS.FIREBASE_REFS.MATCH_LINEUPS}/${matchId}`;
+        return FirebaseService.subscribe(
+            path,
+            (data) => callback(data || {}),
+            (error) => {
+                Logger.error(`Failed to load lineups for ${matchId}: ${error.message}`);
+                if (errorCallback) errorCallback(error);
+            }
+        );
+    },
+
+    /**
+     * Write the starting six of a set. Index 0 is P1, by convention the setter.
+     * Substitutions already recorded for the set are left untouched.
+     */
+    saveSetLineup: async function (matchId, setNumber, lineup, libero) {
+        if (!FirebaseService.isReady()) {
+            UIService.showMessage('⚠️ Firebase not available', 'error');
+            return false;
+        }
+        try {
+            const path = `${APP_CONSTANTS.FIREBASE_REFS.MATCH_LINEUPS}/${matchId}/${setNumber}`;
+            return await FirebaseService.update(path, {
+                lineup: lineup,
+                libero: libero || null
+            });
+        } catch (error) {
+            Logger.error(`Error saving lineup ${matchId}/set${setNumber}: ${error.message}`);
+            return false;
+        }
+    },
+
+    /**
+     * Append a substitution. The key is the write timestamp, which is also the
+     * ordering: replaying subs in key order reconstructs who is on court.
+     */
+    addSubstitution: async function (matchId, setNumber, sub) {
+        if (!FirebaseService.isReady()) {
+            UIService.showMessage('⚠️ Firebase not available', 'error');
+            return false;
+        }
+        try {
+            const key = String(Date.now());
+            const path = `${APP_CONSTANTS.FIREBASE_REFS.MATCH_LINEUPS}/${matchId}/${setNumber}/subs/${key}`;
+            return await FirebaseService.write(path, sub);
+        } catch (error) {
+            Logger.error(`Error adding substitution ${matchId}/set${setNumber}: ${error.message}`);
+            return false;
+        }
+    },
+
+    /**
+     * Remove one substitution (undo). Only ever called with the last key.
+     */
+    removeSubstitution: async function (matchId, setNumber, subKey) {
+        if (!FirebaseService.isReady()) {
+            UIService.showMessage('⚠️ Firebase not available', 'error');
+            return false;
+        }
+        try {
+            const path = `${APP_CONSTANTS.FIREBASE_REFS.MATCH_LINEUPS}/${matchId}/${setNumber}/subs/${subKey}`;
+            return await FirebaseService.delete(path);
+        } catch (error) {
+            Logger.error(`Error removing substitution ${subKey}: ${error.message}`);
+            return false;
+        }
     },
 
     /**

@@ -119,6 +119,10 @@ const MatchManager = {
                 `;
             }
 
+            const lineupButton = `
+                <button class="btn-stats-trigger" onclick="MatchLineups.openModal('${match.id}', '${this.escapeQuote(match.opponent)}', '${this.escapeQuote(dateDisplay)}')" style="margin-left: 5px;">🔄 Lineup</button>
+            `;
+
             tr.innerHTML = `
                 <td><span class="match-date">${dateDisplay}</span></td>
                 <td><span class="opponent-name">${this.escapeHtml(match.opponent)}</span></td>
@@ -130,6 +134,7 @@ const MatchManager = {
                 <td><span class="badge ${statusBadge}">${match.status}</span></td>
                 <td style="white-space: nowrap;">
                     ${statsButtons}
+                    ${lineupButton}
                     ${adminButtons}
                 </td>
             `;
