@@ -11,6 +11,8 @@ const MatchStats = {
     currentLivePlayerId: null,
     viewSet: 'all', // 'all' or a set number; scope for displayed stats and live edits
     snapshotSeen: false,
+    matchEvents: [],
+    eventsSubscriptionRef: null,
 
     /**
      * Dummy function to satisfy match-manager.js player subscription callback.
@@ -262,9 +264,44 @@ const MatchStats = {
         this.viewSet = val === 'all' ? 'all' : Number(val);
         this.renderSetTabs();
         this.updateAllUI();
+        this.updateLiveScore();
         if (this.currentLivePlayerId) {
             this.updatePlayerRowUI(this.currentLivePlayerId, this.scopedStats(this.currentLivePlayerId));
         }
+    },
+
+    /**
+     * Derived score of the active set, shown in the live tracker score bar
+     */
+    updateLiveScore: function() {
+        const el = document.getElementById('liveScoreValue');
+        if (!el) return;
+        if (this.viewSet === 'all') { el.textContent = '—'; return; }
+        const steps = MatchService.scoreProgression(this.matchEvents, this.viewSet);
+        const last = steps[steps.length - 1];
+        el.textContent = last ? `${last.us} – ${last.them}` : '0 – 0';
+    },
+
+    /**
+     * Manual score events: 'opp_error' = their mistake (our point),
+     * 'opp_point' = their winner (their point)
+     */
+    logOppEvent: async function(key) {
+        if (!this.currentMatchId || this.viewSet === 'all') return;
+        this.showSyncStatus('syncing');
+        await MatchService.addMatchEvent(this.currentMatchId, { set: this.viewSet, playerId: null, key });
+        this.showSyncStatus('saved');
+    },
+
+    /**
+     * Undo the last manual score event of the active set
+     */
+    undoOppEvent: async function() {
+        if (!this.currentMatchId || this.viewSet === 'all') return;
+        this.showSyncStatus('syncing');
+        const ok = await MatchService.removeLastMatchEvent(this.currentMatchId, { set: this.viewSet, playerId: null });
+        if (!ok) UIService.showMessage('Nessun punto manuale da annullare in questo set', 'error');
+        this.showSyncStatus('saved');
     },
 
     /**
@@ -356,6 +393,11 @@ const MatchStats = {
         // Atomic server-side increment
         const success = await MatchService.incrementStat(this.currentMatchId, playerId, statKey, 1, this.viewSet);
         if (success) {
+            // Timeline event — only while live tracking, so post-match table
+            // corrections don't pollute the event chronology.
+            if (this.eventsSubscriptionRef) {
+                MatchService.addMatchEvent(this.currentMatchId, { set: this.viewSet, playerId, key: statKey });
+            }
             // Serve streak bookkeeping: an ace extends the streak,
             // a service error closes it (records it) and resets to 0.
             if (statKey === 'point_serve') {
@@ -403,6 +445,10 @@ const MatchStats = {
         // Atomic server-side decrement
         const success = await MatchService.incrementStat(this.currentMatchId, playerId, statKey, -1, this.viewSet);
         if (success) {
+            // Undo the matching timeline event (only while live tracking)
+            if (this.eventsSubscriptionRef) {
+                MatchService.removeLastMatchEvent(this.currentMatchId, { set: this.viewSet, playerId, key: statKey });
+            }
             // Inverse serve streak bookkeeping (undo a mis-tap)
             if (statKey === 'point_serve' && (stats.serve_streak || 0) > 0) {
                 stats.serve_streak = stats.serve_streak - 1;
@@ -538,6 +584,14 @@ const MatchStats = {
             }
         );
 
+        // Live score from the event stream
+        this.matchEvents = [];
+        this.eventsSubscriptionRef = MatchService.subscribeToMatchEvents(matchId, (events) => {
+            if (this.currentMatchId !== subscriptionMatchId) return;
+            this.matchEvents = events;
+            this.updateLiveScore();
+        });
+
         // Display Live Modal
         const modal = document.getElementById('liveStatsModal');
         if (modal) {
@@ -599,8 +653,20 @@ const MatchStats = {
             const totalPoints = (stats.point_serve || 0) + (stats.point_spike || 0) + (stats.point_block || 0) + (stats.point_lob || 0) + (stats.point_random || 0);
             const totalErrors = (stats.service_out || 0) + (stats.service_net || 0) + (stats.foul || 0) + (stats.error_grave || 0) + (stats.error_block || 0) + (stats.error_receive || 0) + (stats.error_set || 0) + (stats.error_defense || 0);
 
+            // Photo avatar with number badge (like the roster page) for quick identification
+            const initial = (player.name || '?').trim().charAt(0).toUpperCase();
+            const avatar = player.photo_url
+                ? `<div class="live-player-avatar">
+                       <img src="${player.photo_url}" alt="${this.escapeHtml(player.name)}">
+                       <span class="live-avatar-num">#${player.number}</span>
+                   </div>`
+                : `<div class="live-player-avatar live-avatar-placeholder">
+                       <span class="live-avatar-letter">${initial}</span>
+                       <span class="live-avatar-num">#${player.number}</span>
+                   </div>`;
+
             card.innerHTML = `
-                <span class="player-number-badge">#${player.number}</span>
+                ${avatar}
                 <span class="player-name">${this.escapeHtml(player.name)}</span>
                 <span class="player-role">${player.role}</span>
                 <div style="display: flex; gap: 8px; margin-top: 4px; font-size: 10px;">
@@ -715,6 +781,11 @@ const MatchStats = {
      */
     closeLiveModal: function() {
         this.unsubscribeActive();
+        if (this.eventsSubscriptionRef) {
+            FirebaseService.unsubscribe(this.eventsSubscriptionRef);
+            this.eventsSubscriptionRef = null;
+        }
+        this.matchEvents = [];
 
         // Hide Modal
         const modal = document.getElementById('liveStatsModal');

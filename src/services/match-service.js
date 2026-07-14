@@ -82,9 +82,10 @@ const MatchService = {
             const matchPath = `${APP_CONSTANTS.FIREBASE_REFS.MATCHES}/${matchId}`;
             await FirebaseService.delete(matchPath);
 
-            // Clean up related match statistics as well
+            // Clean up related match statistics and events as well
             const statsPath = `${APP_CONSTANTS.FIREBASE_REFS.MATCH_STATS}/${matchId}`;
             await FirebaseService.delete(statsPath);
+            await FirebaseService.delete(`${APP_CONSTANTS.FIREBASE_REFS.MATCH_EVENTS}/${matchId}`);
 
             // ...and the set lineups, which would otherwise be orphaned
             const lineupsPath = `${APP_CONSTANTS.FIREBASE_REFS.MATCH_LINEUPS}/${matchId}`;
@@ -285,6 +286,109 @@ const MatchService = {
             Logger.error(`Error removing substitution ${subKey}: ${error.message}`);
             return false;
         }
+    },
+
+    /* ===== MATCH EVENTS (live timeline) =====
+     * matchEvents/{matchId}/{eventKey} = { ts, set, playerId|null, key }
+     * key is a stat key (point_spike, error_receive, serve_streak, ...)
+     * or 'opp_error' (their mistake, our point) / 'opp_point' (their winner).
+     */
+
+    /**
+     * Append one live-tracked event.
+     * ponytail: client timestamp for key/ordering; fine for a single scorekeeper.
+     */
+    addMatchEvent: async function (matchId, event) {
+        if (!FirebaseService.isReady()) return false;
+        try {
+            const ts = Date.now();
+            const eventKey = `e_${ts}_${Math.random().toString(36).slice(2, 6)}`;
+            const path = `${APP_CONSTANTS.FIREBASE_REFS.MATCH_EVENTS}/${matchId}/${eventKey}`;
+            return await FirebaseService.write(path, Object.assign({ ts }, event));
+        } catch (error) {
+            Logger.error(`Error adding event for ${matchId}: ${error.message}`);
+            return false;
+        }
+    },
+
+    /**
+     * Delete the most recent event matching {set, playerId, key} (undo of a mis-tap).
+     */
+    removeLastMatchEvent: async function (matchId, criteria) {
+        if (!FirebaseService.isReady()) return false;
+        try {
+            const path = `${APP_CONSTANTS.FIREBASE_REFS.MATCH_EVENTS}/${matchId}`;
+            const all = (await FirebaseService.read(path)) || {};
+            const match = Object.entries(all)
+                .filter(([, e]) =>
+                    Number(e.set) === Number(criteria.set) &&
+                    (e.playerId || null) === (criteria.playerId || null) &&
+                    (criteria.key === undefined || e.key === criteria.key))
+                .sort((a, b) => a[1].ts - b[1].ts)
+                .pop();
+            if (!match) return false;
+            return await FirebaseService.delete(`${path}/${match[0]}`);
+        } catch (error) {
+            Logger.error(`Error removing event for ${matchId}: ${error.message}`);
+            return false;
+        }
+    },
+
+    /**
+     * One-time read of all events for a match, sorted by time
+     */
+    getMatchEvents: async function (matchId) {
+        if (!FirebaseService.isReady()) return [];
+        try {
+            const path = `${APP_CONSTANTS.FIREBASE_REFS.MATCH_EVENTS}/${matchId}`;
+            const data = (await FirebaseService.read(path)) || {};
+            return Object.values(data).sort((a, b) => a.ts - b.ts);
+        } catch (error) {
+            Logger.error(`Error reading events for ${matchId}: ${error.message}`);
+            return [];
+        }
+    },
+
+    /**
+     * Real-time subscription to a match's events (sorted array in the callback)
+     */
+    subscribeToMatchEvents: function (matchId, callback) {
+        if (!FirebaseService.isReady()) return null;
+        const path = `${APP_CONSTANTS.FIREBASE_REFS.MATCH_EVENTS}/${matchId}`;
+        return FirebaseService.subscribe(
+            path,
+            (data) => callback(Object.values(data || {}).sort((a, b) => a.ts - b.ts)),
+            (error) => Logger.error(`Failed to load events for ${matchId}: ${error.message}`)
+        );
+    },
+
+    /**
+     * Which team scores on this event key: 'us', 'them', or null (neutral, e.g. serve in)
+     */
+    eventTeam: function (key) {
+        if (key === 'opp_error') return 'us';
+        if (key === 'opp_point') return 'them';
+        if (key.indexOf('point_') === 0) return 'us';
+        if (key.indexOf('error_') === 0 || key === 'foul' ||
+            key === 'service_out' || key === 'service_net') return 'them';
+        return null;
+    },
+
+    /**
+     * Running score of one set from its events:
+     * [{ us, them, event }] one entry per scoring event, in order.
+     */
+    scoreProgression: function (events, setNumber) {
+        let us = 0, them = 0;
+        const steps = [];
+        events.forEach((e) => {
+            if (Number(e.set) !== Number(setNumber)) return;
+            const team = this.eventTeam(e.key);
+            if (!team) return;
+            if (team === 'us') us++; else them++;
+            steps.push({ us, them, event: e });
+        });
+        return steps;
     },
 
     /**

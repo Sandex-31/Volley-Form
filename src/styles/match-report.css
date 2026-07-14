@@ -1,0 +1,246 @@
+/* ===== MATCH REPORT PAGE ===== */
+
+.mr-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 30px 20px 60px;
+}
+
+.mr-back {
+    display: inline-block;
+    margin-bottom: 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+}
+
+.mr-back:hover {
+    color: var(--text);
+}
+
+/* ----- Hero header ----- */
+
+.mr-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+}
+
+.mr-hero h1 {
+    font-family: var(--font-head);
+    font-size: 26px;
+    color: var(--text);
+    margin: 0 0 6px;
+}
+
+.mr-hero-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.mr-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--border-strong);
+}
+
+.mr-hero-score {
+    text-align: right;
+}
+
+.mr-score {
+    font-family: var(--font-head);
+    font-size: 34px;
+    font-weight: 800;
+    color: var(--brand);
+}
+
+[data-theme="dark"] .mr-score {
+    color: var(--text);
+}
+
+.mr-sets {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* ----- Cards ----- */
+
+.mr-card {
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+}
+
+.mr-card h2 {
+    font-family: var(--font-head);
+    font-size: 18px;
+    color: var(--text);
+    margin: 0 0 16px;
+}
+
+.mr-card h3 {
+    font-family: var(--font-head);
+    font-size: 14px;
+    color: var(--text);
+    margin: 20px 0 12px;
+}
+
+.mr-chart-wrap {
+    position: relative;
+    height: 280px;
+}
+
+.mr-chart-tall {
+    height: 340px;
+}
+
+.mr-empty {
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 14px;
+    padding: 14px 0;
+}
+
+.mr-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 10px;
+}
+
+/* ----- Runs / insight chips ----- */
+
+.mr-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.mr-chip {
+    font-size: 12px;
+    color: var(--text-2);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 12px;
+}
+
+.mr-chip-us strong { color: var(--success); }
+.mr-chip-them strong { color: var(--danger); }
+
+/* ----- Players table ----- */
+
+.mr-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.mr-table th {
+    padding: 10px 12px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    border-bottom: 2px solid var(--border-strong);
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.mr-table th:hover {
+    color: var(--text);
+}
+
+.mr-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+}
+
+.mr-table tbody tr {
+    cursor: pointer;
+    transition: background 0.15s var(--ease);
+}
+
+.mr-table tbody tr:hover {
+    background: var(--surface-2);
+}
+
+.mr-table tbody tr.selected {
+    background: rgba(var(--accent-rgb), 0.08);
+}
+
+.mr-player {
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+.mr-num {
+    font-variant-numeric: tabular-nums;
+}
+
+.mr-pos { color: var(--success); font-weight: 700; }
+.mr-neg { color: var(--danger); font-weight: 700; }
+
+@media (max-width: 640px) {
+    .mr-hero-score { text-align: left; }
+    .mr-card { padding: 18px 16px; }
+    .mr-chart-wrap { height: 240px; }
+}
+
+/* ----- Timeline controls (set tabs + player filter) ----- */
+
+.mr-timeline-controls {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.mr-player-filter {
+    font-family: var(--font-body, inherit);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 14px;
+    cursor: pointer;
+}
+
+/* ----- Serve serie column ----- */
+
+.mr-serie {
+    display: block;
+    font-size: 12px;
+    white-space: nowrap;
+    color: var(--text);
+}
+
+.mr-serve-pct {
+    display: block;
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 2px;
+}

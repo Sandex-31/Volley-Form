@@ -110,12 +110,15 @@ const MatchManager = {
             if (match.status === 'Upcoming') {
                 statsButtons = `
                     <button class="btn-stats-trigger btn-live-tracker" onclick="MatchStats.openLiveModal('${match.id}', '${this.escapeQuote(match.opponent)}', '${this.escapeQuote(dateDisplay)}')">⏱️ Live Tracker</button>
-                    <button class="btn-stats-trigger" onclick="MatchStats.openModal('${match.id}', '${this.escapeQuote(match.opponent)}', '${this.escapeQuote(dateDisplay)}', true)" style="margin-left: 5px;">📊 Review</button>
                 `;
             } else {
+                // Stats table editor is admin-only; everyone else just gets the report
+                const tableButton = this.isAdmin
+                    ? `<button class="btn-stats-trigger" onclick="MatchStats.openModal('${match.id}', '${this.escapeQuote(match.opponent)}', '${this.escapeQuote(dateDisplay)}', false)" style="margin-left: 5px;">✏️ Tabella</button>`
+                    : '';
                 statsButtons = `
-                    <button class="btn-stats-trigger btn-review-stats" onclick="MatchStats.openModal('${match.id}', '${this.escapeQuote(match.opponent)}', '${this.escapeQuote(dateDisplay)}', true)">📊 Review</button>
-                    <button class="btn-stats-trigger" onclick="MatchStats.openLiveModal('${match.id}', '${this.escapeQuote(match.opponent)}', '${this.escapeQuote(dateDisplay)}')" style="margin-left: 5px;">⏱️ Edit Stats</button>
+                    <button class="btn-stats-trigger btn-review-stats" onclick="window.location.href='match-report.html?id=${match.id}'">📈 Report</button>
+                    ${tableButton}
                 `;
             }
 

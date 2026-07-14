@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../common/theme-init.js"></script>
+    <title>Match Report - Volley Tool</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap">
+    <link rel="stylesheet" href="../styles/theme.css">
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/navbar.css">
+    <link rel="stylesheet" href="../styles/match-lineups.css">
+    <link rel="stylesheet" href="../styles/match-report.css">
+</head>
+
+<body>
+    <!-- ===== NAVIGATION BAR ===== -->
+    <nav class="navbar" id="siteNav">
+        <a href="index.html" class="navbar-brand">
+            <img src="../assets/logo-emblem.png" alt="Wapatanka" class="navbar-logo"> <span>Wapatanka</span>
+        </a>
+        <ul class="navbar-menu" id="navMenu">
+            <li class="navbar-item"><a href="index.html"><span class="nav-ic" data-icon="home"></span> Home</a></li>
+            <li class="navbar-item"><a href="form.html"><span class="nav-ic" data-icon="form"></span> Rate Form</a></li>
+            <li class="navbar-item"><a href="public-exercises.html"><span class="nav-ic" data-icon="exercises"></span> Exercises</a></li>
+            <li class="navbar-item"><a href="responses.html"><span class="nav-ic" data-icon="responses"></span> Responses</a></li>
+            <li class="navbar-item active"><a href="match-table.html"><span class="nav-ic" data-icon="matches"></span> Matches</a></li>
+            <li class="navbar-item"><a href="players.html"><span class="nav-ic" data-icon="players"></span> Players</a></li>
+            <li class="navbar-item"><a href="ai-analysis.html"><span class="nav-ic" data-icon="ai"></span> AI Analysis</a></li>
+            <li class="navbar-item"><a href="upload-exercises.html"><span class="nav-ic" data-icon="manage"></span> Manage</a></li>
+        </ul>
+        <div class="navbar-actions">
+            <button class="theme-toggle-btn" id="themeToggleBtn" onclick="ThemeToggle.toggle()" aria-label="Cambia tema" type="button">
+                <span class="icon-sun" data-icon="sun"></span><span class="icon-moon" data-icon="moon"></span>
+            </button>
+            <button class="navbar-toggle" id="navToggle" aria-label="Menu" aria-expanded="false" type="button">☰</button>
+        </div>
+    </nav>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="mr-container" id="reportContent">
+
+        <a href="match-table.html" class="mr-back">← Calendario partite</a>
+
+        <!-- Match header -->
+        <header class="mr-hero reveal">
+            <div class="mr-hero-main">
+                <h1 id="mrOpponent">Caricamento…</h1>
+                <div class="mr-hero-meta">
+                    <span id="mrDate"></span>
+                    <span class="mr-dot"></span>
+                    <span id="mrLocation"></span>
+                    <span class="mr-dot"></span>
+                    <span id="mrStatus" class="badge badge-upcoming"></span>
+                </div>
+            </div>
+            <div class="mr-hero-score">
+                <div id="mrScore" class="mr-score">- - -</div>
+                <div id="mrSets" class="mr-sets"></div>
+            </div>
+        </header>
+
+        <!-- Score timeline -->
+        <section class="mr-card reveal">
+            <h2>📈 Andamento del set</h2>
+            <div class="mr-timeline-controls">
+                <div id="timelineSetTabs" class="lineup-set-tabs"></div>
+                <select id="timelinePlayerFilter" class="mr-player-filter" onchange="MatchReport.selectTimelinePlayer(this.value)"></select>
+            </div>
+            <div id="timelineRuns" class="mr-chips"></div>
+            <div class="mr-chart-wrap mr-chart-tall">
+                <canvas id="timelineChart"></canvas>
+            </div>
+            <p id="timelineEmpty" class="mr-empty" style="display: none;">
+                Nessun evento tracciato per questa partita. Usa il Live Tracker durante il match per vedere qui l'andamento punto per punto.
+            </p>
+        </section>
+
+        <!-- Team per-set trend -->
+        <section class="mr-card reveal">
+            <h2>🏐 Squadra per set</h2>
+            <div class="mr-chart-wrap">
+                <canvas id="teamChart"></canvas>
+            </div>
+            <p id="teamEmpty" class="mr-empty" style="display: none;">Nessuna statistica registrata per questa partita.</p>
+        </section>
+
+        <!-- Players breakdown -->
+        <section class="mr-card reveal">
+            <h2>👥 Giocatori</h2>
+            <div id="playersScopeTabs" class="lineup-set-tabs"></div>
+            <div class="table-responsive">
+                <table id="playersTable" class="mr-table">
+                    <thead>
+                        <tr>
+                            <th style="text-align: left;">Giocatore</th>
+                            <th data-sort="points" data-label="Punti" onclick="MatchReport.selectSort('points')">Punti</th>
+                            <th data-sort="errors" data-label="Errori" onclick="MatchReport.selectSort('errors')">Errori</th>
+                            <th data-sort="efficiency" data-label="Efficienza" onclick="MatchReport.selectSort('efficiency')">Efficienza</th>
+                            <th data-sort="aces" data-label="Ace" onclick="MatchReport.selectSort('aces')">Ace</th>
+                            <th data-sort="bestStreak" data-label="Battuta (serie)" onclick="MatchReport.selectSort('bestStreak')">Battuta (serie)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="playersTableBody"></tbody>
+                </table>
+            </div>
+            <p class="mr-hint">Clicca un giocatore per il dettaglio delle sue azioni.</p>
+
+            <div id="playerChartCard" style="display: none;">
+                <h3 id="playerChartTitle"></h3>
+                <div id="playerServeChips" class="mr-chips"></div>
+                <div class="mr-chart-wrap">
+                    <canvas id="playerChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <!-- Config -->
+    <script src="../config/firebase.config.js"></script>
+    <script src="../config/constants.js"></script>
+
+    <!-- Common & services -->
+    <script src="../common/logger.js"></script>
+    <script src="../common/ui-service.js"></script>
+    <script src="../services/firebase-service.js"></script>
+    <script src="../services/player-service.js"></script>
+    <script src="../services/match-service.js"></script>
+
+    <script src="../common/icons.js"></script>
+    <script src="../common/navbar.js"></script>
+    <script src="../common/scroll-reveal.js"></script>
+
+    <!-- Page module -->
+    <script src="../modules/matches/match-report.js"></script>
+</body>
+
+</html>

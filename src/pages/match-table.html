@@ -321,6 +321,20 @@
 
             <div id="liveSetTabs" class="lineup-set-tabs"></div>
 
+            <!-- Derived set score + manual opponent-point buttons -->
+            <div class="live-score-bar">
+                <div class="live-score-display">
+                    <span class="live-score-team">Noi</span>
+                    <span id="liveScoreValue" class="live-score-value">0 – 0</span>
+                    <span class="live-score-team">Loro</span>
+                </div>
+                <div class="live-score-actions">
+                    <button type="button" class="btn-score-manual btn-score-us" onclick="MatchStats.logOppEvent('opp_error')">+ Noi (err. avv.)</button>
+                    <button type="button" class="btn-score-manual btn-score-them" onclick="MatchStats.logOppEvent('opp_point')">+ Loro (vincente)</button>
+                    <button type="button" class="btn-score-manual" onclick="MatchStats.undoOppEvent()" title="Annulla ultimo punto manuale">↩</button>
+                </div>
+            </div>
+
             <!-- View 1: Roster Grid -->
             <div id="liveRosterView" class="live-view-panel">
                 <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px;">Tap a player to log their stats in real-time:</p>

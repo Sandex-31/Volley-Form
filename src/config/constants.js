@@ -30,6 +30,7 @@ const APP_CONSTANTS = {
         SELECTED_EXERCISES: 'selectedExercises',
         MATCH_STATS: 'matchStats',
         MATCH_LINEUPS: 'matchLineups',
+        MATCH_EVENTS: 'matchEvents',
         PLAYERS: 'players',
         MATCHES: 'matches'
     },
