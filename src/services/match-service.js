@@ -150,6 +150,22 @@ const MatchService = {
     },
 
     /**
+     * Partially update stats for a player (used for serve streak bookkeeping).
+     * ponytail: last-write-wins on serve_streaks; fine for a single scorekeeper,
+     * move to a transaction if multiple devices ever edit the same player live.
+     */
+    updateStats: async function (matchId, playerId, partial) {
+        if (!FirebaseService.isReady() || !playerId) return false;
+        try {
+            const path = `${APP_CONSTANTS.FIREBASE_REFS.MATCH_STATS}/${matchId}/${playerId}`;
+            return await FirebaseService.update(path, partial);
+        } catch (error) {
+            Logger.error(`Error updating stats for ${matchId}/${playerId}: ${error.message}`);
+            return false;
+        }
+    },
+
+    /**
      * Subscribe to real-time statistics changes for a specific player in a match
      */
     subscribeToMatchStats: function (matchId, playerId, callback) {
@@ -274,6 +290,7 @@ const MatchService = {
      */
     getDefaultStats: function () {
         return {
+            serve_streak: 0,
             service_out: 0,
             service_net: 0,
             foul: 0,

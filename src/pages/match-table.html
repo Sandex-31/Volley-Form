@@ -262,32 +262,36 @@
             </div>
 
             <div class="table-responsive" style="max-height: 60vh; overflow: auto;">
-                <table class="match-table stats-table" style="width: 100%; min-width: 1150px; border-collapse: collapse;">
+                <table class="match-table stats-table" style="width: 100%; min-width: 1350px; border-collapse: collapse;">
                     <thead>
                         <tr style="background-color: var(--surface-2); position: sticky; top: 0; z-index: 10;">
                             <th style="text-align: left; padding: 12px; border: 1px solid var(--border);">Player</th>
-                            <th colspan="2" style="text-align: center; border: 1px solid var(--border); border-left: 2px solid var(--border-strong); border-right: 2px solid var(--border-strong); background-color: rgba(var(--accent-rgb), 0.06);">🏐 Service Errors</th>
-                            <th colspan="6" style="text-align: center; border: 1px solid var(--border); border-right: 2px solid var(--border-strong); background-color: rgba(var(--accent-rgb), 0.08);">⚠️ Errors & Fouls</th>
-                            <th colspan="5" style="text-align: center; border: 1px solid var(--border); background-color: rgba(30, 142, 90, 0.10);">🔥 Points Made</th>
+                            <th colspan="4" style="text-align: center; border: 1px solid var(--border); border-left: 2px solid var(--border-strong); border-right: 2px solid var(--border-strong); background-color: rgba(var(--accent-rgb), 0.06);">🏐 Service Errors</th>
+                            <th colspan="7" style="text-align: center; border: 1px solid var(--border); border-right: 2px solid var(--border-strong); background-color: rgba(var(--accent-rgb), 0.08);">⚠️ Errors & Fouls</th>
+                            <th colspan="6" style="text-align: center; border: 1px solid var(--border); background-color: rgba(30, 142, 90, 0.10);">🔥 Points Made</th>
                         </tr>
                         <tr style="background-color: var(--surface); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; position: sticky; top: 38px; z-index: 10;">
                             <th style="text-align: left; padding: 8px 12px; border: 1px solid var(--border);">Name</th>
                             <!-- Service Errors -->
                             <th style="text-align: center; border: 1px solid var(--border); border-left: 2px solid var(--border-strong); padding: 8px;">Out</th>
-                            <th style="text-align: center; border: 1px solid var(--border); border-right: 2px solid var(--border-strong); padding: 8px;">Net</th>
+                            <th style="text-align: center; border: 1px solid var(--border); padding: 8px;">Net</th>
+                            <th style="text-align: center; border: 1px solid var(--border); padding: 8px;">Streaks</th>
+                            <th style="text-align: center; border: 1px solid var(--border); border-right: 2px solid var(--border-strong); padding: 8px;">Tot</th>
                             <!-- Errors & Fouls -->
                             <th style="text-align: center; border: 1px solid var(--border); padding: 8px;">Foul</th>
                             <th style="text-align: center; border: 1px solid var(--border); padding: 8px;">Grave Err</th>
                             <th style="text-align: center; border: 1px solid var(--border); padding: 8px;">Block Err</th>
                             <th style="text-align: center; border: 1px solid var(--border); padding: 8px;">Rec Error</th>
                             <th style="text-align: center; border: 1px solid var(--border); padding: 8px;">Palleggio Err</th>
-                            <th style="text-align: center; border: 1px solid var(--border); border-right: 2px solid var(--border-strong); padding: 8px;">Def Error</th>
+                            <th style="text-align: center; border: 1px solid var(--border); padding: 8px;">Def Error</th>
+                            <th style="text-align: center; border: 1px solid var(--border); border-right: 2px solid var(--border-strong); padding: 8px;">Tot</th>
                             <!-- Points -->
                             <th style="text-align: center; border: 1px solid var(--border); padding: 8px;">Serve Pt</th>
                             <th style="text-align: center; border: 1px solid var(--border); padding: 8px;">Spike</th>
                             <th style="text-align: center; border: 1px solid var(--border); padding: 8px;">Block</th>
                             <th style="text-align: center; border: 1px solid var(--border); padding: 8px;">Lob</th>
                             <th style="text-align: center; border: 1px solid var(--border); padding: 8px;">Random</th>
+                            <th style="text-align: center; border: 1px solid var(--border); padding: 8px;">Tot</th>
                         </tr>
                     </thead>
                     <tbody id="statsTableBody">

@@ -104,8 +104,14 @@ const MatchStats = {
                 <td data-label="Out" style="text-align: center; border-left: 2px solid #3a4560; vertical-align: middle;">
                     ${this.createCounterHtml(player.id, 'service_out')}
                 </td>
-                <td data-label="Net" style="text-align: center; border-right: 2px solid #3a4560; vertical-align: middle;">
+                <td data-label="Net" style="text-align: center; vertical-align: middle;">
                     ${this.createCounterHtml(player.id, 'service_net')}
+                </td>
+                <td data-label="Streaks" style="text-align: center; vertical-align: middle;">
+                    <span id="streaks-${player.id}" style="font-size: 12px; font-weight: 600; color: #f0f4f8; white-space: nowrap;">—</span>
+                </td>
+                <td data-label="Tot Service" style="text-align: center; border-right: 2px solid #3a4560; vertical-align: middle;">
+                    <span id="total_service-${player.id}" class="stats-value-compact" style="font-size: 15px; font-weight: 700; color: #ff6b6b;">0</span>
                 </td>
                 
                 <!-- Errors & Fouls -->
@@ -124,8 +130,11 @@ const MatchStats = {
                 <td data-label="Set Error" style="text-align: center; vertical-align: middle;">
                     ${this.createCounterHtml(player.id, 'error_set')}
                 </td>
-                <td data-label="Defense Error" style="text-align: center; border-right: 2px solid #3a4560; vertical-align: middle;">
+                <td data-label="Defense Error" style="text-align: center; vertical-align: middle;">
                     ${this.createCounterHtml(player.id, 'error_defense')}
+                </td>
+                <td data-label="Tot Errors" style="text-align: center; border-right: 2px solid #3a4560; vertical-align: middle;">
+                    <span id="total_errors-${player.id}" class="stats-value-compact" style="font-size: 15px; font-weight: 700; color: #ff6b6b;">0</span>
                 </td>
                 
                 <!-- Points Made -->
@@ -143,6 +152,9 @@ const MatchStats = {
                 </td>
                 <td data-label="Random" style="text-align: center; vertical-align: middle;">
                     ${this.createCounterHtml(player.id, 'point_random')}
+                </td>
+                <td data-label="Tot Points" style="text-align: center; border-left: 1px solid #3a4560; vertical-align: middle;">
+                    <span id="total_points-${player.id}" class="stats-value-compact" style="font-size: 15px; font-weight: 700; color: #69c896;">0</span>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -186,12 +198,49 @@ const MatchStats = {
     },
 
     /**
+     * Closed serve streaks as a plain array (Firebase may return arrays as keyed objects)
+     */
+    getClosedStreaks: function(stats) {
+        const s = stats && stats.serve_streaks;
+        return Array.isArray(s) ? s.slice() : Object.values(s || {});
+    },
+
+    /**
+     * Human-readable streak history, e.g. "3 · 0 · 7 · (2)" — parentheses = streak still open
+     */
+    formatStreaks: function(stats) {
+        const closed = this.getClosedStreaks(stats);
+        const current = (stats && stats.serve_streak) || 0;
+        if (closed.length === 0 && current === 0) return '—';
+        const parts = closed.slice();
+        if (current > 0) parts.push(`(${current})`);
+        return parts.join(' · ');
+    },
+
+    /**
      * Update UI counters for a single player row
      */
     updatePlayerRowUI: function(playerId, stats) {
         if (!stats) return;
 
+        const sectionTotals = {
+            total_service: (stats.service_out || 0) + (stats.service_net || 0),
+            total_errors: (stats.foul || 0) + (stats.error_grave || 0) + (stats.error_block || 0) + (stats.error_receive || 0) + (stats.error_set || 0) + (stats.error_defense || 0),
+            total_points: (stats.point_serve || 0) + (stats.point_spike || 0) + (stats.point_block || 0) + (stats.point_lob || 0) + (stats.point_random || 0)
+        };
+        Object.keys(sectionTotals).forEach(key => {
+            const el = document.getElementById(`${key}-${playerId}`);
+            if (el) el.textContent = sectionTotals[key];
+        });
+
+        const streaksText = this.formatStreaks(stats);
+        const streaksEl = document.getElementById(`streaks-${playerId}`);
+        if (streaksEl) streaksEl.textContent = streaksText;
+        const liveStreaksEl = document.getElementById(`live-streaks-${playerId}`);
+        if (liveStreaksEl) liveStreaksEl.textContent = streaksText === '—' ? '' : `Streaks: ${streaksText}`;
+
         Object.keys(stats).forEach(key => {
+            if (key === 'serve_streaks') return; // array, rendered above
             const valueEl = document.getElementById(`val-${playerId}-${key}`);
             if (valueEl) {
                 valueEl.textContent = stats[key];
@@ -239,6 +288,20 @@ const MatchStats = {
         // Atomic server-side increment
         const success = await MatchService.incrementStat(this.currentMatchId, playerId, statKey, 1);
         if (success) {
+            // Serve streak bookkeeping: an ace extends the streak,
+            // a service error closes it (records it) and resets to 0.
+            if (statKey === 'point_serve') {
+                stats.serve_streak = (stats.serve_streak || 0) + 1;
+                this.updatePlayerRowUI(playerId, stats);
+                await MatchService.incrementStat(this.currentMatchId, playerId, 'serve_streak', 1);
+            } else if (statKey === 'service_out' || statKey === 'service_net') {
+                const streaks = this.getClosedStreaks(stats);
+                streaks.push(stats.serve_streak || 0);
+                stats.serve_streaks = streaks;
+                stats.serve_streak = 0;
+                this.updatePlayerRowUI(playerId, stats);
+                await MatchService.updateStats(this.currentMatchId, playerId, { serve_streaks: streaks, serve_streak: 0 });
+            }
             this.showSyncStatus('saved');
         } else {
             // Roll back the optimistic update if the write failed.
@@ -268,6 +331,21 @@ const MatchStats = {
         // Atomic server-side decrement
         const success = await MatchService.incrementStat(this.currentMatchId, playerId, statKey, -1);
         if (success) {
+            // Inverse serve streak bookkeeping (undo a mis-tap)
+            if (statKey === 'point_serve' && (stats.serve_streak || 0) > 0) {
+                stats.serve_streak = stats.serve_streak - 1;
+                this.updatePlayerRowUI(playerId, stats);
+                await MatchService.incrementStat(this.currentMatchId, playerId, 'serve_streak', -1);
+            } else if (statKey === 'service_out' || statKey === 'service_net') {
+                const streaks = this.getClosedStreaks(stats);
+                if (streaks.length > 0) {
+                    const restored = streaks.pop();
+                    stats.serve_streaks = streaks;
+                    stats.serve_streak = (stats.serve_streak || 0) + restored;
+                    this.updatePlayerRowUI(playerId, stats);
+                    await MatchService.updateStats(this.currentMatchId, playerId, { serve_streaks: streaks, serve_streak: stats.serve_streak });
+                }
+            }
             this.showSyncStatus('saved');
         } else {
             // Roll back the optimistic update if the write failed.
@@ -496,13 +574,15 @@ const MatchStats = {
         if (!container) return;
 
         container.innerHTML = `
-            <!-- Service Errors Section -->
+            <!-- Service Section -->
             <div class="live-stat-group srv-errors">
-                <div class="live-stat-group-title">🏐 Service Errors</div>
+                <div class="live-stat-group-title">🏐 Service</div>
                 <div class="live-counter-grid">
+                    ${this.createLiveCounterTileHtml(playerId, 'serve_streak', 'Serve In (streak)')}
                     ${this.createLiveCounterTileHtml(playerId, 'service_out', 'Service Out')}
                     ${this.createLiveCounterTileHtml(playerId, 'service_net', 'Service Net')}
                 </div>
+                <div id="live-streaks-${playerId}" style="font-size: 11px; color: var(--text-muted, #8892b0); padding: 4px 2px 0; text-align: center;"></div>
             </div>
 
             <!-- Errors & Fouls Section -->
