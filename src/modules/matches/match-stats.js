@@ -9,6 +9,8 @@ const MatchStats = {
     activeSubscriptionRef: null,
     isReadOnly: false,
     currentLivePlayerId: null,
+    viewSet: 'all', // 'all' or a set number; scope for displayed stats and live edits
+    snapshotSeen: false,
 
     /**
      * Dummy function to satisfy match-manager.js player subscription callback.
@@ -22,6 +24,8 @@ const MatchStats = {
         this.isReadOnly = isReadOnly;
         this.currentMatchId = matchId;
         this.allPlayerStats = {};
+        this.viewSet = 'all';
+        this.snapshotSeen = false;
         
         // Update header labels
         const opponentEl = document.getElementById('statsMatchOpponent');
@@ -47,6 +51,12 @@ const MatchStats = {
             (allStats) => {
                 if (this.currentMatchId !== subscriptionMatchId) return;
                 this.allPlayerStats = allStats || {};
+                if (!this.snapshotSeen) {
+                    this.snapshotSeen = true;
+                    // Move legacy flat counters under sets/1 (subscription re-fires with clean data)
+                    if (!this.isReadOnly) MatchService.migrateStatsToSets(subscriptionMatchId, this.allPlayerStats);
+                }
+                this.renderSetTabs();
                 this.updateAllUI();
             }
         );
@@ -183,8 +193,7 @@ const MatchStats = {
     updateAllUI: function() {
         const players = PlayerService.getPlayersList();
         players.forEach(player => {
-            const playerStats = this.allPlayerStats[player.id] || MatchService.getDefaultStats();
-            this.updatePlayerRowUI(player.id, playerStats);
+            this.updatePlayerRowUI(player.id, this.scopedStats(player.id));
         });
 
         // If live modal is visible and roster view is active, update it
@@ -215,6 +224,65 @@ const MatchStats = {
         const parts = closed.slice();
         if (current > 0) parts.push(`(${current})`);
         return parts.join(' · ');
+    },
+
+    /**
+     * Set numbers holding data for any player, ascending
+     */
+    setsWithData: function() {
+        const nums = new Set();
+        Object.values(this.allPlayerStats || {}).forEach(raw => {
+            Object.keys(MatchService.splitBySets(raw)).forEach(n => nums.add(Number(n)));
+        });
+        return [...nums].sort((a, b) => a - b);
+    },
+
+    /**
+     * Stats for a player in the current view scope ('all' = whole match)
+     */
+    scopedStats: function(playerId) {
+        const raw = this.allPlayerStats[playerId];
+        if (this.viewSet === 'all') return MatchService.aggregateStats(raw);
+        return MatchService.mergeStats(MatchService.splitBySets(raw)[this.viewSet], null);
+    },
+
+    /**
+     * Local per-set stats object for the active set (created on demand, mutated optimistically)
+     */
+    setStatsFor: function(playerId) {
+        const raw = this.allPlayerStats[playerId] = this.allPlayerStats[playerId] || {};
+        raw.sets = raw.sets || {};
+        return raw.sets[this.viewSet] = raw.sets[this.viewSet] || {};
+    },
+
+    /**
+     * Switch the displayed set scope (review: 'all' | n, live: n)
+     */
+    selectSet: function(val) {
+        this.viewSet = val === 'all' ? 'all' : Number(val);
+        this.renderSetTabs();
+        this.updateAllUI();
+        if (this.currentLivePlayerId) {
+            this.updatePlayerRowUI(this.currentLivePlayerId, this.scopedStats(this.currentLivePlayerId));
+        }
+    },
+
+    /**
+     * Render set tabs in review ('Totale' + sets with data) and live (Set 1..5) modals
+     */
+    renderSetTabs: function() {
+        const tab = (label, val) =>
+            `<button type="button" class="lineup-tab${String(this.viewSet) === String(val) ? ' active' : ''}" onclick="MatchStats.selectSet('${val}')">${label}</button>`;
+        const wrap = document.getElementById('statsSetTabs');
+        if (wrap) {
+            const nums = this.setsWithData();
+            if (!nums.length) nums.push(1);
+            wrap.innerHTML = tab('Totale', 'all') + nums.map(n => tab(`Set ${n}`, n)).join('');
+        }
+        const liveWrap = document.getElementById('liveSetTabs');
+        if (liveWrap) {
+            liveWrap.innerHTML = [1, 2, 3, 4, 5].map(n => tab(`Set ${n}`, n)).join('');
+        }
     },
 
     /**
@@ -272,41 +340,41 @@ const MatchStats = {
      */
     increment: async function(playerId, statKey) {
         if (!this.currentMatchId || !playerId) return;
-
-        this.showSyncStatus('syncing');
-        
-        if (!this.allPlayerStats[playerId]) {
-            this.allPlayerStats[playerId] = MatchService.getDefaultStats();
+        if (this.viewSet === 'all') {
+            UIService.showMessage('Seleziona un set per modificare le statistiche', 'error');
+            return;
         }
 
-        const stats = this.allPlayerStats[playerId];
+        this.showSyncStatus('syncing');
+
+        const stats = this.setStatsFor(playerId);
         stats[statKey] = (stats[statKey] || 0) + 1;
 
         // Optimistic UI update
-        this.updatePlayerRowUI(playerId, stats);
+        this.updatePlayerRowUI(playerId, this.scopedStats(playerId));
 
         // Atomic server-side increment
-        const success = await MatchService.incrementStat(this.currentMatchId, playerId, statKey, 1);
+        const success = await MatchService.incrementStat(this.currentMatchId, playerId, statKey, 1, this.viewSet);
         if (success) {
             // Serve streak bookkeeping: an ace extends the streak,
             // a service error closes it (records it) and resets to 0.
             if (statKey === 'point_serve') {
                 stats.serve_streak = (stats.serve_streak || 0) + 1;
-                this.updatePlayerRowUI(playerId, stats);
-                await MatchService.incrementStat(this.currentMatchId, playerId, 'serve_streak', 1);
+                this.updatePlayerRowUI(playerId, this.scopedStats(playerId));
+                await MatchService.incrementStat(this.currentMatchId, playerId, 'serve_streak', 1, this.viewSet);
             } else if (statKey === 'service_out' || statKey === 'service_net') {
                 const streaks = this.getClosedStreaks(stats);
                 streaks.push(stats.serve_streak || 0);
                 stats.serve_streaks = streaks;
                 stats.serve_streak = 0;
-                this.updatePlayerRowUI(playerId, stats);
-                await MatchService.updateStats(this.currentMatchId, playerId, { serve_streaks: streaks, serve_streak: 0 });
+                this.updatePlayerRowUI(playerId, this.scopedStats(playerId));
+                await MatchService.updateStats(this.currentMatchId, playerId, { serve_streaks: streaks, serve_streak: 0 }, this.viewSet);
             }
             this.showSyncStatus('saved');
         } else {
             // Roll back the optimistic update if the write failed.
             stats[statKey] = Math.max(0, (stats[statKey] || 0) - 1);
-            this.updatePlayerRowUI(playerId, stats);
+            this.updatePlayerRowUI(playerId, this.scopedStats(playerId));
             UIService.showMessage('Failed to save stats', 'error');
             this.showSyncStatus('saved'); // reset dot
         }
@@ -317,40 +385,44 @@ const MatchStats = {
      */
     decrement: async function(playerId, statKey) {
         if (!this.currentMatchId || !playerId) return;
-        
-        const stats = this.allPlayerStats[playerId] || MatchService.getDefaultStats();
+        if (this.viewSet === 'all') {
+            UIService.showMessage('Seleziona un set per modificare le statistiche', 'error');
+            return;
+        }
+
+        const stats = this.setStatsFor(playerId);
         if ((stats[statKey] || 0) <= 0) return;
 
         this.showSyncStatus('syncing');
-        
+
         stats[statKey] = stats[statKey] - 1;
 
         // Optimistic UI update
-        this.updatePlayerRowUI(playerId, stats);
+        this.updatePlayerRowUI(playerId, this.scopedStats(playerId));
 
         // Atomic server-side decrement
-        const success = await MatchService.incrementStat(this.currentMatchId, playerId, statKey, -1);
+        const success = await MatchService.incrementStat(this.currentMatchId, playerId, statKey, -1, this.viewSet);
         if (success) {
             // Inverse serve streak bookkeeping (undo a mis-tap)
             if (statKey === 'point_serve' && (stats.serve_streak || 0) > 0) {
                 stats.serve_streak = stats.serve_streak - 1;
-                this.updatePlayerRowUI(playerId, stats);
-                await MatchService.incrementStat(this.currentMatchId, playerId, 'serve_streak', -1);
+                this.updatePlayerRowUI(playerId, this.scopedStats(playerId));
+                await MatchService.incrementStat(this.currentMatchId, playerId, 'serve_streak', -1, this.viewSet);
             } else if (statKey === 'service_out' || statKey === 'service_net') {
                 const streaks = this.getClosedStreaks(stats);
                 if (streaks.length > 0) {
                     const restored = streaks.pop();
                     stats.serve_streaks = streaks;
                     stats.serve_streak = (stats.serve_streak || 0) + restored;
-                    this.updatePlayerRowUI(playerId, stats);
-                    await MatchService.updateStats(this.currentMatchId, playerId, { serve_streaks: streaks, serve_streak: stats.serve_streak });
+                    this.updatePlayerRowUI(playerId, this.scopedStats(playerId));
+                    await MatchService.updateStats(this.currentMatchId, playerId, { serve_streaks: streaks, serve_streak: stats.serve_streak }, this.viewSet);
                 }
             }
             this.showSyncStatus('saved');
         } else {
             // Roll back the optimistic update if the write failed.
             stats[statKey] = (stats[statKey] || 0) + 1;
-            this.updatePlayerRowUI(playerId, stats);
+            this.updatePlayerRowUI(playerId, this.scopedStats(playerId));
             UIService.showMessage('Failed to save stats', 'error');
             this.showSyncStatus('saved'); // reset dot
         }
@@ -433,6 +505,9 @@ const MatchStats = {
         this.allPlayerStats = {};
         this.currentLivePlayerId = null;
         this.isReadOnly = false; // Always editable in Live Mode
+        this.viewSet = 1;
+        this.snapshotSeen = false;
+        this.renderSetTabs();
 
         // Update header labels in live tracker
         const opponentEl = document.getElementById('liveStatsMatchOpponent');
@@ -451,6 +526,14 @@ const MatchStats = {
             (allStats) => {
                 if (this.currentMatchId !== subscriptionMatchId) return;
                 this.allPlayerStats = allStats || {};
+                if (!this.snapshotSeen) {
+                    this.snapshotSeen = true;
+                    MatchService.migrateStatsToSets(subscriptionMatchId, this.allPlayerStats);
+                    // Land on the set being played rather than always on set 1
+                    const played = this.setsWithData();
+                    if (played.length) this.viewSet = played[played.length - 1];
+                    this.renderSetTabs();
+                }
                 this.updateAllUI();
             }
         );
@@ -512,7 +595,7 @@ const MatchStats = {
             card.onclick = () => this.selectPlayerForLiveEdit(player.id);
 
             // Compute total errors & points for this player to show a summary
-            const stats = this.allPlayerStats[player.id] || MatchService.getDefaultStats();
+            const stats = this.scopedStats(player.id);
             const totalPoints = (stats.point_serve || 0) + (stats.point_spike || 0) + (stats.point_block || 0) + (stats.point_lob || 0) + (stats.point_random || 0);
             const totalErrors = (stats.service_out || 0) + (stats.service_net || 0) + (stats.foul || 0) + (stats.error_grave || 0) + (stats.error_block || 0) + (stats.error_receive || 0) + (stats.error_set || 0) + (stats.error_defense || 0);
 
@@ -561,8 +644,7 @@ const MatchStats = {
         this.renderLiveCounters(playerId);
         
         // Update values in the counters
-        const stats = this.allPlayerStats[playerId] || MatchService.getDefaultStats();
-        this.updatePlayerRowUI(playerId, stats);
+        this.updatePlayerRowUI(playerId, this.scopedStats(playerId));
         this.showSyncStatus('saved');
     },
 

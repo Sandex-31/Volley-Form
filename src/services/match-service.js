@@ -106,7 +106,7 @@ const MatchService = {
         try {
             const path = `${APP_CONSTANTS.FIREBASE_REFS.MATCH_STATS}/${matchId}/${playerId}`;
             const data = await FirebaseService.read(path);
-            return data || this.getDefaultStats();
+            return data ? this.aggregateStats(data) : this.getDefaultStats();
         } catch (error) {
             Logger.error(`Error reading match stats for ${matchId}/${playerId}: ${error.message}`);
             return this.getDefaultStats();
@@ -135,13 +135,14 @@ const MatchService = {
      * Uses a server-side increment so concurrent edits from multiple
      * devices don't overwrite each other (avoids lost updates).
      */
-    incrementStat: async function (matchId, playerId, statKey, delta) {
+    incrementStat: async function (matchId, playerId, statKey, delta, setNumber) {
         if (!FirebaseService.isReady() || !playerId) {
             UIService.showMessage('⚠️ Firebase not available', 'error');
             return false;
         }
         try {
-            const path = `${APP_CONSTANTS.FIREBASE_REFS.MATCH_STATS}/${matchId}/${playerId}/${statKey}`;
+            const setSeg = setNumber ? `sets/${setNumber}/` : '';
+            const path = `${APP_CONSTANTS.FIREBASE_REFS.MATCH_STATS}/${matchId}/${playerId}/${setSeg}${statKey}`;
             return await FirebaseService.increment(path, delta);
         } catch (error) {
             Logger.error(`Error incrementing ${statKey} for ${matchId}/${playerId}: ${error.message}`);
@@ -154,10 +155,11 @@ const MatchService = {
      * ponytail: last-write-wins on serve_streaks; fine for a single scorekeeper,
      * move to a transaction if multiple devices ever edit the same player live.
      */
-    updateStats: async function (matchId, playerId, partial) {
+    updateStats: async function (matchId, playerId, partial, setNumber) {
         if (!FirebaseService.isReady() || !playerId) return false;
         try {
-            const path = `${APP_CONSTANTS.FIREBASE_REFS.MATCH_STATS}/${matchId}/${playerId}`;
+            const setSeg = setNumber ? `/sets/${setNumber}` : '';
+            const path = `${APP_CONSTANTS.FIREBASE_REFS.MATCH_STATS}/${matchId}/${playerId}${setSeg}`;
             return await FirebaseService.update(path, partial);
         } catch (error) {
             Logger.error(`Error updating stats for ${matchId}/${playerId}: ${error.message}`);
@@ -305,5 +307,69 @@ const MatchService = {
             point_lob: 0,
             point_random: 0
         };
+    },
+
+    /**
+     * View of a raw player stats node as { setNumber: stats }.
+     * Legacy flat counters (pre per-set tracking) count as set 1.
+     */
+    splitBySets: function (raw) {
+        const sets = {};
+        Object.entries((raw && raw.sets) || {}).forEach(([n, s]) => {
+            if (s) sets[n] = s;
+        });
+        const legacy = {};
+        Object.keys(raw || {}).forEach((k) => {
+            if (k !== 'sets') legacy[k] = raw[k];
+        });
+        if (Object.keys(legacy).length) {
+            sets['1'] = sets['1'] ? this.mergeStats(sets['1'], legacy) : legacy;
+        }
+        return sets;
+    },
+
+    /** Sum two stats objects: numbers added, serve_streaks concatenated. */
+    mergeStats: function (a, b) {
+        const out = this.getDefaultStats();
+        out.serve_streaks = [];
+        [a, b].forEach((s) => {
+            if (!s) return;
+            Object.keys(s).forEach((k) => {
+                if (k === 'serve_streaks') {
+                    const arr = Array.isArray(s[k]) ? s[k] : Object.values(s[k] || {});
+                    out.serve_streaks = out.serve_streaks.concat(arr);
+                } else if (typeof s[k] === 'number') {
+                    out[k] = (out[k] || 0) + s[k];
+                }
+            });
+        });
+        return out;
+    },
+
+    /** Whole-match totals for a raw player stats node, across all sets. */
+    aggregateStats: function (raw) {
+        const sets = this.splitBySets(raw);
+        return Object.keys(sets)
+            .sort((x, y) => x - y)
+            .reduce((acc, n) => this.mergeStats(acc, sets[n]), this.getDefaultStats());
+    },
+
+    /**
+     * One-time move of legacy flat counters under sets/1.
+     * ponytail: overwrites sets/1 if legacy and per-set data ever coexist;
+     * fine because legacy matches predate per-set tracking.
+     */
+    migrateStatsToSets: async function (matchId, allStats) {
+        for (const [playerId, raw] of Object.entries(allStats || {})) {
+            const legacyKeys = Object.keys(raw || {}).filter((k) => k !== 'sets');
+            if (!legacyKeys.length) continue;
+            const updates = {};
+            legacyKeys.forEach((k) => {
+                updates[`sets/1/${k}`] = raw[k];
+                updates[k] = null;
+            });
+            const path = `${APP_CONSTANTS.FIREBASE_REFS.MATCH_STATS}/${matchId}/${playerId}`;
+            await FirebaseService.update(path, updates);
+        }
     }
 };
