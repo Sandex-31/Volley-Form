@@ -1,6 +1,8 @@
 /* ===== NAVBAR ===== */
 .navbar {
-  position: sticky; top: 0; left: 0; z-index: 1000;
+  /* In normal flow on purpose: the navbar scrolls away with the page
+     (sticky was broken anyway by overflow-x:hidden on html/body). */
+  position: relative; z-index: 1000;
   width: 100%; height: var(--nav-h);
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 28px;

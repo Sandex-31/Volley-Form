@@ -9,6 +9,7 @@
     function init() {
         var panes = Array.prototype.slice.call(document.querySelectorAll('.pane'));
         var bar = document.getElementById('scrollProgress');
+        var navbar = document.querySelector('.navbar');
         var dotsWrap = document.getElementById('sectionDots');
         var blob1 = document.querySelector('#bgFx .blob-1');
         var blob2 = document.querySelector('#bgFx .blob-2');
@@ -35,7 +36,13 @@
             var y = window.scrollY;
             var p = Math.max(0, Math.min(1, y / max));
 
-            if (bar) bar.style.width = (p * 100) + '%';
+            if (bar) {
+                bar.style.width = (p * 100) + '%';
+                // Bar rides just under the navbar, then clamps to the very top
+                // of the viewport once the (non-sticky) navbar scrolls away.
+                var navBottom = navbar ? navbar.getBoundingClientRect().bottom : 0;
+                bar.style.top = Math.max(0, navBottom) + 'px';
+            }
 
             if (!reduce) {
                 if (blob1) blob1.style.transform = 'translate3d(' + (-y * 0.04) + 'px,' + (y * 0.12) + 'px,0)';
