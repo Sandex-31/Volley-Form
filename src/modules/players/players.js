@@ -103,7 +103,7 @@ const PlayersModule = {
                 `;
             }
 
-            const heightHtml = player.height ? `<div class="player-height" style="font-size: 12px; color: #8892b0; margin-top: 5px;">Altezza: ${player.height} cm</div>` : '';
+            const heightHtml = player.height ? `<div class="player-height" style="font-size: 12px; color: var(--text-muted); margin-top: 5px;">Altezza: ${player.height} cm</div>` : '';
             card.innerHTML = `
                 ${photoHtml}
                 <div class="player-name">${this.escapeHtml(player.name)}</div>

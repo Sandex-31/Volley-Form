@@ -69,7 +69,7 @@ const MatchManager = {
         if (!matches || matches.length === 0) {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="6" style="text-align: center; color: #999; font-style: italic; padding: 30px;">
+                    <td colspan="6" style="text-align: center; color: var(--text-muted); font-style: italic; padding: 30px;">
                         No matches scheduled or recorded yet.
                     </td>
                 </tr>

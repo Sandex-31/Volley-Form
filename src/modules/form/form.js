@@ -95,10 +95,10 @@ const FormModule = {
         if (nextBtn) {
             if (this.currentStep === this.totalSteps) {
                 nextBtn.textContent = 'Submit';
-                nextBtn.style.background = '#4caf50';
+                nextBtn.style.background = 'var(--success)';
             } else {
                 nextBtn.textContent = 'Next →';
-                nextBtn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                nextBtn.style.background = '';
             }
         }
 

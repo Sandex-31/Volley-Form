@@ -358,7 +358,10 @@ const MatchService = {
         return FirebaseService.subscribe(
             path,
             (data) => callback(Object.values(data || {}).sort((a, b) => a.ts - b.ts)),
-            (error) => Logger.error(`Failed to load events for ${matchId}: ${error.message}`)
+            (error) => {
+                Logger.error(`Failed to load events for ${matchId}: ${error.message}`);
+                UIService.showMessage('Punteggio live non disponibile: accesso a matchEvents negato', 'error');
+            }
         );
     },
 

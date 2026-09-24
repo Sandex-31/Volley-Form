@@ -88,7 +88,7 @@ const MatchStats = {
         if (players.length === 0) {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="9" style="text-align: center; color: #999; font-style: italic; padding: 20px;">
+                    <td colspan="9" style="text-align: center; color: var(--text-muted); font-style: italic; padding: 20px;">
                         No players on team roster. Go to the "Players" tab to register players.
                     </td>
                 </tr>
@@ -104,26 +104,26 @@ const MatchStats = {
             tr.innerHTML = `
                 <td style="padding: 10px; text-align: left; vertical-align: middle;">
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <span class="player-number" style="display: inline-flex; width: 28px; height: 28px; font-size: 12px; margin-right: 0; margin-bottom: 0; background: linear-gradient(135deg, #3a4560 0%, #4e5a7b 100%); flex-shrink: 0;">#${player.number}</span>
+                        <span class="player-number" style="display: inline-flex; width: 28px; height: 28px; font-size: 12px; margin-right: 0; margin-bottom: 0; background: linear-gradient(135deg, var(--brand) 0%, var(--brand-strong) 100%); flex-shrink: 0;">#${player.number}</span>
                         <div>
-                            <div style="font-weight: 700; color: #f0f4f8; font-size: 13px;">${this.escapeHtml(player.name)}</div>
-                            <div style="font-size: 10px; color: #8892b0; text-transform: uppercase; letter-spacing: 0.5px;">${player.role}</div>
+                            <div style="font-weight: 700; color: var(--text); font-size: 13px;">${this.escapeHtml(player.name)}</div>
+                            <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">${player.role}</div>
                         </div>
                     </div>
                 </td>
                 
                 <!-- Service Errors -->
-                <td data-label="Out" style="text-align: center; border-left: 2px solid #3a4560; vertical-align: middle;">
+                <td data-label="Out" style="text-align: center; border-left: 2px solid var(--border-strong); vertical-align: middle;">
                     ${this.createCounterHtml(player.id, 'service_out')}
                 </td>
                 <td data-label="Net" style="text-align: center; vertical-align: middle;">
                     ${this.createCounterHtml(player.id, 'service_net')}
                 </td>
                 <td data-label="Streaks" style="text-align: center; vertical-align: middle;">
-                    <span id="streaks-${player.id}" style="font-size: 12px; font-weight: 600; color: #f0f4f8; white-space: nowrap;">—</span>
+                    <span id="streaks-${player.id}" style="font-size: 12px; font-weight: 600; color: var(--text); white-space: nowrap;">—</span>
                 </td>
-                <td data-label="Tot Service" style="text-align: center; border-right: 2px solid #3a4560; vertical-align: middle;">
-                    <span id="total_service-${player.id}" class="stats-value-compact" style="font-size: 15px; font-weight: 700; color: #ff6b6b;">0</span>
+                <td data-label="Tot Service" style="text-align: center; border-right: 2px solid var(--border-strong); vertical-align: middle;">
+                    <span id="total_service-${player.id}" class="stats-value-compact" style="font-size: 15px; font-weight: 700; color: var(--danger);">0</span>
                 </td>
                 
                 <!-- Errors & Fouls -->
@@ -145,8 +145,8 @@ const MatchStats = {
                 <td data-label="Defense Error" style="text-align: center; vertical-align: middle;">
                     ${this.createCounterHtml(player.id, 'error_defense')}
                 </td>
-                <td data-label="Tot Errors" style="text-align: center; border-right: 2px solid #3a4560; vertical-align: middle;">
-                    <span id="total_errors-${player.id}" class="stats-value-compact" style="font-size: 15px; font-weight: 700; color: #ff6b6b;">0</span>
+                <td data-label="Tot Errors" style="text-align: center; border-right: 2px solid var(--border-strong); vertical-align: middle;">
+                    <span id="total_errors-${player.id}" class="stats-value-compact" style="font-size: 15px; font-weight: 700; color: var(--danger);">0</span>
                 </td>
                 
                 <!-- Points Made -->
@@ -165,8 +165,8 @@ const MatchStats = {
                 <td data-label="Random" style="text-align: center; vertical-align: middle;">
                     ${this.createCounterHtml(player.id, 'point_random')}
                 </td>
-                <td data-label="Tot Points" style="text-align: center; border-left: 1px solid #3a4560; vertical-align: middle;">
-                    <span id="total_points-${player.id}" class="stats-value-compact" style="font-size: 15px; font-weight: 700; color: #69c896;">0</span>
+                <td data-label="Tot Points" style="text-align: center; border-left: 1px solid var(--border-strong); vertical-align: middle;">
+                    <span id="total_points-${player.id}" class="stats-value-compact" style="font-size: 15px; font-weight: 700; color: var(--success);">0</span>
                 </td>
             `;
             tbody.appendChild(tr);
@@ -178,7 +178,7 @@ const MatchStats = {
      */
     createCounterHtml: function(playerId, statKey) {
         if (this.isReadOnly) {
-            return `<span id="val-${playerId}-${statKey}" class="stats-value-compact" style="font-size: 15px; font-weight: 700; color: #f0f4f8;">0</span>`;
+            return `<span id="val-${playerId}-${statKey}" class="stats-value-compact" style="font-size: 15px; font-weight: 700; color: var(--text);">0</span>`;
         }
         return `
             <div class="stats-counter-compact">
@@ -289,7 +289,8 @@ const MatchStats = {
     logOppEvent: async function(key) {
         if (!this.currentMatchId || this.viewSet === 'all') return;
         this.showSyncStatus('syncing');
-        await MatchService.addMatchEvent(this.currentMatchId, { set: this.viewSet, playerId: null, key });
+        const ok = await MatchService.addMatchEvent(this.currentMatchId, { set: this.viewSet, playerId: null, key });
+        if (!ok) UIService.showMessage('Punto non salvato (permessi matchEvents?)', 'error');
         this.showSyncStatus('saved');
     },
 
@@ -396,7 +397,8 @@ const MatchStats = {
             // Timeline event — only while live tracking, so post-match table
             // corrections don't pollute the event chronology.
             if (this.eventsSubscriptionRef) {
-                MatchService.addMatchEvent(this.currentMatchId, { set: this.viewSet, playerId, key: statKey });
+                MatchService.addMatchEvent(this.currentMatchId, { set: this.viewSet, playerId, key: statKey })
+                    .then(ok => { if (!ok) UIService.showMessage('Evento punteggio non salvato (permessi matchEvents?)', 'error'); });
             }
             // Serve streak bookkeeping: an ace extends the streak,
             // a service error closes it (records it) and resets to 0.
@@ -636,7 +638,7 @@ const MatchStats = {
 
         if (players.length === 0) {
             grid.innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; color: #999; font-style: italic; padding: 20px;">
+                <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); font-style: italic; padding: 20px;">
                     No players on roster. Go to the "Players" tab to register players.
                 </div>
             `;
@@ -670,8 +672,8 @@ const MatchStats = {
                 <span class="player-name">${this.escapeHtml(player.name)}</span>
                 <span class="player-role">${player.role}</span>
                 <div style="display: flex; gap: 8px; margin-top: 4px; font-size: 10px;">
-                    <span style="color: #69c896; font-weight: 700;">🔥 ${totalPoints} Pt</span>
-                    <span style="color: #ff6b6b; font-weight: 700;">⚠️ ${totalErrors} Er</span>
+                    <span style="color: var(--success); font-weight: 700;">🔥 ${totalPoints} Pt</span>
+                    <span style="color: var(--danger); font-weight: 700;">⚠️ ${totalErrors} Er</span>
                 </div>
             `;
             grid.appendChild(card);
@@ -730,7 +732,7 @@ const MatchStats = {
                     ${this.createLiveCounterTileHtml(playerId, 'service_out', 'Service Out')}
                     ${this.createLiveCounterTileHtml(playerId, 'service_net', 'Service Net')}
                 </div>
-                <div id="live-streaks-${playerId}" style="font-size: 11px; color: var(--text-muted, #8892b0); padding: 4px 2px 0; text-align: center;"></div>
+                <div id="live-streaks-${playerId}" style="font-size: 11px; color: var(--text-muted); padding: 4px 2px 0; text-align: center;"></div>
             </div>
 
             <!-- Errors & Fouls Section -->
