@@ -28,6 +28,9 @@ const APP_CONSTANTS = {
     FIREBASE_REFS: {
         FORM_SUBMISSIONS: 'formSubmissions',
         SELECTED_EXERCISES: 'selectedExercises',
+        EXERCISE_LIBRARY: 'exerciseLibrary',
+        TRAINING_DAYS: 'trainingDays',
+        TRAINING_SESSIONS: 'trainingSessions',
         MATCH_STATS: 'matchStats',
         MATCH_LINEUPS: 'matchLineups',
         MATCH_EVENTS: 'matchEvents',

@@ -1,519 +1,390 @@
 /**
  * Exercise Upload Manager
- * Handle admin exercise uploads and management
+ * Admin: training days, per-session plans, exercise library (role, description, images, sketches)
  */
+
+const Sketchpad = {
+    canvas: null,
+    ctx: null,
+    history: [],
+    color: null,
+    drawing: false,
+    dirty: false,
+
+    init: function(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.color = this.token('--board-text');
+        this.clear();
+        canvas.addEventListener('pointerdown', (e) => {
+            this.drawing = true;
+            canvas.setPointerCapture(e.pointerId);
+            this.history.push(this.ctx.getImageData(0, 0, canvas.width, canvas.height));
+            if (this.history.length > 30) this.history.shift();
+            const p = this.point(e);
+            this.ctx.beginPath();
+            this.ctx.moveTo(p.x, p.y);
+            this.ctx.lineTo(p.x + 0.1, p.y + 0.1);
+            this.stroke();
+        });
+        canvas.addEventListener('pointermove', (e) => {
+            if (!this.drawing) return;
+            const p = this.point(e);
+            this.ctx.lineTo(p.x, p.y);
+            this.stroke();
+        });
+        const end = () => { this.drawing = false; };
+        canvas.addEventListener('pointerup', end);
+        canvas.addEventListener('pointercancel', end);
+    },
+
+    token: function(name) {
+        return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    },
+
+    point: function(e) {
+        const r = this.canvas.getBoundingClientRect();
+        return { x: (e.clientX - r.left) * this.canvas.width / r.width, y: (e.clientY - r.top) * this.canvas.height / r.height };
+    },
+
+    stroke: function() {
+        Object.assign(this.ctx, { strokeStyle: this.color, lineWidth: 5, lineCap: 'round', lineJoin: 'round' });
+        this.ctx.stroke();
+        this.dirty = true;
+    },
+
+    /**
+     * Reset to an empty full court (18 x 9 m, net in the middle, 3 m attack lines)
+     */
+    clear: function() {
+        const { ctx, canvas } = this;
+        const m = 50, w = canvas.width - 2 * m, h = canvas.height - 2 * m;
+        ctx.fillStyle = this.token('--board-bg');
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = this.token('--board-muted');
+        ctx.lineWidth = 3;
+        ctx.strokeRect(m, m, w, h);
+        ctx.beginPath();
+        [w / 3, 2 * w / 3].forEach(x => { ctx.moveTo(m + x, m); ctx.lineTo(m + x, m + h); });
+        ctx.stroke();
+        ctx.strokeStyle = this.token('--board-text');
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.moveTo(m + w / 2, m - 20);
+        ctx.lineTo(m + w / 2, m + h + 20);
+        ctx.stroke();
+        this.history = [];
+        this.dirty = false;
+    },
+
+    undo: function() {
+        const snap = this.history.pop();
+        if (snap) this.ctx.putImageData(snap, 0, 0);
+        this.dirty = this.history.length > 0;
+    },
+
+    toBlob: function() {
+        return new Promise(resolve => this.canvas.toBlob(resolve, 'image/png'));
+    }
+};
 
 const ExerciseUploadManager = {
     isAdminLoggedIn: false,
-    selectedExercises: [],
+    library: {},
+    days: [],
+    sessions: {},
+    editingId: null,
+    // Each entry: { url } (already uploaded) or { blob, preview, ext } (pending)
+    images: [],
+    subscribed: false,
 
-    /**
-     * Initialize upload manager
-     */
     init: function() {
-        this.checkAdminLogin();
         this.setupEventListeners();
+        Sketchpad.init(document.getElementById('sketchCanvas'));
+        this.checkAdminLogin();
         Logger.info('Exercise upload manager initialized');
     },
 
-    /**
-     * Setup event listeners
-     */
     setupEventListeners: function() {
-        const loginBtn = document.getElementById('loginBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const passwordInput = document.getElementById('adminPassword');
-        const cancelEditBtn = document.getElementById('cancelEditBtn');
-
-        if (loginBtn) {
-            loginBtn.addEventListener('click', () => this.loginAdmin());
-        }
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', () => this.logoutAdmin());
-        }
-        if (passwordInput) {
-            passwordInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    this.loginAdmin();
-                }
-            });
-        }
-        if (cancelEditBtn) {
-            cancelEditBtn.addEventListener('click', () => this.cancelEdit());
-        }
+        const $ = (id) => document.getElementById(id);
+        $('loginBtn').addEventListener('click', () => this.loginAdmin());
+        $('adminPassword').addEventListener('keydown', (e) => { if (e.key === 'Enter') this.loginAdmin(); });
+        $('logoutBtn').addEventListener('click', () => this.logoutAdmin());
+        $('exRole').innerHTML = EXERCISE_ROLES.map(r => `<option value="${r}">${r}</option>`).join('');
+        $('exImages').addEventListener('change', (e) => this.addFiles(e.target.files));
+        $('saveExerciseBtn').addEventListener('click', () => this.saveExercise());
+        $('cancelExerciseBtn').addEventListener('click', () => this.resetForm());
+        $('sketchUndo').addEventListener('click', () => Sketchpad.undo());
+        $('sketchClear').addEventListener('click', () => Sketchpad.clear());
+        $('sketchAdd').addEventListener('click', () => this.addSketch());
+        $('sketchColors').addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-color]');
+            if (!btn) return;
+            Sketchpad.color = Sketchpad.token(btn.dataset.color);
+            $('sketchColors').querySelectorAll('[data-color]').forEach(b => b.classList.toggle('active', b === btn));
+        });
     },
 
-    /**
-     * Login admin
-     */
     loginAdmin: function() {
-        const password = document.getElementById('adminPassword').value;
-
-        if (!password) {
+        const input = document.getElementById('adminPassword');
+        if (!input.value) {
             UIService.showMessage('Inserisci la password amministratore', 'error');
             return;
         }
-
-        if (password === APP_CONSTANTS.ADMIN_PASSWORD) {
-            this.isAdminLoggedIn = true;
-            StorageService.setItem(APP_CONSTANTS.STORAGE_KEYS.ADMIN_LOGGED_IN, true);
-            document.getElementById('adminPassword').value = '';
-            UIService.toggleElement('loginSection', false);
-            UIService.toggleElement('uploadSection', true);
-            this.loadExercises();
-            this.populatePresetDropdown();
-            UIService.showMessage('Accesso effettuato', 'success');
-        } else {
+        if (input.value !== APP_CONSTANTS.ADMIN_PASSWORD) {
             UIService.showMessage('Password non corretta', 'error');
+            return;
         }
+        input.value = '';
+        StorageService.setItem(APP_CONSTANTS.STORAGE_KEYS.ADMIN_LOGGED_IN, true);
+        this.showAdmin();
+        UIService.showMessage('Accesso effettuato', 'success');
     },
 
-    /**
-     * Logout admin
-     */
     logoutAdmin: function() {
         this.isAdminLoggedIn = false;
         StorageService.removeItem(APP_CONSTANTS.STORAGE_KEYS.ADMIN_LOGGED_IN);
         UIService.toggleElement('loginSection', true);
         UIService.toggleElement('uploadSection', false);
-        this.cancelEdit();
-        document.getElementById('adminPassword').value = '';
+        this.resetForm();
         UIService.showMessage('Uscita effettuata', 'success');
     },
 
-    /**
-     * Check admin login status
-     */
     checkAdminLogin: function() {
-        if (StorageService.hasItem(APP_CONSTANTS.STORAGE_KEYS.ADMIN_LOGGED_IN)) {
-            this.isAdminLoggedIn = true;
-            UIService.toggleElement('loginSection', false);
-            UIService.toggleElement('uploadSection', true);
-            this.loadExercises();
-            // Allow dynamic loading of presets once ready
-            setTimeout(() => this.populatePresetDropdown(), 500);
-        }
+        if (StorageService.hasItem(APP_CONSTANTS.STORAGE_KEYS.ADMIN_LOGGED_IN)) this.showAdmin();
     },
 
-    /**
-     * Load exercises from Firebase
-     */
-    loadExercises: function() {
-        ExerciseService.subscribeToSelectedExercises((exercises) => {
-            this.selectedExercises = exercises || [];
-            this.displayExercises(this.selectedExercises);
-        });
-    },
-
-    /**
-     * Populate preset exercises dropdown
-     */
-    populatePresetDropdown: function() {
-        const select = document.getElementById('exerciseSelect');
-        if (!select) return;
-
-        select.innerHTML = '<option value="">-- Scegli un esercizio --</option>';
-        const presets = ExerciseService.getPresetExercises();
-
-        presets.forEach(preset => {
-            const option = document.createElement('option');
-            option.value = preset;
-            option.textContent = preset;
-            select.appendChild(option);
-        });
-    },
-
-    /**
-     * Add selected preset exercise to the schedule
-     */
-    addPresetExercise: async function() {
-        const select = document.getElementById('exerciseSelect');
-        if (!select) return;
-
-        const selected = select.value;
-        if (!selected) {
-            UIService.showMessage('Scegli un esercizio dall’elenco', 'error');
+    showAdmin: function() {
+        this.isAdminLoggedIn = true;
+        UIService.toggleElement('loginSection', false);
+        UIService.toggleElement('uploadSection', true);
+        if (this.subscribed) return;
+        if (!FirebaseService.isReady()) {
+            setTimeout(() => this.showAdmin(), 100);
             return;
         }
+        this.subscribed = true;
+        ExerciseService.subscribeLibrary((lib) => { this.library = lib; this.renderLibrary(); this.renderPlanner(); });
+        ExerciseService.subscribeTrainingDays((days) => { this.days = days; this.renderDays(); this.renderPlanner(); });
+        ExerciseService.subscribeSessions((s) => { this.sessions = s; this.renderPlanner(); });
+    },
 
-        // Check if already scheduled
-        const exists = this.selectedExercises.some(ex => {
-            const exName = typeof ex === 'string' ? ex : ex.name;
-            return exName === selected;
+    /* ===== TRAINING DAYS ===== */
+
+    renderDays: function() {
+        // Monday-first order
+        const order = [1, 2, 3, 4, 5, 6, 0];
+        document.getElementById('trainingDays').innerHTML = order.map(d => `
+            <label class="day-chip">
+                <input type="checkbox" value="${d}" ${this.days.includes(d) ? 'checked' : ''}
+                    onchange="ExerciseUploadManager.toggleDay(${d}, this.checked)">
+                <span>${WEEKDAY_NAMES[d].slice(0, 3)}</span>
+            </label>`).join('');
+    },
+
+    toggleDay: async function(day, on) {
+        const days = on ? [...new Set([...this.days, day])].sort() : this.days.filter(d => d !== day);
+        if (!await ExerciseService.saveTrainingDays(days)) UIService.showMessage('Salvataggio giorni non riuscito', 'error');
+    },
+
+    /* ===== SESSION PLANNER ===== */
+
+    exerciseOptions: function() {
+        return EXERCISE_ROLES.map(role => {
+            const items = Object.entries(this.library).filter(([, ex]) => ex.role === role);
+            if (!items.length) return '';
+            return `<optgroup label="${role}">${items.map(([id, ex]) =>
+                `<option value="${id}">${ExerciseService.escapeHtml(ex.title)}</option>`).join('')}</optgroup>`;
+        }).join('');
+    },
+
+    renderPlanner: function() {
+        const el = document.getElementById('sessionPlanner');
+        const dates = ExerciseService.upcomingDates(this.days, 6);
+        if (!dates.length) {
+            el.innerHTML = '<p class="tr-empty">Seleziona prima i giorni di allenamento.</p>';
+            return;
+        }
+        const options = this.exerciseOptions();
+        el.innerHTML = dates.map(date => {
+            const ids = this.currentIds(date);
+            return `
+            <div class="tr-session">
+                <div class="tr-session-date">${ExerciseService.formatDate(date)}</div>
+                <ol class="tr-session-list">
+                    ${ids.map((id, i) => `
+                    <li class="tr-row">
+                        <span class="tr-role">${this.library[id].role}</span>
+                        <span class="tr-row-title">${ExerciseService.escapeHtml(this.library[id].title)}</span>
+                        <button class="tr-icon-btn" title="Su" onclick="ExerciseUploadManager.moveInSession('${date}', ${i}, -1)">↑</button>
+                        <button class="tr-icon-btn" title="Giù" onclick="ExerciseUploadManager.moveInSession('${date}', ${i}, 1)">↓</button>
+                        <button class="tr-icon-btn danger" title="Rimuovi" onclick="ExerciseUploadManager.removeFromSession('${date}', ${i})">×</button>
+                    </li>`).join('')}
+                </ol>
+                ${options ? `
+                <div class="tr-add">
+                    <select id="add-${date}"><option value="">+ Aggiungi esercizio…</option>${options}</select>
+                    <button class="tr-btn" onclick="ExerciseUploadManager.addToSession('${date}')">Aggiungi</button>
+                </div>` : '<p class="tr-empty">Crea prima qualche esercizio.</p>'}
+            </div>`;
+        }).join('');
+    },
+
+    currentIds: function(date) {
+        return (this.sessions[date] || []).filter(id => this.library[id]);
+    },
+
+    saveSession: async function(date, ids) {
+        if (!await ExerciseService.saveSession(date, ids)) UIService.showMessage('Salvataggio allenamento non riuscito', 'error');
+    },
+
+    addToSession: function(date) {
+        const id = document.getElementById(`add-${date}`).value;
+        if (!id) return;
+        this.saveSession(date, [...this.currentIds(date), id]);
+    },
+
+    removeFromSession: function(date, i) {
+        const ids = this.currentIds(date);
+        ids.splice(i, 1);
+        this.saveSession(date, ids);
+    },
+
+    moveInSession: function(date, i, dir) {
+        const ids = this.currentIds(date);
+        const j = i + dir;
+        if (j < 0 || j >= ids.length) return;
+        [ids[i], ids[j]] = [ids[j], ids[i]];
+        this.saveSession(date, ids);
+    },
+
+    /* ===== LIBRARY ===== */
+
+    renderLibrary: function() {
+        const el = document.getElementById('libraryList');
+        const html = EXERCISE_ROLES.map(role => {
+            const items = Object.entries(this.library).filter(([, ex]) => ex.role === role);
+            if (!items.length) return '';
+            return `<h3 class="tr-role-title">${role}</h3>` + items.map(([id, ex]) => `
+                <div class="tr-row">
+                    <span class="tr-row-title">${ExerciseService.escapeHtml(ex.title)}</span>
+                    <span class="tr-meta">${(ex.images || []).length} img</span>
+                    <button class="tr-btn" onclick="ExerciseUploadManager.editExercise('${id}')">Modifica</button>
+                    <button class="tr-icon-btn danger" title="Elimina" onclick="ExerciseUploadManager.deleteExercise('${id}')">×</button>
+                </div>`).join('');
+        }).join('');
+        el.innerHTML = html || '<p class="tr-empty">Nessun esercizio ancora.</p>';
+    },
+
+    addFiles: function(files) {
+        [...files].forEach(file => {
+            if (!file.type.startsWith('image/')) return;
+            if (file.size > 10 * 1024 * 1024) {
+                UIService.showMessage(`${file.name}: massimo 10 MB`, 'error');
+                return;
+            }
+            this.images.push({ blob: file, preview: URL.createObjectURL(file), ext: file.name.split('.').pop().toLowerCase() || 'jpg' });
         });
-
-        if (exists) {
-            UIService.showMessage('Questo esercizio è già in programma', 'error');
-            return;
-        }
-
-        const newExercise = {
-            name: selected,
-            description: '',
-            videoUrl: '',
-            timestamp: new Date().toISOString()
-        };
-
-        const updatedList = [...this.selectedExercises, newExercise];
-        const success = await ExerciseService.saveSelectedExercises(updatedList);
-        if (success) {
-            select.value = '';
-            UIService.showMessage('Esercizio aggiunto al programma', 'success');
-        } else {
-            UIService.showMessage('Esercizio non aggiunto', 'error');
-        }
+        document.getElementById('exImages').value = '';
+        this.renderImages();
     },
 
-    /**
-     * Add new custom exercise
-     */
-    addNewExercise: async function() {
-        const exerciseName = prompt('Nome del nuovo esercizio:');
-        if (!exerciseName || !exerciseName.trim()) return;
-
-        const exists = this.selectedExercises.some(ex => {
-            const exName = typeof ex === 'string' ? ex : ex.name;
-            return exName.toLowerCase() === exerciseName.trim().toLowerCase();
-        });
-
-        if (exists) {
-            UIService.showMessage('Questo esercizio è già in programma', 'error');
+    addSketch: async function() {
+        if (!Sketchpad.dirty) {
+            UIService.showMessage('Disegna qualcosa prima di aggiungere lo sketch', 'error');
             return;
         }
-
-        const newExercise = {
-            name: exerciseName.trim(),
-            description: '',
-            videoUrl: '',
-            timestamp: new Date().toISOString()
-        };
-
-        const updatedList = [...this.selectedExercises, newExercise];
-        const success = await ExerciseService.saveSelectedExercises(updatedList);
-        if (success) {
-            UIService.showMessage('Esercizio personalizzato aggiunto al programma', 'success');
-        } else {
-            UIService.showMessage('Esercizio non aggiunto', 'error');
-        }
+        const blob = await Sketchpad.toBlob();
+        this.images.push({ blob, preview: URL.createObjectURL(blob), ext: 'png' });
+        Sketchpad.clear();
+        this.renderImages();
     },
 
-    /**
-     * Display exercises in UI (Matching styles in upload-exercises.css)
-     */
-    displayExercises: function(exercises) {
-        const container = document.getElementById('exercisesList');
-        if (!container) return;
+    removeImage: function(i) {
+        this.images.splice(i, 1);
+        this.renderImages();
+    },
 
-        container.innerHTML = '';
+    renderImages: function() {
+        document.getElementById('exPreview').innerHTML = this.images.map((img, i) => `
+            <div class="tr-thumb">
+                <img src="${ExerciseService.escapeHtml(img.url || img.preview)}" alt="">
+                <button class="tr-icon-btn danger" title="Rimuovi" onclick="ExerciseUploadManager.removeImage(${i})">×</button>
+            </div>`).join('');
+    },
 
-        if (!exercises || exercises.length === 0) {
-            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; font-style: italic; padding: 20px;">Nessun esercizio in programma</p>';
+    editExercise: function(id) {
+        const ex = this.library[id];
+        if (!ex) return;
+        this.editingId = id;
+        document.getElementById('exRole').value = ex.role;
+        document.getElementById('exTitle').value = ex.title;
+        document.getElementById('exDescription').value = ex.description || '';
+        this.images = (ex.images || []).map(url => ({ url }));
+        this.renderImages();
+        document.getElementById('exFormTitle').textContent = 'Modifica esercizio';
+        document.getElementById('exFormTitle').scrollIntoView({ behavior: 'smooth' });
+    },
+
+    resetForm: function() {
+        this.editingId = null;
+        this.images = [];
+        document.getElementById('exTitle').value = '';
+        document.getElementById('exDescription').value = '';
+        document.getElementById('exFormTitle').textContent = 'Nuovo esercizio';
+        Sketchpad.clear();
+        this.renderImages();
+    },
+
+    saveExercise: async function() {
+        const title = document.getElementById('exTitle').value.trim();
+        if (!title) {
+            UIService.showMessage('Inserisci il nome dell\'esercizio', 'error');
             return;
         }
+        if (Sketchpad.dirty && !confirm('C\'è uno sketch non aggiunto. Salvare comunque senza?')) return;
 
-        exercises.forEach((exercise, index) => {
-            const exerciseEl = document.createElement('div');
-            exerciseEl.className = 'exercise-item-edit';
-            exerciseEl.draggable = true;
-            exerciseEl.dataset.index = index;
-
-            const exName = typeof exercise === 'string' ? exercise : exercise.name;
-            const hasVideo = typeof exercise === 'object' && exercise.videoUrl;
-            const hasDesc = typeof exercise === 'object' && exercise.description;
-
-            exerciseEl.innerHTML = `
-                <span class="admin-drag-handle" title="Drag to reorder" style="cursor: grab; color: var(--text-muted); font-size: 16px; margin-right: 10px; user-select: none;">☰</span>
-                <div class="exercise-name-display" style="display: inline-block; font-weight: bold; margin-bottom: 8px;">${exName}</div>
-                <div class="exercise-status ${hasVideo ? 'has-video' : ''}" style="font-size: 12px; color: ${hasVideo ? 'var(--success)' : 'var(--text-muted)'};">
-                    ${hasVideo ? '✓ Video uploaded' : '✗ No video'}
-                </div>
-                <div class="exercise-status ${hasDesc ? 'has-description' : ''}" style="font-size: 12px; color: ${hasDesc ? 'var(--accent)' : 'var(--text-muted)'}; margin-top: 4px;">
-                    ${hasDesc ? '✓ Has description' : '✗ No description'}
-                </div>
-                <div class="admin-reorder-buttons" style="margin-top: 10px; display: inline-flex; gap: 4px;">
-                    <button type="button" class="admin-btn-reorder" onclick="ExerciseUploadManager.moveExercise(${index}, -1)" ${index === 0 ? 'disabled' : ''} title="Move up" style="padding: 4px 8px; font-size: 10px;">▲</button>
-                    <button type="button" class="admin-btn-reorder" onclick="ExerciseUploadManager.moveExercise(${index}, 1)" ${index === exercises.length - 1 ? 'disabled' : ''} title="Move down" style="padding: 4px 8px; font-size: 10px;">▼</button>
-                </div>
-                <div style="margin-top: 10px;">
-                    <button class="btn-edit-exercise" onclick="ExerciseUploadManager.editExercise('${this.escapeQuote(exName)}')" style="padding: 6px 12px; font-size: 12px; background: var(--accent); color: white;">Edit</button>
-                    <button class="btn-remove-exercise" onclick="ExerciseUploadManager.deleteExercise('${this.escapeQuote(exName)}')" style="padding: 6px 12px; font-size: 12px; background: var(--danger); color: white; margin-left: 5px;">Delete</button>
-                </div>
-            `;
-            container.appendChild(exerciseEl);
-        });
-
-        this.setupDragAndDrop();
-    },
-
-    /**
-     * Open exercise edit form
-     */
-    editExercise: function(exerciseName) {
-        const exercise = this.selectedExercises.find(ex => {
-            const exName = typeof ex === 'string' ? ex : ex.name;
-            return exName === exerciseName;
-        });
-
-        if (!exercise) {
-            UIService.showMessage('Esercizio non trovato', 'error');
-            return;
-        }
-
-        const currentDesc = typeof exercise === 'object' ? (exercise.description || '') : '';
-        
-        document.getElementById('editExerciseName').value = exerciseName;
-        document.getElementById('editDescription').value = currentDesc;
-        document.getElementById('editVideoInput').value = '';
-        
-        const progressDiv = document.getElementById('uploadProgress');
-        if (progressDiv) {
-            progressDiv.style.display = 'none';
-            progressDiv.innerHTML = '';
-        }
-
-        UIService.toggleElement('editSection', true);
-        document.getElementById('editSection').scrollIntoView({ behavior: 'smooth' });
-    },
-
-    /**
-     * Cancel edit mode
-     */
-    cancelEdit: function() {
-        UIService.toggleElement('editSection', false);
-        document.getElementById('editExerciseName').value = '';
-        document.getElementById('editDescription').value = '';
-        document.getElementById('editVideoInput').value = '';
-    },
-
-    /**
-     * Save exercise data and upload video if provided
-     */
-    uploadExerciseData: async function() {
-        const exerciseName = document.getElementById('editExerciseName').value;
-        const description = document.getElementById('editDescription').value;
-        const videoInput = document.getElementById('editVideoInput');
-        const videoFile = videoInput ? videoInput.files[0] : null;
-
-        if (!exerciseName) {
-            UIService.showMessage('Manca il nome dell’esercizio', 'error');
-            return;
-        }
-
-        const saveBtn = document.querySelector('#editSection .btn-save');
-        if (saveBtn) saveBtn.disabled = true;
-
+        const btn = document.getElementById('saveExerciseBtn');
+        btn.disabled = true;
+        btn.textContent = 'Salvataggio…';
+        const id = this.editingId || ExerciseService.newId();
         try {
-            if (videoFile) {
-                // Check file size
-                if (videoFile.size > APP_CONSTANTS.MAX_FILE_SIZE) {
-                    UIService.showMessage('Video troppo grande (massimo 100 MB)', 'error');
-                    if (saveBtn) saveBtn.disabled = false;
-                    return;
-                }
-
-                // Check Supabase initialization
-                if (!SupabaseModule.isInitialized()) {
-                    UIService.showMessage('Archivio video non collegato', 'error');
-                    if (saveBtn) saveBtn.disabled = false;
-                    return;
-                }
-
-                const bucketName = 'exercises';
-                const sanitizedExerciseName = this.sanitizeFilePath(exerciseName);
-                const sanitizedFileName = this.sanitizeFilePath(videoFile.name);
-                const fileName = `${Date.now()}_${sanitizedFileName}`;
-                const filePath = `${sanitizedExerciseName}/${fileName}`;
-
-                // Setup progress bar
-                const progressDiv = document.getElementById('uploadProgress');
-                if (progressDiv) {
-                    progressDiv.style.display = 'block';
-                    progressDiv.innerHTML = `
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progressFill" style="width: 10%;"></div>
-                        </div>
-                        <div class="progress-text"><span id="progressPercent">10</span>% - Uploading to Supabase...</div>
-                    `;
-                }
-
-                // Upload file to Supabase
-                const supabaseClient = SupabaseModule.getClient();
-                const { data: uploadData, error: uploadError } = await supabaseClient.storage
-                    .from(bucketName)
-                    .upload(filePath, videoFile);
-
-                if (uploadError) {
-                    throw new Error(uploadError.message);
-                }
-
-                // Update progress indicator
-                const progressFill = document.getElementById('progressFill');
-                const progressPercent = document.getElementById('progressPercent');
-                if (progressFill) progressFill.style.width = '70%';
-                if (progressPercent) progressPercent.textContent = '70';
-
-                // Get public URL
-                const { data: publicUrlData } = supabaseClient.storage
-                    .from(bucketName)
-                    .getPublicUrl(filePath);
-
-                const videoUrl = publicUrlData.publicUrl;
-
-                if (progressFill) progressFill.style.width = '90%';
-                if (progressPercent) progressPercent.textContent = '90';
-
-                // Save to Firebase
-                const success = await ExerciseService.saveExerciseData(exerciseName, description, videoUrl);
-                if (success) {
-                    if (progressFill) progressFill.style.width = '100%';
-                    if (progressPercent) progressPercent.textContent = '100';
-                    UIService.showMessage('Video e descrizione salvati', 'success');
-                    this.cancelEdit();
-                } else {
-                    UIService.showMessage('Dati dell’esercizio non salvati', 'error');
-                }
-            } else {
-                // No video file, just update description and keep the existing video URL!
-                const existingExercise = this.selectedExercises.find(ex => {
-                    const exName = typeof ex === 'string' ? ex : ex.name;
-                    return exName === exerciseName;
-                });
-                const existingVideoUrl = existingExercise && typeof existingExercise === 'object' ? (existingExercise.videoUrl || '') : '';
-
-                const success = await ExerciseService.saveExerciseData(exerciseName, description, existingVideoUrl);
-                if (success) {
-                    UIService.showMessage('Descrizione salvata', 'success');
-                    this.cancelEdit();
-                } else {
-                    UIService.showMessage('Dati non salvati', 'error');
-                }
+            const urls = [];
+            for (const img of this.images) {
+                urls.push(img.url || await ExerciseService.uploadImage(id, img.blob, img.ext));
             }
+            const ok = await ExerciseService.saveExercise(id, {
+                role: document.getElementById('exRole').value,
+                title,
+                description: document.getElementById('exDescription').value.trim(),
+                images: urls
+            });
+            if (!ok) throw new Error('scrittura Firebase fallita');
+            UIService.showMessage('Esercizio salvato', 'success');
+            this.resetForm();
         } catch (error) {
-            Logger.error(`Upload error: ${error.message}`);
-            UIService.showMessage(`Caricamento non riuscito: ${error.message}`, 'error');
+            Logger.error(`Save exercise failed: ${error.message}`);
+            UIService.showMessage(`Salvataggio non riuscito: ${error.message}`, 'error');
         } finally {
-            if (saveBtn) saveBtn.disabled = false;
-            const progressDiv = document.getElementById('uploadProgress');
-            if (progressDiv) progressDiv.style.display = 'none';
+            btn.disabled = false;
+            btn.textContent = 'Salva esercizio';
         }
     },
 
-    /**
-     * Delete exercise from schedule
-     */
-    deleteExercise: async function(exerciseName) {
-        if (!confirm(`Togliere "${exerciseName}" dal programma?`)) {
-            return;
-        }
-
-        const success = await ExerciseService.deleteExercise(exerciseName);
-        if (success) {
+    deleteExercise: async function(id) {
+        const ex = this.library[id];
+        if (!ex || !confirm(`Eliminare "${ex.title}"?`)) return;
+        if (await ExerciseService.deleteExercise(id)) {
+            if (this.editingId === id) this.resetForm();
             UIService.showMessage('Esercizio eliminato', 'success');
-            // If deleting the active editing exercise, cancel it
-            const activeEditName = document.getElementById('editExerciseName').value;
-            if (activeEditName === exerciseName) {
-                this.cancelEdit();
-            }
         } else {
-            UIService.showMessage('Esercizio non eliminato', 'error');
+            UIService.showMessage('Eliminazione non riuscita', 'error');
         }
-    },
-
-    /**
-     * Move exercise up or down in array
-     */
-    moveExercise: async function(index, direction) {
-        const targetIndex = index + direction;
-        if (targetIndex < 0 || targetIndex >= this.selectedExercises.length) return;
-
-        const updatedList = [...this.selectedExercises];
-        // Swap elements
-        [updatedList[index], updatedList[targetIndex]] = [updatedList[targetIndex], updatedList[index]];
-
-        const success = await ExerciseService.saveSelectedExercises(updatedList);
-        if (!success) {
-            UIService.showMessage('Ordine non aggiornato', 'error');
-        }
-    },
-
-    /**
-     * Setup drag and drop for cards
-     */
-    setupDragAndDrop: function() {
-        const items = document.querySelectorAll('.exercise-item-edit');
-        let draggedItem = null;
-
-        items.forEach(item => {
-            item.addEventListener('dragstart', (e) => {
-                if (e.target.tagName === 'BUTTON' || e.target.closest('button') || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-                    e.preventDefault();
-                    return;
-                }
-                draggedItem = item;
-                item.classList.add('dragging');
-            });
-
-            item.addEventListener('dragend', () => {
-                item.classList.remove('dragging');
-                items.forEach(i => i.classList.remove('drag-over'));
-                draggedItem = null;
-            });
-
-            item.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                if (draggedItem && draggedItem !== item) {
-                    item.classList.add('drag-over');
-                }
-            });
-
-            item.addEventListener('dragleave', () => {
-                item.classList.remove('drag-over');
-            });
-
-            item.addEventListener('drop', async (e) => {
-                e.preventDefault();
-                if (draggedItem && draggedItem !== item) {
-                    const draggedIndex = parseInt(draggedItem.dataset.index);
-                    const targetIndex = parseInt(item.dataset.index);
-
-                    const updatedList = [...this.selectedExercises];
-                    [updatedList[draggedIndex], updatedList[targetIndex]] = [updatedList[targetIndex], updatedList[draggedIndex]];
-
-                    const success = await ExerciseService.saveSelectedExercises(updatedList);
-                    if (!success) {
-                        UIService.showMessage('Nuovo ordine non salvato', 'error');
-                    }
-                }
-            });
-        });
-    },
-
-    /**
-     * Sanitize path string for Supabase uploads
-     */
-    sanitizeFilePath: function(str) {
-        return str
-            .normalize('NFD')                           // Decompose accented characters
-            .replace(/[\u0300-\u036f]/g, '')           // Remove accents
-            .replace(/[^\w\s-]/g, '')                  // Remove special characters
-            .replace(/\s+/g, '_')                      // Replace spaces with underscores
-            .replace(/_+/g, '_')                       // Remove multiple consecutive underscores
-            .toLowerCase();                            // Convert to lowercase
-    },
-
-    /**
-     * Escape single quotes for HTML attribute strings
-     */
-    escapeQuote: function(str) {
-        return str.replace(/'/g, "\\'");
     }
 };
 
-// Initialize on page load
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        ExerciseUploadManager.init();
-    });
+    document.addEventListener('DOMContentLoaded', () => ExerciseUploadManager.init());
 } else {
     ExerciseUploadManager.init();
 }

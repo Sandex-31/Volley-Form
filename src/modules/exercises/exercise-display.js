@@ -1,129 +1,96 @@
 /**
  * Exercise Display Module
- * Handle displaying exercises on public page
+ * Public page: upcoming trainings with their exercises + library by role
  */
 
 const ExerciseDisplay = {
-    /**
-     * Initialize display module
-     */
+    library: {},
+    days: [],
+    sessions: {},
+    role: EXERCISE_ROLES[0],
+
     init: function() {
-        // Wait for Firebase to be ready before loading exercises
         if (!FirebaseService.isReady()) {
-            // Retry in 100ms if Firebase isn't ready yet
             setTimeout(() => this.init(), 100);
             return;
         }
-        this.loadAndDisplayExercises();
+        document.getElementById('roleTabs').innerHTML = EXERCISE_ROLES.map(r =>
+            `<button class="tr-tab" data-role="${r}" onclick="ExerciseDisplay.setRole('${r}')">${r}</button>`).join('');
+        ExerciseService.subscribeLibrary((lib) => { this.library = lib; this.render(); });
+        ExerciseService.subscribeTrainingDays((days) => { this.days = days; this.render(); });
+        ExerciseService.subscribeSessions((s) => { this.sessions = s; this.render(); });
+        document.getElementById('firebaseStatus').textContent = '';
         Logger.info('Exercise display module initialized');
     },
 
-    /**
-     * Load and display exercises
-     */
-    loadAndDisplayExercises: function() {
-        const ref = ExerciseService.subscribeToSelectedExercises((exercises) => {
-            this.displayExercisesPublic(exercises);
-        });
+    setRole: function(role) {
+        this.role = role;
+        this.renderLibrary();
     },
 
-    /**
-     * Display exercises in public view
-     */
-    displayExercisesPublic: function(exercises) {
-        const container = document.getElementById('exercisesContainer');
-        if (!container) return;
+    render: function() {
+        this.renderUpcoming();
+        this.renderLibrary();
+    },
 
-        container.innerHTML = '';
+    row: function(id) {
+        const ex = this.library[id];
+        const imgs = (ex.images || []).length;
+        return `
+            <button class="tr-row tr-row-link" onclick="ExerciseDisplay.open('${id}')">
+                <span class="tr-role">${ex.role}</span>
+                <span class="tr-row-title">${ExerciseService.escapeHtml(ex.title)}</span>
+                ${imgs ? `<span class="tr-meta">${imgs} img</span>` : ''}
+            </button>`;
+    },
 
-        if (!exercises || exercises.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-state-icon">📭</div>
-                    <div class="empty-state-text">Nessun esercizio in programma per oggi</div>
-                </div>
-            `;
-            UIService.updateStatusIndicator('Real-time sync active', 'var(--success)');
+    renderUpcoming: function() {
+        const el = document.getElementById('upcomingTrainings');
+        const info = document.getElementById('trainingDaysInfo');
+        const order = [1, 2, 3, 4, 5, 6, 0].filter(d => this.days.includes(d));
+        info.textContent = order.length ? `Ci alleniamo: ${order.map(d => WEEKDAY_NAMES[d]).join(', ')}` : '';
+
+        const dates = ExerciseService.upcomingDates(this.days, 1);
+        if (!dates.length) {
+            el.innerHTML = '<p class="tr-empty">Nessun giorno di allenamento impostato.</p>';
             return;
         }
-
-        exercises.forEach((exercise, index) => {
-            const exName = typeof exercise === 'string' ? exercise : exercise.name;
-            const exDescription = typeof exercise === 'string' ? '' : (exercise.description || '');
-            const videoUrl = typeof exercise === 'string' ? '' : (exercise.videoUrl || '');
-
-            const exerciseItem = document.createElement('div');
-            exerciseItem.className = 'exercise-item';
-            exerciseItem.id = `exercise-${index}`;
-
-            let cardContent = `
-                <div class="exercise-item-header" onclick="ExerciseDisplay.toggleExercise(${index})">
-                    <div class="exercise-item-name">${this.escapeHtml(exName)}</div>
-                    <div class="exercise-expand-icon" id="icon-${index}">▼</div>
-                </div>
-                <div class="exercise-item-content" id="content-${index}">
-                    <div class="exercise-item-body">
-                        ${exDescription ? `<div class="exercise-description">${this.escapeHtml(exDescription)}</div>` : ''}
-                        <div class="exercise-video-container">
-                            ${videoUrl ? `
-                                <video class="exercise-video" controls loop>
-                                    <source src="${this.escapeHtml(videoUrl)}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            ` : `
-                                <div class="no-video-message">Video non ancora disponibile</div>
-                            `}
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            exerciseItem.innerHTML = cardContent;
-            container.appendChild(exerciseItem);
-        });
-
-        UIService.updateStatusIndicator('Real-time sync active', 'var(--success)');
+        el.innerHTML = dates.map(date => {
+            const ids = (this.sessions[date] || []).filter(id => this.library[id]);
+            return `
+            <div class="tr-session">
+                <div class="tr-session-date">${ExerciseService.formatDate(date)}</div>
+                ${ids.length ? `<div class="tr-session-list">${ids.map(id => this.row(id)).join('')}</div>`
+                    : '<p class="tr-empty">Programma non ancora definito.</p>'}
+            </div>`;
+        }).join('');
     },
 
-    /**
-     * Toggle expand/collapse exercise item
-     */
-    toggleExercise: function(index) {
-        const content = document.getElementById(`content-${index}`);
-        const icon = document.getElementById(`icon-${index}`);
-        if (!content || !icon) return;
-
-        if (content.style.maxHeight) {
-            content.style.maxHeight = null;
-            icon.classList.remove('expanded');
-            content.classList.remove('expanded');
-        } else {
-            content.style.maxHeight = content.scrollHeight + "px";
-            icon.classList.add('expanded');
-            content.classList.add('expanded');
-        }
+    renderLibrary: function() {
+        document.querySelectorAll('#roleTabs .tr-tab').forEach(b => b.classList.toggle('active', b.dataset.role === this.role));
+        const ids = Object.keys(this.library).filter(id => this.library[id].role === this.role);
+        document.getElementById('libraryByRole').innerHTML = ids.length
+            ? ids.map(id => this.row(id)).join('')
+            : '<p class="tr-empty">Nessun esercizio per questo ruolo.</p>';
     },
 
-    /**
-     * Escape HTML to prevent XSS
-     */
-    escapeHtml: function(text) {
-        const map = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#039;'
-        };
-        return text.replace(/[&<>"']/g, m => map[m]);
+    open: function(id) {
+        const ex = this.library[id];
+        if (!ex) return;
+        const esc = ExerciseService.escapeHtml;
+        document.getElementById('exerciseDialogBody').innerHTML = `
+            <span class="tr-role">${ex.role}</span>
+            <h2>${esc(ex.title)}</h2>
+            ${ex.description ? `<p class="tr-desc">${esc(ex.description)}</p>` : ''}
+            <div class="tr-gallery">
+                ${(ex.images || []).map(url => `<a href="${esc(url)}" target="_blank" rel="noopener"><img src="${esc(url)}" alt="${esc(ex.title)}" loading="lazy"></a>`).join('')}
+            </div>`;
+        document.getElementById('exerciseDialog').showModal();
     }
 };
 
-// Initialize on page load
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        ExerciseDisplay.init();
-    });
+    document.addEventListener('DOMContentLoaded', () => ExerciseDisplay.init());
 } else {
     ExerciseDisplay.init();
 }

@@ -1,14 +1,21 @@
 /**
  * Exercise Service
- * Manage exercise data and operations
+ * Exercise library (by role), training days and per-session exercise plans.
+ *
+ * Firebase layout:
+ *   exerciseLibrary/{id}      -> { role, title, description, images: [url], updatedAt }
+ *   trainingDays              -> [weekday] (0 = domenica … 6 = sabato)
+ *   trainingSessions/{date}   -> [exerciseId] (date = YYYY-MM-DD, local)
  */
 
+const EXERCISE_ROLES = ['Generale', 'Palleggiatore', 'Schiacciatore', 'Opposto', 'Centrale', 'Libero'];
+const WEEKDAY_NAMES = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
+
 const ExerciseService = {
-    selectedExercises: [],
     allExercises: [],
 
     /**
-     * Load exercises from storage or defaults
+     * Preset names still used by the evaluation form
      */
     loadExercises: function() {
         const saved = StorageService.getItem(APP_CONSTANTS.STORAGE_KEYS.EXERCISES_LIST);
@@ -16,118 +23,91 @@ const ExerciseService = {
         return this.allExercises;
     },
 
-    /**
-     * Get preset exercises
-     */
     getPresetExercises: function() {
-        if (this.allExercises.length === 0) {
-            this.loadExercises();
-        }
+        if (this.allExercises.length === 0) this.loadExercises();
         return this.allExercises;
     },
 
     /**
-     * Save exercise list to storage
+     * Subscribe to a path, passing `fallback` when the node is empty
      */
-    saveExerciseList: function(exercises) {
-        this.allExercises = exercises;
-        return StorageService.setItem(APP_CONSTANTS.STORAGE_KEYS.EXERCISES_LIST, exercises);
-    },
-
-    /**
-     * Get selected exercises from Firebase
-     */
-    getSelectedExercises: async function() {
-        if (FirebaseService.isReady()) {
-            const data = await FirebaseService.read(APP_CONSTANTS.FIREBASE_REFS.SELECTED_EXERCISES);
-            this.selectedExercises = Array.isArray(data) ? data : [];
-            return this.selectedExercises;
-        }
-        return [];
-    },
-
-    /**
-     * Subscribe to selected exercises changes
-     */
-    subscribeToSelectedExercises: function(callback) {
-        return FirebaseService.subscribe(
-            APP_CONSTANTS.FIREBASE_REFS.SELECTED_EXERCISES,
-            (data) => {
-                this.selectedExercises = Array.isArray(data) ? data : [];
-                callback(this.selectedExercises);
-            },
-            (error) => {
-                Logger.error(`Failed to load exercises: ${error.message}`);
-                UIService.showMessage('⚠️ Failed to load exercises', 'error');
-            }
-        );
-    },
-
-    /**
-     * Save exercise with metadata
-     */
-    saveExerciseData: async function(exerciseName, description, videoUrl) {
-        if (!FirebaseService.isReady()) {
-            UIService.showMessage('⚠️ Firebase not available', 'error');
-            return false;
-        }
-
-        const index = this.selectedExercises.findIndex(ex => {
-            const exName = typeof ex === 'string' ? ex : ex.name;
-            return exName === exerciseName;
+    _subscribe: function(path, fallback, callback) {
+        return FirebaseService.subscribe(path, (data) => callback(data || fallback), (error) => {
+            Logger.error(`Failed to load ${path}: ${error.message}`);
+            UIService.showMessage('⚠️ Impossibile caricare i dati degli allenamenti', 'error');
         });
+    },
 
-        const exerciseData = {
-            name: exerciseName,
-            description: description,
-            videoUrl: videoUrl,
-            timestamp: new Date().toISOString()
-        };
+    subscribeLibrary: function(cb) { return this._subscribe(APP_CONSTANTS.FIREBASE_REFS.EXERCISE_LIBRARY, {}, cb); },
+    subscribeTrainingDays: function(cb) { return this._subscribe(APP_CONSTANTS.FIREBASE_REFS.TRAINING_DAYS, [], cb); },
+    subscribeSessions: function(cb) { return this._subscribe(APP_CONSTANTS.FIREBASE_REFS.TRAINING_SESSIONS, {}, cb); },
 
-        if (index >= 0) {
-            // Update existing
-            this.selectedExercises[index] = exerciseData;
-        } else {
-            // Add new
-            this.selectedExercises.push(exerciseData);
-        }
+    saveExercise: function(id, data) {
+        return FirebaseService.write(`${APP_CONSTANTS.FIREBASE_REFS.EXERCISE_LIBRARY}/${id}`,
+            { ...data, updatedAt: new Date().toISOString() });
+    },
 
-        return await FirebaseService.write(
-            APP_CONSTANTS.FIREBASE_REFS.SELECTED_EXERCISES,
-            this.selectedExercises
-        );
+    // ponytail: session lists keep ids of deleted exercises; renderers skip unknown ids
+    deleteExercise: function(id) {
+        return FirebaseService.delete(`${APP_CONSTANTS.FIREBASE_REFS.EXERCISE_LIBRARY}/${id}`);
+    },
+
+    saveTrainingDays: function(days) {
+        return FirebaseService.write(APP_CONSTANTS.FIREBASE_REFS.TRAINING_DAYS, days);
+    },
+
+    saveSession: function(date, ids) {
+        const path = `${APP_CONSTANTS.FIREBASE_REFS.TRAINING_SESSIONS}/${date}`;
+        return ids.length ? FirebaseService.write(path, ids) : FirebaseService.delete(path);
+    },
+
+    newId: function() {
+        return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
     },
 
     /**
-     * Delete exercise
+     * Upload an image/sketch blob to Supabase storage, returns its public URL
      */
-    deleteExercise: async function(exerciseName) {
-        this.selectedExercises = this.selectedExercises.filter(ex => {
-            const exName = typeof ex === 'string' ? ex : ex.name;
-            return exName !== exerciseName;
-        });
-
-        return await FirebaseService.write(
-            APP_CONSTANTS.FIREBASE_REFS.SELECTED_EXERCISES,
-            this.selectedExercises
-        );
+    uploadImage: async function(exerciseId, blob, ext) {
+        const client = SupabaseModule.getClient();
+        if (!client) throw new Error('Supabase non disponibile');
+        const path = `library/${exerciseId}/${Date.now()}-${Math.random().toString(36).slice(2, 6)}.${ext}`;
+        const { error } = await client.storage.from('exercises').upload(path, blob, { contentType: blob.type });
+        if (error) throw new Error(error.message);
+        return client.storage.from('exercises').getPublicUrl(path).data.publicUrl;
     },
 
     /**
-     * Save the entire selected exercises list (e.g. for reordering)
+     * Local YYYY-MM-DD for a Date
      */
-    saveSelectedExercises: async function(exercises) {
-        if (!FirebaseService.isReady()) {
-            UIService.showMessage('⚠️ Firebase not available', 'error');
-            return false;
+    dateKey: function(d) {
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    },
+
+    /**
+     * Next `count` training dates (today included) from the configured weekdays
+     */
+    upcomingDates: function(days, count) {
+        const out = [];
+        if (!days || !days.length) return out;
+        const d = new Date();
+        d.setHours(0, 0, 0, 0);
+        for (let i = 0; i < 60 && out.length < count; i++) {
+            if (days.includes(d.getDay())) out.push(this.dateKey(d));
+            d.setDate(d.getDate() + 1);
         }
-        this.selectedExercises = exercises;
-        return await FirebaseService.write(
-            APP_CONSTANTS.FIREBASE_REFS.SELECTED_EXERCISES,
-            this.selectedExercises
-        );
+        return out;
+    },
+
+    formatDate: function(key) {
+        const [y, m, d] = key.split('-').map(Number);
+        return new Date(y, m - 1, d).toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' });
+    },
+
+    escapeHtml: function(text) {
+        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+        return String(text ?? '').replace(/[&<>"']/g, m => map[m]);
     }
 };
 
-// Initialize exercises on load
 ExerciseService.loadExercises();

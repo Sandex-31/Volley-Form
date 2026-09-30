@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap">
     <link rel="stylesheet" href="../styles/theme.css?v=20260930">
     <link rel="stylesheet" href="../styles/public-exercises.css?v=20260930">
+    <link rel="stylesheet" href="../styles/training.css?v=20260930">
     <link rel="stylesheet" href="../styles/navbar.css?v=20260930">
     <link rel="stylesheet" href="../styles/ambience.css?v=20260930">
 </head>
@@ -40,16 +41,26 @@
     <div class="container reveal">
         <div class="header">
             <h1><span data-icon="exercises"></span> Esercizi di allenamento</h1>
-            <p>Gli esercizi in programma per gli allenamenti</p>
+            <p id="trainingDaysInfo">Il programma dei prossimi allenamenti</p>
             <p id="firebaseStatus" style="color: var(--text-muted); font-size: 12px; margin-top: 10px;">Caricamento…</p>
         </div>
 
-        <!-- Exercises Container -->
-        <div id="exercisesContainer" class="exercises-list">
-            <p class="loading">Caricamento esercizi…</p>
-        </div>
+        <section class="tr-section">
+            <h2>Prossimo allenamento</h2>
+            <div id="upcomingTrainings"><p class="tr-empty">Caricamento…</p></div>
+        </section>
 
+        <section class="tr-section">
+            <h2>Esercizi per ruolo</h2>
+            <div id="roleTabs" class="tr-tabs"></div>
+            <div id="libraryByRole" class="tr-session-list"></div>
+        </section>
     </div>
+
+    <dialog id="exerciseDialog" class="tr-dialog">
+        <form method="dialog"><button class="tr-icon-btn tr-dialog-close" aria-label="Chiudi">×</button></form>
+        <div id="exerciseDialogBody"></div>
+    </dialog>
 
     <!-- ===== FIREBASE SDK ===== -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-compat.js"></script>

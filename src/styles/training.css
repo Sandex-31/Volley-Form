@@ -1,0 +1,161 @@
+/* ===== TRAINING PLAN & EXERCISE LIBRARY (public + admin) ===== */
+
+.tr-section { margin-top: 28px; }
+.tr-section h2,
+.tr-role-title {
+    font-family: var(--font-head);
+    color: var(--text);
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+.tr-role-title { font-size: 14px; color: var(--text-2); margin: 18px 0 8px; }
+
+.tr-empty { color: var(--text-muted); font-size: 14px; padding: 6px 0; }
+
+/* Sessions */
+.tr-session {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    margin-bottom: 12px;
+    background: var(--surface-2);
+}
+.tr-session-date {
+    font-family: var(--font-head);
+    font-weight: 700;
+    color: var(--text);
+    text-transform: capitalize;
+    margin-bottom: 10px;
+}
+.tr-session-list { display: flex; flex-direction: column; gap: 6px; list-style: none; padding: 0; margin: 0; }
+
+/* Exercise row */
+.tr-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font: inherit;
+    font-size: 14px;
+    text-align: left;
+    margin-bottom: 6px;
+}
+.tr-session-list .tr-row { margin-bottom: 0; }
+.tr-row-link { cursor: pointer; transition: border-color .2s var(--ease), transform .2s var(--ease); }
+.tr-row-link:hover { border-color: var(--accent); transform: translateX(2px); }
+.tr-row-title { flex: 1; min-width: 0; font-weight: 600; overflow-wrap: anywhere; }
+.tr-meta { color: var(--text-muted); font-size: 12px; white-space: nowrap; }
+
+.tr-role {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+    color: var(--accent);
+    background: rgba(var(--accent-rgb), .12);
+}
+
+/* Buttons */
+.tr-btn,
+.tr-icon-btn {
+    width: auto;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--text-2);
+    cursor: pointer;
+}
+.tr-btn:hover, .tr-icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+.tr-icon-btn { padding: 4px 9px; font-size: 14px; line-height: 1; }
+.tr-icon-btn.danger:hover { border-color: var(--danger); color: var(--danger); }
+.tr-btn-accent { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.tr-btn-accent:hover { background: var(--accent-hover); color: var(--on-accent); }
+
+/* Admin: add to session */
+.tr-add { display: flex; gap: 8px; margin-top: 10px; }
+.tr-add select { flex: 1; min-width: 0; }
+
+/* Admin: training days */
+.tr-days { display: flex; flex-wrap: wrap; gap: 8px; }
+.day-chip { margin: 0; cursor: pointer; }
+.day-chip input { position: absolute; opacity: 0; pointer-events: none; }
+.day-chip span {
+    display: inline-block;
+    padding: 8px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    color: var(--text-2);
+    font-weight: 600;
+}
+.day-chip input:checked + span { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.day-chip input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Public: role tabs */
+.tr-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.tr-tab {
+    width: auto;
+    padding: 6px 14px;
+    font-size: 13px;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--text-2);
+    cursor: pointer;
+}
+.tr-tab.active { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+
+/* Sketchpad */
+.tr-sketch-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 8px; }
+.tr-swatches { display: flex; gap: 6px; margin-right: auto; }
+.tr-swatch {
+    width: 28px; height: 28px; padding: 0;
+    border-radius: 50%;
+    border: 2px solid var(--border-strong);
+    cursor: pointer;
+}
+.tr-swatch.active { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tr-canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-sm);
+    touch-action: none;
+    cursor: crosshair;
+}
+
+/* Images */
+.tr-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin-top: 12px; }
+.tr-gallery img { width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--border); display: block; }
+.tr-thumb { position: relative; }
+.tr-thumb .tr-icon-btn { position: absolute; top: 4px; right: 4px; }
+
+/* Public: exercise dialog */
+.tr-dialog {
+    width: min(720px, calc(100vw - 32px));
+    max-height: calc(100vh - 48px);
+    margin: auto;
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow-lg);
+}
+.tr-dialog::backdrop { background: rgba(var(--brand-rgb), .6); }
+.tr-dialog h2 { font-family: var(--font-head); font-size: 20px; margin: 8px 0 12px; }
+.tr-dialog-close { float: right; }
+.tr-desc { white-space: pre-wrap; color: var(--text-2); line-height: 1.55; }
+
+@media (max-width: 480px) {
+    .tr-add { flex-direction: column; }
+}
