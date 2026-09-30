@@ -1,19 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../common/theme-init.js"></script>
-    <title>Wapatanka - Volley Tool</title>
+    <script src="../common/theme-init.js?v=20260930"></script>
+    <title>Wapatanka · Gestionale squadra</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap">
-    <link rel="stylesheet" href="../styles/theme.css">
-    <link rel="stylesheet" href="../styles/styles.css">
-    <link rel="stylesheet" href="../styles/navbar.css">
-    <link rel="stylesheet" href="../styles/players.css">
-    <link rel="stylesheet" href="../styles/home.css">
+    <link rel="stylesheet" href="../styles/theme.css?v=20260930">
+    <link rel="stylesheet" href="../styles/styles.css?v=20260930">
+    <link rel="stylesheet" href="../styles/navbar.css?v=20260930">
+    <link rel="stylesheet" href="../styles/players.css?v=20260930">
+    <link rel="stylesheet" href="../styles/home.css?v=20260930">
+    <link rel="stylesheet" href="../styles/ambience.css?v=20260930">
 </head>
 
 <body>
@@ -24,13 +25,13 @@
         </a>
         <ul class="navbar-menu" id="navMenu">
             <li class="navbar-item active"><a href="index.html"><span class="nav-ic" data-icon="home"></span> Home</a></li>
-            <li class="navbar-item"><a href="form.html"><span class="nav-ic" data-icon="form"></span> Rate Form</a></li>
-            <li class="navbar-item"><a href="public-exercises.html"><span class="nav-ic" data-icon="exercises"></span> Exercises</a></li>
-            <li class="navbar-item"><a href="responses.html"><span class="nav-ic" data-icon="responses"></span> Responses</a></li>
-            <li class="navbar-item"><a href="match-table.html"><span class="nav-ic" data-icon="matches"></span> Matches</a></li>
-            <li class="navbar-item"><a href="players.html"><span class="nav-ic" data-icon="players"></span> Players</a></li>
-            <li class="navbar-item"><a href="ai-analysis.html"><span class="nav-ic" data-icon="ai"></span> AI Analysis</a></li>
-            <li class="navbar-item"><a href="upload-exercises.html"><span class="nav-ic" data-icon="manage"></span> Manage</a></li>
+            <li class="navbar-item"><a href="form.html"><span class="nav-ic" data-icon="form"></span> Valutazione</a></li>
+            <li class="navbar-item"><a href="public-exercises.html"><span class="nav-ic" data-icon="exercises"></span> Esercizi</a></li>
+            <li class="navbar-item"><a href="responses.html"><span class="nav-ic" data-icon="responses"></span> Risposte</a></li>
+            <li class="navbar-item"><a href="match-table.html"><span class="nav-ic" data-icon="matches"></span> Partite</a></li>
+            <li class="navbar-item"><a href="players.html"><span class="nav-ic" data-icon="players"></span> Giocatori</a></li>
+            <li class="navbar-item"><a href="ai-analysis.html"><span class="nav-ic" data-icon="ai"></span> Analisi video</a></li>
+            <li class="navbar-item"><a href="upload-exercises.html"><span class="nav-ic" data-icon="manage"></span> Gestione</a></li>
         </ul>
         <div class="navbar-actions">
             <button class="theme-toggle-btn" id="themeToggleBtn" onclick="ThemeToggle.toggle()" aria-label="Cambia tema" type="button">
@@ -62,15 +63,15 @@
         <!-- 1 · HERO -->
         <section class="pane pane-hero" id="pane-hero" data-label="Hero">
             <div class="pane-inner reveal">
-                <span class="pane-kicker">Volley Tool</span>
+                <span class="pane-kicker">Gestionale squadra</span>
                 <h1 class="pane-title">WAPATANKA</h1>
                 <p class="pane-lead">Il gestionale ufficiale della squadra: feedback allenamenti, calendario
                     partite, roster e statistiche di gioco — tutto in un posto.</p>
                 <div class="hero-cta">
-                    <a href="form.html" class="btn-accent"><span data-icon="form"></span> Rate Today's Training</a>
-                    <a href="match-table.html" class="btn-ghost"><span data-icon="matches"></span> View Matches</a>
+                    <a href="form.html" class="btn-accent"><span data-icon="form"></span> Valuta l’allenamento di oggi</a>
+                    <a href="match-table.html" class="btn-ghost"><span data-icon="matches"></span> Vedi le partite</a>
                 </div>
-                <div class="scroll-cue"><span class="mouse"></span> Scroll</div>
+                <div class="scroll-cue"><span class="mouse"></span> Scorri</div>
             </div>
         </section>
 
@@ -119,33 +120,33 @@
                 <div class="explore-grid">
                     <a href="form.html" class="home-card">
                         <div class="icon" data-icon="form"></div>
-                        <h3>Rate Form</h3>
-                        <p>Provide training feedback and rate exercise difficulty.</p>
+                        <h3>Valutazione</h3>
+                        <p>Lascia un feedback sull’allenamento e valuta gli esercizi.</p>
                     </a>
                     <a href="public-exercises.html" class="home-card">
                         <div class="icon" data-icon="exercises"></div>
-                        <h3>Exercises</h3>
-                        <p>View the full database of training exercises.</p>
+                        <h3>Esercizi</h3>
+                        <p>Tutti gli esercizi di allenamento.</p>
                     </a>
                     <a href="match-table.html" class="home-card">
                         <div class="icon" data-icon="matches"></div>
-                        <h3>Matches</h3>
-                        <p>Track team schedule, set scores, and log statistics.</p>
+                        <h3>Partite</h3>
+                        <p>Calendario, punteggi dei set e statistiche di gioco.</p>
                     </a>
                     <a href="players.html" class="home-card">
                         <div class="icon" data-icon="players"></div>
-                        <h3>Players</h3>
-                        <p>Check the team roster, roles, and jersey numbers.</p>
+                        <h3>Giocatori</h3>
+                        <p>Rosa, ruoli e numeri di maglia.</p>
                     </a>
                     <a href="ai-analysis.html" class="home-card">
                         <div class="icon" data-icon="ai"></div>
-                        <h3>AI Analysis</h3>
-                        <p>Analyse match video with AI-powered insights.</p>
+                        <h3>Analisi video</h3>
+                        <p>Analizza i video delle partite con l’intelligenza artificiale.</p>
                     </a>
                     <a href="upload-exercises.html" class="home-card">
                         <div class="icon" data-icon="manage"></div>
-                        <h3>Manage</h3>
-                        <p>Upload and manage the exercise database.</p>
+                        <h3>Gestione</h3>
+                        <p>Carica e gestisci gli esercizi.</p>
                     </a>
                 </div>
             </div>
@@ -158,32 +159,32 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <!-- ===== CONFIGURATION & CONSTANTS ===== -->
-    <script src="../config/firebase.config.js"></script>
-    <script src="../config/constants.js"></script>
+    <script src="../config/firebase.config.js?v=20260930"></script>
+    <script src="../config/constants.js?v=20260930"></script>
 
     <!-- ===== COMMON SERVICES ===== -->
-    <script src="../common/logger.js"></script>
-    <script src="../common/storage-service.js"></script>
-    <script src="../common/ui-service.js"></script>
+    <script src="../common/logger.js?v=20260930"></script>
+    <script src="../common/storage-service.js?v=20260930"></script>
+    <script src="../common/ui-service.js?v=20260930"></script>
 
     <!-- ===== DATA SERVICES ===== -->
-    <script src="../services/firebase-service.js"></script>
-    <script src="../services/player-service.js"></script>
-    <script src="../services/match-service.js"></script>
+    <script src="../services/firebase-service.js?v=20260930"></script>
+    <script src="../services/player-service.js?v=20260930"></script>
+    <script src="../services/match-service.js?v=20260930"></script>
 
     <!-- ===== UI COMMON ===== -->
-    <script src="../common/icons.js"></script>
-    <script src="../common/navbar.js"></script>
-    <script src="../common/scroll-reveal.js"></script>
+    <script src="../common/icons.js?v=20260930"></script>
+    <script src="../common/navbar.js?v=20260930"></script>
+    <script src="../common/scroll-reveal.js?v=20260930"></script>
 
     <!-- ===== HOME MODULES ===== -->
-    <script src="../modules/home/home.js"></script>
-    <script src="../modules/home/home-stats.js"></script>
-    <script src="../modules/home/home-scrollfx.js"></script>
+    <script src="../modules/home/home.js?v=20260930"></script>
+    <script src="../modules/home/home-stats.js?v=20260930"></script>
+    <script src="../modules/home/home-scrollfx.js?v=20260930"></script>
 
     <!-- ===== 3D VOLLEYBALL (Three.js pinned CDN + SRI, with robust fallback) ===== -->
     <script defer src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js" integrity="sha384-qOkzR5Ke/XkQxuGVJ9hpFEpDlcoLtWwVYhnJf06cLIZa2vaIptSqaubivErzmD5O" crossorigin="anonymous"></script>
-    <script defer src="../modules/home/volleyball-3d.js"></script>
+    <script defer src="../modules/home/volleyball-3d.js?v=20260930"></script>
 </body>
 
 </html>

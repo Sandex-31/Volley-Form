@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../common/theme-init.js"></script>
-    <title>Manage Exercises - Admin Panel</title>
+    <script src="../common/theme-init.js?v=20260930"></script>
+    <title>Gestione esercizi · Wapatanka</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap">
-    <link rel="stylesheet" href="../styles/theme.css">
-    <link rel="stylesheet" href="../styles/upload-exercises.css">
-    <link rel="stylesheet" href="../styles/navbar.css">
+    <link rel="stylesheet" href="../styles/theme.css?v=20260930">
+    <link rel="stylesheet" href="../styles/upload-exercises.css?v=20260930">
+    <link rel="stylesheet" href="../styles/navbar.css?v=20260930">
+    <link rel="stylesheet" href="../styles/ambience.css?v=20260930">
 </head>
 
 <body>
@@ -22,13 +23,13 @@
         </a>
         <ul class="navbar-menu" id="navMenu">
             <li class="navbar-item"><a href="index.html"><span class="nav-ic" data-icon="home"></span> Home</a></li>
-            <li class="navbar-item"><a href="form.html"><span class="nav-ic" data-icon="form"></span> Rate Form</a></li>
-            <li class="navbar-item"><a href="public-exercises.html"><span class="nav-ic" data-icon="exercises"></span> Exercises</a></li>
-            <li class="navbar-item"><a href="responses.html"><span class="nav-ic" data-icon="responses"></span> Responses</a></li>
-            <li class="navbar-item"><a href="match-table.html"><span class="nav-ic" data-icon="matches"></span> Matches</a></li>
-            <li class="navbar-item"><a href="players.html"><span class="nav-ic" data-icon="players"></span> Players</a></li>
-            <li class="navbar-item"><a href="ai-analysis.html"><span class="nav-ic" data-icon="ai"></span> AI Analysis</a></li>
-            <li class="navbar-item active"><a href="upload-exercises.html"><span class="nav-ic" data-icon="manage"></span> Manage</a></li>
+            <li class="navbar-item"><a href="form.html"><span class="nav-ic" data-icon="form"></span> Valutazione</a></li>
+            <li class="navbar-item"><a href="public-exercises.html"><span class="nav-ic" data-icon="exercises"></span> Esercizi</a></li>
+            <li class="navbar-item"><a href="responses.html"><span class="nav-ic" data-icon="responses"></span> Risposte</a></li>
+            <li class="navbar-item"><a href="match-table.html"><span class="nav-ic" data-icon="matches"></span> Partite</a></li>
+            <li class="navbar-item"><a href="players.html"><span class="nav-ic" data-icon="players"></span> Giocatori</a></li>
+            <li class="navbar-item"><a href="ai-analysis.html"><span class="nav-ic" data-icon="ai"></span> Analisi video</a></li>
+            <li class="navbar-item active"><a href="upload-exercises.html"><span class="nav-ic" data-icon="manage"></span> Gestione</a></li>
         </ul>
         <div class="navbar-actions">
             <button class="theme-toggle-btn" id="themeToggleBtn" onclick="ThemeToggle.toggle()" aria-label="Cambia tema" type="button">
@@ -40,88 +41,83 @@
 
     <div class="container reveal">
         <div class="header">
-            <h1><span data-icon="manage"></span> Manage Exercises</h1>
-            <p>Add, edit, and manage training exercises</p>
+            <h1><span data-icon="manage"></span> Gestione esercizi</h1>
+            <p>Aggiungi, modifica e programma gli esercizi</p>
         </div>
 
         <!-- Messages -->
-        <div id="errorMessage" class="error-message"></div>
-        <div id="successMessage" class="success-message"></div>
-        <div id="infoMessage" class="info-message"></div>
 
         <!-- Login Section -->
         <div id="loginSection">
-            <h2 style="color: var(--text); margin-bottom: 20px; font-size: 18px; font-weight: 700;">Admin Authentication
+            <h2 style="color: var(--text); margin-bottom: 20px; font-size: 18px; font-weight: 700;">Accesso amministratore
             </h2>
             <div class="form-group">
-                <label for="adminPassword">Admin Password</label>
-                <input type="password" id="adminPassword" placeholder="Enter admin password..." autofocus>
+                <label for="adminPassword">Password amministratore</label>
+                <input type="password" id="adminPassword" placeholder="Password amministratore…" autofocus>
             </div>
-            <button class="btn-save" id="loginBtn">🔑 Login</button>
+            <button class="btn-save" id="loginBtn">Accedi</button>
         </div>
 
         <!-- Upload Section (Hidden by default) -->
         <div id="uploadSection" style="display: none;">
             <div style="text-align: right; margin-bottom: 20px;">
                 <button class="btn-secondary" id="logoutBtn"
-                    style="width: auto; padding: 8px 16px; font-size: 12px;">Logout</button>
+                    style="width: auto; padding: 8px 16px; font-size: 12px;">Esci</button>
             </div>
 
             <!-- Edit Exercise Section -->
             <div id="editSection"
                 style="display: none; margin-bottom: 30px; padding-bottom: 25px; border-bottom: 1px solid var(--border);">
-                <h2 style="color: var(--text); margin-bottom: 20px; font-size: 18px; font-weight: 700;">✏️ Edit Exercise
+                <h2 style="color: var(--text); margin-bottom: 20px; font-size: 18px; font-weight: 700;">Modifica esercizio
                 </h2>
 
                 <div class="form-group">
-                    <label for="editExerciseName">Exercise Name</label>
+                    <label for="editExerciseName">Nome esercizio</label>
                     <input type="text" id="editExerciseName" readonly style="background: var(--surface-2); cursor: not-allowed;">
                 </div>
 
                 <div class="form-group">
-                    <label for="editDescription">Exercise Description</label>
+                    <label for="editDescription">Descrizione</label>
                     <textarea id="editDescription"
-                        placeholder="Write a detailed description of the exercise technique, benefits, and tips..."></textarea>
+                        placeholder="Descrivi la tecnica, a cosa serve e qualche consiglio…"></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label for="editVideoInput">📹 Upload Video (MP4, Max 100 MB)</label>
+                    <label for="editVideoInput">Carica video (MP4, max 100 MB)</label>
                     <input type="file" id="editVideoInput" accept=".mp4,video/mp4">
                     <small style="color: var(--text-muted); display: block; margin-top: 8px;">
-                        💡 Format: MP4 | Max size: 100 MB | Recommended: 1080p, landscape orientation
+                        Formato MP4, massimo 100 MB. Consigliato 1080p in orizzontale.
                     </small>
                 </div>
 
                 <div id="uploadProgress" class="upload-progress"></div>
 
                 <div class="button-group">
-                    <button class="btn-save" onclick="ExerciseUploadManager.uploadExerciseData()">✓ Save &
-                        Upload</button>
-                    <button class="btn-secondary" id="cancelEditBtn">Cancel</button>
+                    <button class="btn-save" onclick="ExerciseUploadManager.uploadExerciseData()">Salva e carica</button>
+                    <button class="btn-secondary" id="cancelEditBtn">Annulla</button>
                 </div>
             </div>
 
             <!-- Add Exercise Section -->
             <div class="section" style="margin-bottom: 30px; padding-bottom: 25px; border-bottom: 1px solid var(--border);">
-                <h2>➕ Schedule Exercise</h2>
+                <h2>Programma esercizio</h2>
                 <div class="form-group">
-                    <label for="exerciseSelect">Select Preset Exercise</label>
+                    <label for="exerciseSelect">Esercizio predefinito</label>
                     <select id="exerciseSelect">
-                        <option value="">-- Choose an exercise --</option>
+                        <option value="">-- Scegli un esercizio --</option>
                     </select>
                 </div>
                 <button type="button" class="btn-save" onclick="ExerciseUploadManager.addPresetExercise()"
-                    style="margin-bottom: 15px;">+ Add Preset Exercise</button>
+                    style="margin-bottom: 15px;">+ Aggiungi esercizio predefinito</button>
 
-                <div style="text-align: center; margin: 10px 0; color: var(--text-muted);">- OR -</div>
+                <div style="text-align: center; margin: 10px 0; color: var(--text-muted);">oppure</div>
 
-                <button type="button" class="btn-secondary" onclick="ExerciseUploadManager.addNewExercise()">➕ Create
-                    Custom Exercise</button>
+                <button type="button" class="btn-secondary" onclick="ExerciseUploadManager.addNewExercise()">Crea esercizio personalizzato</button>
             </div>
 
             <!-- Exercise List Section -->
             <div class="section">
-                <h2>📋 Scheduled Exercises</h2>
+                <h2>Esercizi in programma</h2>
                 <div id="exercisesList" class="exercises-list"></div>
             </div>
         </div>
@@ -136,29 +132,29 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
     <!-- ===== CONFIGURATION & CONSTANTS ===== -->
-    <script src="../config/firebase.config.js"></script>
-    <script src="../config/supabase.config.js"></script>
-    <script src="../config/constants.js"></script>
+    <script src="../config/firebase.config.js?v=20260930"></script>
+    <script src="../config/supabase.config.js?v=20260930"></script>
+    <script src="../config/constants.js?v=20260930"></script>
 
     <!-- ===== COMMON SERVICES ===== -->
-    <script src="../common/logger.js"></script>
-    <script src="../common/storage-service.js"></script>
-    <script src="../common/ui-service.js"></script>
+    <script src="../common/logger.js?v=20260930"></script>
+    <script src="../common/storage-service.js?v=20260930"></script>
+    <script src="../common/ui-service.js?v=20260930"></script>
 
     <!-- ===== DATA SERVICES ===== -->
-    <script src="../services/firebase-service.js"></script>
-    <script src="../services/exercise-service.js"></script>
+    <script src="../services/firebase-service.js?v=20260930"></script>
+    <script src="../services/exercise-service.js?v=20260930"></script>
 
     <!-- ===== FORM VALIDATION ===== -->
-    <script src="../modules/form/validation.js"></script>
+    <script src="../modules/form/validation.js?v=20260930"></script>
 
     <!-- ===== UI COMMON ===== -->
-    <script src="../common/icons.js"></script>
-    <script src="../common/navbar.js"></script>
-    <script src="../common/scroll-reveal.js"></script>
+    <script src="../common/icons.js?v=20260930"></script>
+    <script src="../common/navbar.js?v=20260930"></script>
+    <script src="../common/scroll-reveal.js?v=20260930"></script>
 
     <!-- ===== EXERCISE UPLOAD MODULE ===== -->
-    <script src="../modules/exercises/upload-manager.js"></script>
+    <script src="../modules/exercises/upload-manager.js?v=20260930"></script>
 </body>
 
 </html>

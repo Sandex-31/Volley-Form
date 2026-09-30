@@ -94,10 +94,10 @@ const FormModule = {
         const nextBtn = document.getElementById('nextBtn');
         if (nextBtn) {
             if (this.currentStep === this.totalSteps) {
-                nextBtn.textContent = 'Submit';
+                nextBtn.textContent = 'Invia';
                 nextBtn.style.background = 'var(--success)';
             } else {
-                nextBtn.textContent = 'Next →';
+                nextBtn.textContent = 'Avanti →';
                 nextBtn.style.background = '';
             }
         }
@@ -132,7 +132,7 @@ const FormModule = {
         };
 
         if (!FirebaseService.isReady()) {
-            UIService.showMessage('⚠️ Firebase not available - data may not be saved', 'error');
+            UIService.showMessage('Connessione al database assente: la valutazione potrebbe non essere salvata', 'error');
             return;
         }
 
@@ -142,12 +142,12 @@ const FormModule = {
         );
 
         if (success) {
-            UIService.showMessage('✓ Form submitted successfully!', 'success');
+            UIService.showMessage('Valutazione inviata, grazie!', 'success');
             form.reset();
             this.currentStep = 1;
             this.updateProgress();
         } else {
-            UIService.showMessage('✗ Failed to submit form', 'error');
+            UIService.showMessage('Valutazione non inviata, riprova', 'error');
         }
     },
 
@@ -156,7 +156,7 @@ const FormModule = {
      */
     addExercise: function() {
         if (this.exerciseCount >= APP_CONSTANTS.MAX_EXERCISES_PER_FORM) {
-            UIService.showMessage(`Maximum ${APP_CONSTANTS.MAX_EXERCISES_PER_FORM} exercises allowed`, 'error');
+            UIService.showMessage(`Puoi valutare al massimo ${APP_CONSTANTS.MAX_EXERCISES_PER_FORM} esercizi`, 'error');
             return;
         }
 
@@ -173,7 +173,7 @@ const FormModule = {
         exerciseItem.id = `exercise-${this.exerciseCount}`;
         exerciseItem.innerHTML = `
             <select name="exercise_${this.exerciseCount}_name" class="exercise-name-select exercise-name-dropdown">
-                <option value="">Select an exercise...</option>
+                <option value="">Scegli un esercizio…</option>
                 ${exerciseOptions}
             </select>
             <div class="exercise-top-row">
@@ -184,7 +184,7 @@ const FormModule = {
                 <button type="button" class="exercise-remove" onclick="FormModule.removeExercise(${this.exerciseCount})">✕</button>
             </div>
             <div class="exercise-notes">
-                <textarea name="exercise_${this.exerciseCount}_notes" placeholder="Add notes for this exercise (optional)..."></textarea>
+                <textarea name="exercise_${this.exerciseCount}_notes" placeholder="Note su questo esercizio (facoltative)…"></textarea>
             </div>
         `;
 

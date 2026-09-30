@@ -353,18 +353,18 @@ const MatchLineups = {
         }
 
         if (lineup.some((id) => !id)) {
-            UIService.showMessage('⚠️ Compila tutte e sei le posizioni', 'error');
+            UIService.showMessage('Compila tutte e sei le posizioni', 'error');
             return;
         }
         if (new Set(lineup).size !== 6) {
-            UIService.showMessage('⚠️ Un giocatore non può occupare due posizioni', 'error');
+            UIService.showMessage('Un giocatore non può occupare due posizioni', 'error');
             return;
         }
 
         const liberoEl = document.getElementById('lineupLibero');
         const libero = liberoEl ? liberoEl.value : '';
         if (libero && lineup.indexOf(libero) !== -1) {
-            UIService.showMessage('⚠️ Il libero non può essere anche fra i sei in campo', 'error');
+            UIService.showMessage('Il libero non può essere anche fra i sei in campo', 'error');
             return;
         }
 
@@ -384,18 +384,18 @@ const MatchLineups = {
         const score = scoreEl ? scoreEl.value.trim() : '';
 
         if (!/^\d{1,2}\s*-\s*\d{1,2}$/.test(score)) {
-            UIService.showMessage('⚠️ Punteggio non valido (es. 14-11)', 'error');
+            UIService.showMessage('Punteggio non valido (es. 14-11)', 'error');
             return;
         }
 
         // Guard the invariants before writing, not after.
         const six = this.onCourt(setData);
         if (six.indexOf(out) === -1) {
-            UIService.showMessage('⚠️ Chi esce non è in campo', 'error');
+            UIService.showMessage('Chi esce non è in campo', 'error');
             return;
         }
         if (six.indexOf(incoming) !== -1) {
-            UIService.showMessage('⚠️ Chi entra è già in campo', 'error');
+            UIService.showMessage('Chi entra è già in campo', 'error');
             return;
         }
 

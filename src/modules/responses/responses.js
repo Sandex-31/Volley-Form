@@ -53,7 +53,7 @@ const ResponsesModule = {
             container.innerHTML = `
                 <div class="empty-state">
                     <div class="empty-state-icon">📭</div>
-                    <div class="empty-state-text">No responses yet</div>
+                    <div class="empty-state-text">Ancora nessuna risposta</div>
                 </div>
             `;
             if (countEl) countEl.textContent = '0';
@@ -69,7 +69,7 @@ const ResponsesModule = {
         if (countEl) countEl.textContent = responses.length;
 
         const ratingEmojis = ['😞', '😐', '🙂', '😊', '🤩'];
-        const ratingLabels = ['Terrible', 'Bad', 'Okay', 'Good', 'Amazing'];
+        const ratingLabels = ['Pessimo', 'Scarso', 'Discreto', 'Buono', 'Ottimo'];
 
         responses.forEach((response, index) => {
             const responseEl = document.createElement('div');
@@ -92,25 +92,25 @@ const ResponsesModule = {
                 }
             });
 
-            const submittedAt = response.submittedAt || (response.timestamp ? new Date(response.timestamp).toLocaleString() : 'Unknown time');
-            const exerciseDate = response.exerciseDate || 'No date specified';
+            const submittedAt = response.submittedAt || (response.timestamp ? new Date(response.timestamp).toLocaleString('it-IT') : 'ora sconosciuta');
+            const exerciseDate = response.exerciseDate || 'Data non indicata';
             const notes = response.notes || '';
-            const firstName = response.firstName || 'Anonymous';
+            const firstName = response.firstName || 'Anonimo';
             const lastName = response.lastName || '';
             const fullName = `${firstName} ${lastName}`.trim();
 
             let exercisesHtml = '';
             Object.keys(exerciseFields).sort((a, b) => parseInt(a) - parseInt(b)).forEach(exerciseNum => {
                 const exercise = exerciseFields[exerciseNum];
-                const exerciseName = exercise.name || 'Unknown exercise';
+                const exerciseName = exercise.name || 'Esercizio senza nome';
                 const exerciseNote = exercise.notes || '';
                 const rating = parseInt(exercise.rating);
                 const ratingEmoji = !isNaN(rating) && ratingEmojis[rating] ? ratingEmojis[rating] : '❓';
-                const ratingLabel = !isNaN(rating) && ratingLabels[rating] ? ratingLabels[rating] : 'Not Rated';
+                const ratingLabel = !isNaN(rating) && ratingLabels[rating] ? ratingLabels[rating] : 'Non valutato';
 
                 exercisesHtml += `
                     <div class="exercise-card">
-                        <div class="exercise-name">💪 ${this.escapeHtml(exerciseName)}</div>
+                        <div class="exercise-name">${this.escapeHtml(exerciseName)}</div>
                         <div class="exercise-rating">
                             <span class="rating-stars">${ratingEmoji}</span>
                             <span class="rating-text">${ratingLabel}</span>
@@ -126,26 +126,26 @@ const ResponsesModule = {
 
             const notesHtml = notes.trim() 
                 ? `<div class="notes-section">"${this.escapeHtml(notes)}"</div>`
-                : '<div class="notes-section empty">No additional notes</div>';
+                : '<div class="notes-section empty">Nessuna nota</div>';
 
             const cardContent = `
                 <div class="response-header">
                     <div>
-                        <div class="response-date">📅 ${this.escapeHtml(exerciseDate)}</div>
-                        <div class="response-time">Submitted by <strong>${this.escapeHtml(fullName)}</strong> on ${submittedAt}</div>
+                        <div class="response-date">${this.escapeHtml(exerciseDate)}</div>
+                        <div class="response-time">Inviata da <strong>${this.escapeHtml(fullName)}</strong> il ${submittedAt}</div>
                     </div>
-                    <div class="response-index">Response #${responses.length - index}</div>
+                    <div class="response-index">Risposta n. ${responses.length - index}</div>
                 </div>
 
                 <div class="response-section">
-                    <h3>💪 Exercises & Ratings</h3>
+                    <h3>Esercizi e valutazioni</h3>
                     <div class="exercises-grid">
-                        ${exercisesHtml || '<p style="color: var(--text-muted); font-style: italic;">No exercises recorded</p>'}
+                        ${exercisesHtml || '<p style="color: var(--text-muted); font-style: italic;">Nessun esercizio registrato</p>'}
                     </div>
                 </div>
 
                 <div class="response-section">
-                    <h3>📝 Notes</h3>
+                    <h3>Note</h3>
                     ${notesHtml}
                 </div>
             `;

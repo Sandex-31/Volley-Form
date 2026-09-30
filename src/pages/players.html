@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../common/theme-init.js"></script>
-    <title>Team Roster - Volley Tool</title>
+    <script src="../common/theme-init.js?v=20260930"></script>
+    <title>Giocatori · Wapatanka</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap">
-    <link rel="stylesheet" href="../styles/theme.css">
-    <link rel="stylesheet" href="../styles/styles.css">
-    <link rel="stylesheet" href="../styles/navbar.css">
-    <link rel="stylesheet" href="../styles/players.css">
+    <link rel="stylesheet" href="../styles/theme.css?v=20260930">
+    <link rel="stylesheet" href="../styles/styles.css?v=20260930">
+    <link rel="stylesheet" href="../styles/navbar.css?v=20260930">
+    <link rel="stylesheet" href="../styles/players.css?v=20260930">
+    <link rel="stylesheet" href="../styles/ambience.css?v=20260930">
 </head>
 <body>
     <!-- ===== NAVIGATION BAR ===== -->
@@ -21,13 +22,13 @@
         </a>
         <ul class="navbar-menu" id="navMenu">
             <li class="navbar-item"><a href="index.html"><span class="nav-ic" data-icon="home"></span> Home</a></li>
-            <li class="navbar-item"><a href="form.html"><span class="nav-ic" data-icon="form"></span> Rate Form</a></li>
-            <li class="navbar-item"><a href="public-exercises.html"><span class="nav-ic" data-icon="exercises"></span> Exercises</a></li>
-            <li class="navbar-item"><a href="responses.html"><span class="nav-ic" data-icon="responses"></span> Responses</a></li>
-            <li class="navbar-item"><a href="match-table.html"><span class="nav-ic" data-icon="matches"></span> Matches</a></li>
-            <li class="navbar-item active"><a href="players.html"><span class="nav-ic" data-icon="players"></span> Players</a></li>
-            <li class="navbar-item"><a href="ai-analysis.html"><span class="nav-ic" data-icon="ai"></span> AI Analysis</a></li>
-            <li class="navbar-item"><a href="upload-exercises.html"><span class="nav-ic" data-icon="manage"></span> Manage</a></li>
+            <li class="navbar-item"><a href="form.html"><span class="nav-ic" data-icon="form"></span> Valutazione</a></li>
+            <li class="navbar-item"><a href="public-exercises.html"><span class="nav-ic" data-icon="exercises"></span> Esercizi</a></li>
+            <li class="navbar-item"><a href="responses.html"><span class="nav-ic" data-icon="responses"></span> Risposte</a></li>
+            <li class="navbar-item"><a href="match-table.html"><span class="nav-ic" data-icon="matches"></span> Partite</a></li>
+            <li class="navbar-item active"><a href="players.html"><span class="nav-ic" data-icon="players"></span> Giocatori</a></li>
+            <li class="navbar-item"><a href="ai-analysis.html"><span class="nav-ic" data-icon="ai"></span> Analisi video</a></li>
+            <li class="navbar-item"><a href="upload-exercises.html"><span class="nav-ic" data-icon="manage"></span> Gestione</a></li>
         </ul>
         <div class="navbar-actions">
             <button class="theme-toggle-btn" id="themeToggleBtn" onclick="ThemeToggle.toggle()" aria-label="Cambia tema" type="button">
@@ -40,23 +41,20 @@
     <!-- ===== MAIN CONTENT CONTAINER ===== -->
     <div class="players-container container reveal">
         <div class="header">
-            <h1><span data-icon="players"></span> Team Roster</h1>
-            <p>View and manage volleyball players, numbers, and roles</p>
+            <h1><span data-icon="players"></span> La rosa</h1>
+            <p>Giocatori, numeri di maglia e ruoli della squadra</p>
         </div>
 
         <!-- Messages -->
-        <div id="errorMessage" class="error-message"></div>
-        <div id="successMessage" class="success-message"></div>
-        <div id="infoMessage" class="info-message"></div>
 
         <!-- Admin Action Header (Hidden for public, toggled by JS) -->
         <div id="playerAdminActions" class="players-header-actions" style="display: none;">
-            <button class="btn-save" onclick="PlayersModule.openAddModal()" style="width: auto; padding: 10px 20px;">➕ Add Player</button>
+            <button class="btn-save" onclick="PlayersModule.openAddModal()" style="width: auto; padding: 10px 20px;">Aggiungi giocatore</button>
         </div>
 
         <!-- Roster Grid -->
         <div id="playersGrid" class="players-grid">
-            <p class="loading" style="grid-column: 1/-1; text-align: center; color: var(--text-muted); font-style: italic;">Loading roster...</p>
+            <p class="loading" style="grid-column: 1/-1; text-align: center; color: var(--text-muted); font-style: italic;">Caricamento rosa…</p>
         </div>
     </div>
 
@@ -64,19 +62,19 @@
     <div id="playerAdminModal" class="player-modal">
         <div class="player-modal-content">
             <span class="close-player-modal" onclick="PlayersModule.closeModal()">&times;</span>
-            <h2 id="playerModalTitle" style="color: var(--text); margin-bottom: 20px; font-size: 18px; font-weight: 700;">Add Player</h2>
+            <h2 id="playerModalTitle" style="color: var(--text); margin-bottom: 20px; font-size: 18px; font-weight: 700;">Aggiungi giocatore</h2>
             
             <form id="playerForm" onsubmit="PlayersModule.handleFormSubmit(event)">
                 <input type="hidden" id="editPlayerId" value="">
                 
                 <div class="form-group" style="margin-bottom: 15px; text-align: left;">
-                    <label for="playerName">Full Name *</label>
-                    <input type="text" id="playerName" required placeholder="e.g. Lorenzo Rossi">
+                    <label for="playerName">Nome e cognome *</label>
+                    <input type="text" id="playerName" required placeholder="es. Lorenzo Rossi">
                 </div>
 
                 <!-- Profile Photo Input & Preview -->
                 <div class="form-group" style="margin-bottom: 20px; text-align: left;">
-                    <label>Profile Picture (for AI face recognition)</label>
+                    <label>Foto profilo (per il riconoscimento nei video)</label>
                     <div class="modal-photo-upload-container">
                         <div class="modal-photo-preview" id="modalPhotoPreviewContainer">
                             <img id="playerPhotoPreview" src="" alt="Preview" style="transition: transform 0.1s ease-out;">
@@ -84,15 +82,15 @@
                         </div>
                         <div class="modal-photo-controls">
                             <input type="file" id="playerPhotoInput" accept="image/*" style="display: none;" onchange="PlayersModule.handlePhotoSelect(event)">
-                            <button type="button" class="btn-secondary btn-upload-photo" onclick="document.getElementById('playerPhotoInput').click()">Choose Image</button>
-                            <button type="button" id="btnRemovePhoto" class="btn-secondary btn-remove-photo" onclick="PlayersModule.removeSelectedPhoto()" style="display: none;">Remove</button>
-                            <small class="upload-tip">Use a clear photo of the player's face so Gemini AI can identify them in videos.</small>
+                            <button type="button" class="btn-secondary btn-upload-photo" onclick="document.getElementById('playerPhotoInput').click()">Scegli immagine</button>
+                            <button type="button" id="btnRemovePhoto" class="btn-secondary btn-remove-photo" onclick="PlayersModule.removeSelectedPhoto()" style="display: none;">Rimuovi</button>
+                            <small class="upload-tip">Usa una foto nitida del viso: serve all’AI per riconoscere il giocatore nei video.</small>
                         </div>
                     </div>
 
                     <!-- Zoom & Pan Position Adjustments -->
                     <div id="photoAdjustments" style="display: none; margin-top: 10px; background: var(--surface-2); padding: 12px; border-radius: 6px; border: 1px solid var(--border);">
-                        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">📐 Adjust Position & Zoom:</div>
+                        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Posizione e zoom:</div>
                         <div style="margin-bottom: 8px;">
                             <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 2px;">
                                 <span>Zoom</span>
@@ -102,11 +100,11 @@
                         </div>
                         <div style="display: flex; gap: 10px;">
                             <div style="flex: 1;">
-                                <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 2px;">Pan Left/Right (X)</label>
+                                <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 2px;">Sposta sinistra/destra (X)</label>
                                 <input type="range" id="photoPanX" min="-50" max="50" step="1" value="0" style="width: 100%; height: 6px; background: var(--surface); border-radius: 3px; outline: none; -webkit-appearance: none; cursor: pointer;" oninput="PlayersModule.updatePhotoTransform()">
                             </div>
                             <div style="flex: 1;">
-                                <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 2px;">Pan Up/Down (Y)</label>
+                                <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 2px;">Sposta su/giù (Y)</label>
                                 <input type="range" id="photoPanY" min="-50" max="50" step="1" value="0" style="width: 100%; height: 6px; background: var(--surface); border-radius: 3px; outline: none; -webkit-appearance: none; cursor: pointer;" oninput="PlayersModule.updatePhotoTransform()">
                             </div>
                         </div>
@@ -115,29 +113,29 @@
 
                 <div class="form-row" style="margin-bottom: 20px; text-align: left;">
                     <div class="form-group">
-                        <label for="playerNumber">Jersey Number *</label>
-                        <input type="number" id="playerNumber" required min="1" max="99" placeholder="e.g. 7">
+                        <label for="playerNumber">Numero di maglia *</label>
+                        <input type="number" id="playerNumber" required min="1" max="99" placeholder="es. 7">
                     </div>
                     <div class="form-group">
                         <label for="playerHeight">Altezza (cm)</label>
-                        <input type="number" id="playerHeight" min="100" max="250" placeholder="e.g. 185">
+                        <input type="number" id="playerHeight" min="100" max="250" placeholder="es. 185">
                     </div>
                     <div class="form-group">
-                        <label for="playerRole">Role *</label>
+                        <label for="playerRole">Ruolo *</label>
                         <select id="playerRole" required>
-                            <option value="">-- Select Role --</option>
-                            <option value="Setter">Setter</option>
-                            <option value="Banda">Banda (Banda/Banda Opposta)</option>
-                            <option value="Opposite">Opposite</option>
-                            <option value="Centrale">Centrale (Middle Blocker)</option>
+                            <option value="">-- Scegli il ruolo --</option>
+                            <option value="Setter">Palleggiatore</option>
+                            <option value="Banda">Banda</option>
+                            <option value="Opposite">Opposto</option>
+                            <option value="Centrale">Centrale</option>
                             <option value="Libero">Libero</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="button-group">
-                    <button type="submit" class="btn-save">✓ Save Player</button>
-                    <button type="button" class="btn-secondary" onclick="PlayersModule.closeModal()">Cancel</button>
+                    <button type="submit" class="btn-save">Salva giocatore</button>
+                    <button type="button" class="btn-secondary" onclick="PlayersModule.closeModal()">Annulla</button>
                 </div>
             </form>
         </div>
@@ -152,25 +150,25 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
     <!-- ===== CONFIGURATION & CONSTANTS ===== -->
-    <script src="../config/firebase.config.js"></script>
-    <script src="../config/supabase.config.js"></script>
-    <script src="../config/constants.js"></script>
+    <script src="../config/firebase.config.js?v=20260930"></script>
+    <script src="../config/supabase.config.js?v=20260930"></script>
+    <script src="../config/constants.js?v=20260930"></script>
 
     <!-- ===== COMMON SERVICES ===== -->
-    <script src="../common/logger.js"></script>
-    <script src="../common/storage-service.js"></script>
-    <script src="../common/ui-service.js"></script>
+    <script src="../common/logger.js?v=20260930"></script>
+    <script src="../common/storage-service.js?v=20260930"></script>
+    <script src="../common/ui-service.js?v=20260930"></script>
 
     <!-- ===== DATA SERVICES ===== -->
-    <script src="../services/firebase-service.js"></script>
-    <script src="../services/player-service.js"></script>
+    <script src="../services/firebase-service.js?v=20260930"></script>
+    <script src="../services/player-service.js?v=20260930"></script>
 
     <!-- ===== UI COMMON ===== -->
-    <script src="../common/icons.js"></script>
-    <script src="../common/navbar.js"></script>
-    <script src="../common/scroll-reveal.js"></script>
+    <script src="../common/icons.js?v=20260930"></script>
+    <script src="../common/navbar.js?v=20260930"></script>
+    <script src="../common/scroll-reveal.js?v=20260930"></script>
 
     <!-- ===== PLAYERS MODULE ===== -->
-    <script src="../modules/players/players.js"></script>
+    <script src="../modules/players/players.js?v=20260930"></script>
 </body>
 </html>

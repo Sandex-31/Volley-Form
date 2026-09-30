@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../common/theme-init.js"></script>
-    <title>Form Responses - Volleyball</title>
+    <script src="../common/theme-init.js?v=20260930"></script>
+    <title>Risposte · Wapatanka</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap">
-    <link rel="stylesheet" href="../styles/theme.css">
-    <link rel="stylesheet" href="../styles/styles.css">
-    <link rel="stylesheet" href="../styles/navbar.css">
+    <link rel="stylesheet" href="../styles/theme.css?v=20260930">
+    <link rel="stylesheet" href="../styles/styles.css?v=20260930">
+    <link rel="stylesheet" href="../styles/navbar.css?v=20260930">
     <style>
         * {
             margin: 0;
@@ -206,6 +206,7 @@
             font-size: 16px;
         }
     </style>
+    <link rel="stylesheet" href="../styles/ambience.css?v=20260930">
 </head>
 <body>
     <!-- ===== NAVIGATION BAR ===== -->
@@ -215,13 +216,13 @@
         </a>
         <ul class="navbar-menu" id="navMenu">
             <li class="navbar-item"><a href="index.html"><span class="nav-ic" data-icon="home"></span> Home</a></li>
-            <li class="navbar-item"><a href="form.html"><span class="nav-ic" data-icon="form"></span> Rate Form</a></li>
-            <li class="navbar-item"><a href="public-exercises.html"><span class="nav-ic" data-icon="exercises"></span> Exercises</a></li>
-            <li class="navbar-item active"><a href="responses.html"><span class="nav-ic" data-icon="responses"></span> Responses</a></li>
-            <li class="navbar-item"><a href="match-table.html"><span class="nav-ic" data-icon="matches"></span> Matches</a></li>
-            <li class="navbar-item"><a href="players.html"><span class="nav-ic" data-icon="players"></span> Players</a></li>
-            <li class="navbar-item"><a href="ai-analysis.html"><span class="nav-ic" data-icon="ai"></span> AI Analysis</a></li>
-            <li class="navbar-item"><a href="upload-exercises.html"><span class="nav-ic" data-icon="manage"></span> Manage</a></li>
+            <li class="navbar-item"><a href="form.html"><span class="nav-ic" data-icon="form"></span> Valutazione</a></li>
+            <li class="navbar-item"><a href="public-exercises.html"><span class="nav-ic" data-icon="exercises"></span> Esercizi</a></li>
+            <li class="navbar-item active"><a href="responses.html"><span class="nav-ic" data-icon="responses"></span> Risposte</a></li>
+            <li class="navbar-item"><a href="match-table.html"><span class="nav-ic" data-icon="matches"></span> Partite</a></li>
+            <li class="navbar-item"><a href="players.html"><span class="nav-ic" data-icon="players"></span> Giocatori</a></li>
+            <li class="navbar-item"><a href="ai-analysis.html"><span class="nav-ic" data-icon="ai"></span> Analisi video</a></li>
+            <li class="navbar-item"><a href="upload-exercises.html"><span class="nav-ic" data-icon="manage"></span> Gestione</a></li>
         </ul>
         <div class="navbar-actions">
             <button class="theme-toggle-btn" id="themeToggleBtn" onclick="ThemeToggle.toggle()" aria-label="Cambia tema" type="button">
@@ -233,14 +234,14 @@
 
     <div class="container reveal">
         <div class="header">
-            <h1><span data-icon="responses"></span> Form Responses</h1>
-            <p>View all submitted form responses</p>
-            <p class="meta">Total responses received: <span id="responseCount" style="color: var(--accent); font-weight: bold;">0</span></p>
+            <h1><span data-icon="responses"></span> Risposte</h1>
+            <p>Tutte le valutazioni inviate dalla squadra</p>
+            <p class="meta">Risposte ricevute: <span id="responseCount" style="color: var(--accent); font-weight: bold;">0</span></p>
         </div>
 
         <!-- Responses List Container -->
         <div id="responsesList" class="responses-list reveal">
-            <p class="loading" style="text-align: center; color: var(--text-muted); font-style: italic;">Loading responses...</p>
+            <p class="loading" style="text-align: center; color: var(--text-muted); font-style: italic;">Caricamento risposte…</p>
         </div>
 
     </div>
@@ -250,25 +251,25 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <!-- ===== CONFIGURATION & CONSTANTS ===== -->
-    <script src="../config/firebase.config.js"></script>
-    <script src="../config/supabase.config.js"></script>
-    <script src="../config/constants.js"></script>
+    <script src="../config/firebase.config.js?v=20260930"></script>
+    <script src="../config/supabase.config.js?v=20260930"></script>
+    <script src="../config/constants.js?v=20260930"></script>
 
     <!-- ===== COMMON SERVICES ===== -->
-    <script src="../common/logger.js"></script>
-    <script src="../common/storage-service.js"></script>
-    <script src="../common/ui-service.js"></script>
+    <script src="../common/logger.js?v=20260930"></script>
+    <script src="../common/storage-service.js?v=20260930"></script>
+    <script src="../common/ui-service.js?v=20260930"></script>
 
     <!-- ===== DATA SERVICES ===== -->
-    <script src="../services/firebase-service.js"></script>
-    <script src="../services/exercise-service.js"></script>
+    <script src="../services/firebase-service.js?v=20260930"></script>
+    <script src="../services/exercise-service.js?v=20260930"></script>
 
     <!-- ===== UI COMMON ===== -->
-    <script src="../common/icons.js"></script>
-    <script src="../common/navbar.js"></script>
-    <script src="../common/scroll-reveal.js"></script>
+    <script src="../common/icons.js?v=20260930"></script>
+    <script src="../common/navbar.js?v=20260930"></script>
+    <script src="../common/scroll-reveal.js?v=20260930"></script>
 
     <!-- ===== RESPONSES MODULE ===== -->
-    <script src="../modules/responses/responses.js"></script>
+    <script src="../modules/responses/responses.js?v=20260930"></script>
 </body>
 </html>

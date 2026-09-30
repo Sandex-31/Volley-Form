@@ -164,53 +164,11 @@ button {
 }
 
 /* ===== MESSAGES ===== */
-.error-message {
-    display: none;
-    background: var(--danger);
-    color: white;
-    padding: 12px 15px;
-    border-radius: var(--radius-sm);
-    margin-bottom: 20px;
-    text-align: center;
-    font-size: 14px;
-    border: 1px solid var(--danger);
-}
 
-.error-message.show {
-    display: block;
-}
 
-.success-message {
-    display: none;
-    background: var(--success);
-    color: white;
-    padding: 12px 15px;
-    border-radius: var(--radius-sm);
-    margin-bottom: 20px;
-    text-align: center;
-    font-size: 14px;
-    border: 1px solid var(--success);
-}
 
-.success-message.show {
-    display: block;
-}
 
-.info-message {
-    display: none;
-    background: var(--accent);
-    color: white;
-    padding: 12px 15px;
-    border-radius: var(--radius-sm);
-    margin-bottom: 20px;
-    text-align: center;
-    font-size: 14px;
-    border: 1px solid var(--accent-hover);
-}
 
-.info-message.show {
-    display: block;
-}
 
 /* ===== UPLOAD PROGRESS ===== */
 .upload-progress {

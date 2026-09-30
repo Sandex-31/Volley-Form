@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../common/theme-init.js"></script>
-    <title>Wapatanka - Exercise Rating Form</title>
+    <script src="../common/theme-init.js?v=20260930"></script>
+    <title>Wapatanka · Valutazione allenamento</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap">
-    <link rel="stylesheet" href="../styles/theme.css">
-    <link rel="stylesheet" href="../styles/styles.css">
-    <link rel="stylesheet" href="../styles/navbar.css">
+    <link rel="stylesheet" href="../styles/theme.css?v=20260930">
+    <link rel="stylesheet" href="../styles/styles.css?v=20260930">
+    <link rel="stylesheet" href="../styles/navbar.css?v=20260930">
+    <link rel="stylesheet" href="../styles/ambience.css?v=20260930">
 </head>
 <body>
     <!-- ===== NAVIGATION BAR ===== -->
@@ -20,13 +21,13 @@
         </a>
         <ul class="navbar-menu" id="navMenu">
             <li class="navbar-item"><a href="index.html"><span class="nav-ic" data-icon="home"></span> Home</a></li>
-            <li class="navbar-item active"><a href="form.html"><span class="nav-ic" data-icon="form"></span> Rate Form</a></li>
-            <li class="navbar-item"><a href="public-exercises.html"><span class="nav-ic" data-icon="exercises"></span> Exercises</a></li>
-            <li class="navbar-item"><a href="responses.html"><span class="nav-ic" data-icon="responses"></span> Responses</a></li>
-            <li class="navbar-item"><a href="match-table.html"><span class="nav-ic" data-icon="matches"></span> Matches</a></li>
-            <li class="navbar-item"><a href="players.html"><span class="nav-ic" data-icon="players"></span> Players</a></li>
-            <li class="navbar-item"><a href="ai-analysis.html"><span class="nav-ic" data-icon="ai"></span> AI Analysis</a></li>
-            <li class="navbar-item"><a href="upload-exercises.html"><span class="nav-ic" data-icon="manage"></span> Manage</a></li>
+            <li class="navbar-item active"><a href="form.html"><span class="nav-ic" data-icon="form"></span> Valutazione</a></li>
+            <li class="navbar-item"><a href="public-exercises.html"><span class="nav-ic" data-icon="exercises"></span> Esercizi</a></li>
+            <li class="navbar-item"><a href="responses.html"><span class="nav-ic" data-icon="responses"></span> Risposte</a></li>
+            <li class="navbar-item"><a href="match-table.html"><span class="nav-ic" data-icon="matches"></span> Partite</a></li>
+            <li class="navbar-item"><a href="players.html"><span class="nav-ic" data-icon="players"></span> Giocatori</a></li>
+            <li class="navbar-item"><a href="ai-analysis.html"><span class="nav-ic" data-icon="ai"></span> Analisi video</a></li>
+            <li class="navbar-item"><a href="upload-exercises.html"><span class="nav-ic" data-icon="manage"></span> Gestione</a></li>
         </ul>
         <div class="navbar-actions">
             <button class="theme-toggle-btn" id="themeToggleBtn" onclick="ThemeToggle.toggle()" aria-label="Cambia tema" type="button">
@@ -38,9 +39,9 @@
 
     <div class="container reveal">
         <div class="header">
-            <h1>Wapatanka feedback</h1>
-            <p>Complete all steps to submit your information</p>
-            <p>Everything is totally anonymous and secure.</p>
+            <h1>Com’è andato l’allenamento?</h1>
+            <p>Completa tutti i passaggi per inviare la valutazione</p>
+            <p>Tutto è anonimo e al sicuro.</p>
         </div>
 
         <!-- Progress Bar -->
@@ -48,40 +49,38 @@
             <div class="progress-bar">
                 <div class="progress-fill"></div>
             </div>
-            <div class="progress-text"><span id="currentStep">1</span> of <span id="totalSteps">3</span> completed</div>
+            <div class="progress-text"><span id="currentStep">1</span> di <span id="totalSteps">3</span> completato</div>
         </div>
 
         <!-- Steps Indicator -->
         <div class="steps-indicator">
             <div class="step active" data-step="1">
                 <div class="step-circle">1</div>
-                <div class="step-label">Personal</div>
+                <div class="step-label">Dati</div>
             </div>
             <div class="step" data-step="2">
                 <div class="step-circle">2</div>
-                <div class="step-label">Exercises</div>
+                <div class="step-label">Esercizi</div>
             </div>
             <div class="step" data-step="3">
                 <div class="step-circle">3</div>
-                <div class="step-label">Notes</div>
+                <div class="step-label">Note</div>
             </div>
         </div>
 
-        <div id="errorMessage" class="error-message"></div>
-        <div id="successMessage" class="success-message">✓ Form submitted successfully!</div>
 
         <form id="dataForm">
             <!-- STEP 1: Personal Information -->
             <div class="step-content active" data-step="1">
-                <h3 style="color: var(--text); margin-bottom: 20px;">Personal Information</h3>
+                <h3 style="color: var(--text); margin-bottom: 20px;">Dati personali</h3>
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="firstName">First Name *</label>
+                        <label for="firstName">Nome *</label>
                         <input type="text" id="firstName" name="firstName" required>
                     </div>
                     <div class="form-group">
-                        <label for="lastName">Last Name *</label>
+                        <label for="lastName">Cognome *</label>
                         <input type="text" id="lastName" name="lastName" required>
                     </div>
                 </div>
@@ -89,11 +88,11 @@
 
             <!-- STEP 2: Exercise Ratings -->
             <div class="step-content" data-step="2">
-                <h3 style="color: var(--text); margin-bottom: 10px; font-size: 24px;">💪 Exercise Ratings</h3>
-                <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 14px;">How did each exercise feel? Drag the slider to rate from 😞 to 🤩</p>
+                <h3 style="color: var(--text); margin-bottom: 10px; font-size: 24px;">Valutazione esercizi</h3>
+                <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 14px;">Com’è andato ogni esercizio? Sposta il cursore da basso ad alto.</p>
                 
                 <div class="form-group" style="margin-bottom: 25px;">
-                    <label for="exerciseDate">Date *</label>
+                    <label for="exerciseDate">Data *</label>
                     <input type="date" id="exerciseDate" name="exerciseDate" required>
                 </div>
                 
@@ -101,24 +100,24 @@
                     <!-- Exercises will be added here dynamically -->
                 </div>
 
-                <button type="button" class="add-exercise-btn" id="addExerciseBtn" onclick="FormModule.addExercise()">➕ Add Another Exercise</button>
+                <button type="button" class="add-exercise-btn" id="addExerciseBtn" onclick="FormModule.addExercise()">Aggiungi un altro esercizio</button>
             </div>
 
             <!-- STEP 3: Notes -->
             <div class="step-content" data-step="3">
-                <h3 style="color: var(--text); margin-bottom: 20px;">📝 Notes</h3>
-                <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 14px;">Write anything you'd want the others to know. (everything is totally anonymous and secure.)</p>
+                <h3 style="color: var(--text); margin-bottom: 20px;">Note</h3>
+                <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 14px;">Scrivi quello che vorresti far sapere agli altri. Resta tutto anonimo.</p>
                 
                 <div class="form-group">
-                    <label for="notes">Your Notes</label>
-                    <textarea id="notes" name="notes" placeholder="Write your thoughts, feedback, or any additional information..."></textarea>
+                    <label for="notes">Le tue note</label>
+                    <textarea id="notes" name="notes" placeholder="Scrivi le tue impressioni, un feedback o qualsiasi altra cosa…"></textarea>
                 </div>
             </div>
 
             <!-- Navigation Buttons -->
             <div class="button-group">
-                <button type="button" class="btn-prev" id="prevBtn" disabled>← Previous</button>
-                <button type="button" class="btn-next" id="nextBtn">Next →</button>
+                <button type="button" class="btn-prev" id="prevBtn" disabled>← Indietro</button>
+                <button type="button" class="btn-next" id="nextBtn">Avanti →</button>
             </div>
         </form>
     </div>
@@ -128,26 +127,26 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <!-- ===== CONFIGURATION & CONSTANTS ===== -->
-    <script src="../config/firebase.config.js"></script>
-    <script src="../config/supabase.config.js"></script>
-    <script src="../config/constants.js"></script>
+    <script src="../config/firebase.config.js?v=20260930"></script>
+    <script src="../config/supabase.config.js?v=20260930"></script>
+    <script src="../config/constants.js?v=20260930"></script>
 
     <!-- ===== COMMON SERVICES ===== -->
-    <script src="../common/logger.js"></script>
-    <script src="../common/storage-service.js"></script>
-    <script src="../common/ui-service.js"></script>
+    <script src="../common/logger.js?v=20260930"></script>
+    <script src="../common/storage-service.js?v=20260930"></script>
+    <script src="../common/ui-service.js?v=20260930"></script>
 
     <!-- ===== DATA SERVICES ===== -->
-    <script src="../services/firebase-service.js"></script>
-    <script src="../services/exercise-service.js"></script>
+    <script src="../services/firebase-service.js?v=20260930"></script>
+    <script src="../services/exercise-service.js?v=20260930"></script>
 
     <!-- ===== UI COMMON ===== -->
-    <script src="../common/icons.js"></script>
-    <script src="../common/navbar.js"></script>
-    <script src="../common/scroll-reveal.js"></script>
+    <script src="../common/icons.js?v=20260930"></script>
+    <script src="../common/navbar.js?v=20260930"></script>
+    <script src="../common/scroll-reveal.js?v=20260930"></script>
 
     <!-- ===== FORM MODULE ===== -->
-    <script src="../modules/form/validation.js"></script>
-    <script src="../modules/form/form.js"></script>
+    <script src="../modules/form/validation.js?v=20260930"></script>
+    <script src="../modules/form/form.js?v=20260930"></script>
 </body>
 </html>

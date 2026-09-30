@@ -164,7 +164,7 @@ const PlayerDetailModule = {
             
             const btn = document.createElement('button');
             btn.className = 'pd-set-btn';
-            btn.innerHTML = `🏐 ${targetDef.name} (Apex: ${set.apex}m)`;
+            btn.innerHTML = `${targetDef.name} (Apex: ${set.apex}m)`;
             btn.onclick = () => this.selectSet(index);
             setList.appendChild(btn);
         });
@@ -218,8 +218,8 @@ const PlayerDetailModule = {
                     </div>
                 </div>
                 <div style="display: flex; gap: 10px; margin-top: 15px;">
-                    <button onclick="PlayerDetailModule.openEditSetModal(${index})" class="btn-primary" style="flex: 1; padding: 8px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold;">✏️ Modifica</button>
-                    <button onclick="PlayerDetailModule.deleteSet(${index})" class="btn-danger" style="flex: 1; padding: 8px; border-radius: 6px; border: 1px solid var(--danger); background: rgba(192, 57, 43, 0.14); color: var(--danger); cursor: pointer; font-weight: bold;">🗑️ Elimina</button>
+                    <button onclick="PlayerDetailModule.openEditSetModal(${index})" class="btn-primary" style="flex: 1; padding: 8px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold;">Modifica</button>
+                    <button onclick="PlayerDetailModule.deleteSet(${index})" class="btn-danger" style="flex: 1; padding: 8px; border-radius: 6px; border: 1px solid var(--danger); background: rgba(192, 57, 43, 0.14); color: var(--danger); cursor: pointer; font-weight: bold;">Elimina</button>
                 </div>
             </div>
         `;

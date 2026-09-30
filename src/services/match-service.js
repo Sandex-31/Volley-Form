@@ -288,6 +288,13 @@ const MatchService = {
         }
     },
 
+    /**
+     * Italian label for a stored match status (display only)
+     */
+    statusLabel: function (status) {
+        return ({ Won: 'Vinta', Lost: 'Persa', Upcoming: 'In programma' })[status] || status || '';
+    },
+
     /* ===== MATCH EVENTS (live timeline) =====
      * matchEvents/{matchId}/{eventKey} = { ts, set, playerId|null, key }
      * key is a stat key (point_spike, error_receive, serve_streak, ...)

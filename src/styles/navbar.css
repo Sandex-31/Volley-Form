@@ -27,7 +27,7 @@
 /* Dark theme: the navy emblem would blend into the dark navbar, so sit it on a
    light chip for contrast. Light theme needs nothing (navy shows on light nav). */
 :root[data-theme="dark"] .navbar-logo {
-  background: #f2f5fb;
+  background: var(--logo-chip);
   border-radius: 9px;
   padding: 3px 5px;
   box-sizing: content-box;

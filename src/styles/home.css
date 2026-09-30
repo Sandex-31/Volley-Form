@@ -269,7 +269,7 @@
 
 .btn-accent {
     background: var(--accent);
-    color: #fff;
+    color: var(--on-accent);
     box-shadow: 0 6px 18px rgba(var(--accent-rgb), .35);
 }
 
@@ -534,7 +534,7 @@
     height: 40px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 130%);
-    color: #fff;
+    color: var(--on-accent);
     display: flex;
     align-items: center;
     justify-content: center;

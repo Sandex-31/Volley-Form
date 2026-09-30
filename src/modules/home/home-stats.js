@@ -27,7 +27,7 @@ const HomeStats = {
                 this.tile('win', won, 'Vittorie') +
                 this.tile('loss', lost, 'Sconfitte') +
                 this.tile('', upcoming, 'In arrivo') +
-                this.tile('rate', rate + '%', 'Win rate');
+                this.tile('rate', rate + '%', '% vittorie');
         });
 
         Logger && Logger.info && Logger.info('Home season stats initialized');

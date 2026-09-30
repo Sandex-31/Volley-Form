@@ -177,7 +177,7 @@
 /* --- Primary action: brand navy → red gradient (the "AI" signature) --- */
 .btn-ai-analysis {
     background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 130%);
-    color: #fff;
+    color: var(--on-accent);
     border: none;
     border-radius: var(--radius-sm);
     padding: 15px 24px;

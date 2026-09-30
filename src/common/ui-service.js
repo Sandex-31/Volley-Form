@@ -8,41 +8,32 @@ const UIService = {
      * Show message in the UI
      */
     showMessage: function(text, type = 'error') {
-        const errorMsg = document.getElementById('errorMessage');
-        const successMsg = document.getElementById('successMessage');
-        const infoMsg = document.getElementById('infoMessage');
-
-        // Hide all messages
-        document.querySelectorAll('.error-message, .success-message, .info-message').forEach(el => {
-            el.classList.remove('show');
-        });
-
-        let msgEl;
-        if (type === 'error') {
-            msgEl = errorMsg;
-        } else if (type === 'success') {
-            msgEl = successMsg;
-        } else {
-            msgEl = infoMsg;
+        // Floating toast stack, created on demand so every page (and every modal) shows it
+        let region = document.getElementById('toastRegion');
+        if (!region) {
+            region = document.createElement('div');
+            region.id = 'toastRegion';
+            region.className = 'toast-region';
+            region.setAttribute('role', 'status');
+            region.setAttribute('aria-live', 'polite');
+            document.body.appendChild(region);
         }
 
-        if (msgEl) {
-            msgEl.textContent = text;
-            msgEl.classList.add('show');
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type === 'error' || type === 'success' ? type : 'info'}`;
+        // The toast colour already says success/error, so drop legacy leading symbols
+        toast.textContent = String(text).replace(/^[\s✓✗✔✅❌⚠️🔥📊️]+/u, '');
+        toast.onclick = () => toast.remove();
+        region.appendChild(toast);
+        while (region.children.length > 3) region.firstChild.remove();
 
-            // Auto-hide non-error messages
-            if (type !== 'error') {
-                setTimeout(() => {
-                    msgEl.classList.remove('show');
-                }, 4000);
-            }
-        }
+        setTimeout(() => toast.remove(), type === 'error' ? 7000 : 4000);
     },
 
     /**
      * Update status indicator
      */
-    updateStatusIndicator: function(text, color = '#51a376') {
+    updateStatusIndicator: function(text, color = 'var(--success)') {
         const status = document.getElementById('firebaseStatus');
         if (status) {
             status.textContent = text;

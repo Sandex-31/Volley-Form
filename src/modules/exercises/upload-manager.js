@@ -50,7 +50,7 @@ const ExerciseUploadManager = {
         const password = document.getElementById('adminPassword').value;
 
         if (!password) {
-            UIService.showMessage('✗ Please enter admin password', 'error');
+            UIService.showMessage('Inserisci la password amministratore', 'error');
             return;
         }
 
@@ -62,9 +62,9 @@ const ExerciseUploadManager = {
             UIService.toggleElement('uploadSection', true);
             this.loadExercises();
             this.populatePresetDropdown();
-            UIService.showMessage('✓ Login successful!', 'success');
+            UIService.showMessage('Accesso effettuato', 'success');
         } else {
-            UIService.showMessage('✗ Incorrect admin password', 'error');
+            UIService.showMessage('Password non corretta', 'error');
         }
     },
 
@@ -78,7 +78,7 @@ const ExerciseUploadManager = {
         UIService.toggleElement('uploadSection', false);
         this.cancelEdit();
         document.getElementById('adminPassword').value = '';
-        UIService.showMessage('✓ Logged out', 'success');
+        UIService.showMessage('Uscita effettuata', 'success');
     },
 
     /**
@@ -112,7 +112,7 @@ const ExerciseUploadManager = {
         const select = document.getElementById('exerciseSelect');
         if (!select) return;
 
-        select.innerHTML = '<option value="">-- Choose an exercise --</option>';
+        select.innerHTML = '<option value="">-- Scegli un esercizio --</option>';
         const presets = ExerciseService.getPresetExercises();
 
         presets.forEach(preset => {
@@ -132,7 +132,7 @@ const ExerciseUploadManager = {
 
         const selected = select.value;
         if (!selected) {
-            UIService.showMessage('✗ Please select an exercise from the list', 'error');
+            UIService.showMessage('Scegli un esercizio dall’elenco', 'error');
             return;
         }
 
@@ -143,7 +143,7 @@ const ExerciseUploadManager = {
         });
 
         if (exists) {
-            UIService.showMessage('✗ This exercise is already scheduled', 'error');
+            UIService.showMessage('Questo esercizio è già in programma', 'error');
             return;
         }
 
@@ -158,9 +158,9 @@ const ExerciseUploadManager = {
         const success = await ExerciseService.saveSelectedExercises(updatedList);
         if (success) {
             select.value = '';
-            UIService.showMessage('✓ Exercise added to schedule!', 'success');
+            UIService.showMessage('Esercizio aggiunto al programma', 'success');
         } else {
-            UIService.showMessage('✗ Failed to add exercise', 'error');
+            UIService.showMessage('Esercizio non aggiunto', 'error');
         }
     },
 
@@ -168,7 +168,7 @@ const ExerciseUploadManager = {
      * Add new custom exercise
      */
     addNewExercise: async function() {
-        const exerciseName = prompt('Enter custom exercise name:');
+        const exerciseName = prompt('Nome del nuovo esercizio:');
         if (!exerciseName || !exerciseName.trim()) return;
 
         const exists = this.selectedExercises.some(ex => {
@@ -177,7 +177,7 @@ const ExerciseUploadManager = {
         });
 
         if (exists) {
-            UIService.showMessage('✗ This exercise is already scheduled', 'error');
+            UIService.showMessage('Questo esercizio è già in programma', 'error');
             return;
         }
 
@@ -191,9 +191,9 @@ const ExerciseUploadManager = {
         const updatedList = [...this.selectedExercises, newExercise];
         const success = await ExerciseService.saveSelectedExercises(updatedList);
         if (success) {
-            UIService.showMessage('✓ Custom exercise added to schedule!', 'success');
+            UIService.showMessage('Esercizio personalizzato aggiunto al programma', 'success');
         } else {
-            UIService.showMessage('✗ Failed to add exercise', 'error');
+            UIService.showMessage('Esercizio non aggiunto', 'error');
         }
     },
 
@@ -207,7 +207,7 @@ const ExerciseUploadManager = {
         container.innerHTML = '';
 
         if (!exercises || exercises.length === 0) {
-            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; font-style: italic; padding: 20px;">No exercises scheduled</p>';
+            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; font-style: italic; padding: 20px;">Nessun esercizio in programma</p>';
             return;
         }
 
@@ -255,7 +255,7 @@ const ExerciseUploadManager = {
         });
 
         if (!exercise) {
-            UIService.showMessage('Exercise not found', 'error');
+            UIService.showMessage('Esercizio non trovato', 'error');
             return;
         }
 
@@ -295,7 +295,7 @@ const ExerciseUploadManager = {
         const videoFile = videoInput ? videoInput.files[0] : null;
 
         if (!exerciseName) {
-            UIService.showMessage('✗ Exercise name is missing', 'error');
+            UIService.showMessage('Manca il nome dell’esercizio', 'error');
             return;
         }
 
@@ -306,14 +306,14 @@ const ExerciseUploadManager = {
             if (videoFile) {
                 // Check file size
                 if (videoFile.size > APP_CONSTANTS.MAX_FILE_SIZE) {
-                    UIService.showMessage('✗ Video is too large (max 100 MB)', 'error');
+                    UIService.showMessage('Video troppo grande (massimo 100 MB)', 'error');
                     if (saveBtn) saveBtn.disabled = false;
                     return;
                 }
 
                 // Check Supabase initialization
                 if (!SupabaseModule.isInitialized()) {
-                    UIService.showMessage('✗ Supabase Storage is not connected or initialized', 'error');
+                    UIService.showMessage('Archivio video non collegato', 'error');
                     if (saveBtn) saveBtn.disabled = false;
                     return;
                 }
@@ -367,10 +367,10 @@ const ExerciseUploadManager = {
                 if (success) {
                     if (progressFill) progressFill.style.width = '100%';
                     if (progressPercent) progressPercent.textContent = '100';
-                    UIService.showMessage('✓ Video and description saved successfully!', 'success');
+                    UIService.showMessage('Video e descrizione salvati', 'success');
                     this.cancelEdit();
                 } else {
-                    UIService.showMessage('✗ Failed to save metadata to Firebase', 'error');
+                    UIService.showMessage('Dati dell’esercizio non salvati', 'error');
                 }
             } else {
                 // No video file, just update description and keep the existing video URL!
@@ -382,15 +382,15 @@ const ExerciseUploadManager = {
 
                 const success = await ExerciseService.saveExerciseData(exerciseName, description, existingVideoUrl);
                 if (success) {
-                    UIService.showMessage('✓ Description saved successfully!', 'success');
+                    UIService.showMessage('Descrizione salvata', 'success');
                     this.cancelEdit();
                 } else {
-                    UIService.showMessage('✗ Failed to save data', 'error');
+                    UIService.showMessage('Dati non salvati', 'error');
                 }
             }
         } catch (error) {
             Logger.error(`Upload error: ${error.message}`);
-            UIService.showMessage(`✗ Upload failed: ${error.message}`, 'error');
+            UIService.showMessage(`Caricamento non riuscito: ${error.message}`, 'error');
         } finally {
             if (saveBtn) saveBtn.disabled = false;
             const progressDiv = document.getElementById('uploadProgress');
@@ -402,20 +402,20 @@ const ExerciseUploadManager = {
      * Delete exercise from schedule
      */
     deleteExercise: async function(exerciseName) {
-        if (!confirm(`Are you sure you want to delete "${exerciseName}" from the schedule?`)) {
+        if (!confirm(`Togliere "${exerciseName}" dal programma?`)) {
             return;
         }
 
         const success = await ExerciseService.deleteExercise(exerciseName);
         if (success) {
-            UIService.showMessage('✓ Exercise deleted!', 'success');
+            UIService.showMessage('Esercizio eliminato', 'success');
             // If deleting the active editing exercise, cancel it
             const activeEditName = document.getElementById('editExerciseName').value;
             if (activeEditName === exerciseName) {
                 this.cancelEdit();
             }
         } else {
-            UIService.showMessage('✗ Failed to delete exercise', 'error');
+            UIService.showMessage('Esercizio non eliminato', 'error');
         }
     },
 
@@ -432,7 +432,7 @@ const ExerciseUploadManager = {
 
         const success = await ExerciseService.saveSelectedExercises(updatedList);
         if (!success) {
-            UIService.showMessage('✗ Failed to reorder exercises', 'error');
+            UIService.showMessage('Ordine non aggiornato', 'error');
         }
     },
 
@@ -481,7 +481,7 @@ const ExerciseUploadManager = {
 
                     const success = await ExerciseService.saveSelectedExercises(updatedList);
                     if (!success) {
-                        UIService.showMessage('✗ Failed to save reordered list', 'error');
+                        UIService.showMessage('Nuovo ordine non salvato', 'error');
                     }
                 }
             });

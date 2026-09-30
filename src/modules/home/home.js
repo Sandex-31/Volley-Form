@@ -32,7 +32,7 @@ const HomeModule = {
                 grid.innerHTML = `
                     <div class="preview-empty">
                         No squad players registered yet.
-                        <a href="players.html" class="preview-link">Register players →</a>
+                        <a href="players.html" class="preview-link">Aggiungi giocatori →</a>
                     </div>
                 `;
                 return;
@@ -56,7 +56,7 @@ const HomeModule = {
                 card.innerHTML = `
                     <div class="jersey">#${player.number}</div>
                     <div class="name" title="${this.escapeHtml(player.name)}">${this.escapeHtml(player.name)}</div>
-                    <div class="role ${roleClass}">${role}</div>
+                    <div class="role ${roleClass}">${PlayerService.roleLabel(role)}</div>
                 `;
                 grid.appendChild(card);
             });
@@ -69,8 +69,8 @@ const HomeModule = {
 
                 moreCard.innerHTML = `
                     <div class="more-count">+${players.length - 5}</div>
-                    <div class="more-label">More Players</div>
-                    <div class="more-link">View Roster →</div>
+                    <div class="more-label">Altri giocatori</div>
+                    <div class="more-link">Vedi la rosa →</div>
                 `;
                 grid.appendChild(moreCard);
             }
@@ -90,7 +90,7 @@ const HomeModule = {
             if (!matches || matches.length === 0) {
                 container.innerHTML = `
                     <div class="preview-empty">
-                        No matches scheduled yet.
+                        Nessuna partita in calendario.
                     </div>
                 `;
                 return;
@@ -102,25 +102,25 @@ const HomeModule = {
                                            .sort((a, b) => new Date(a.date) - new Date(b.date)); // closest first
 
             let targetMatch = null;
-            let titleText = '📅 NEXT APPOINTMENT';
+            let titleText = 'Prossima partita';
 
             if (upcomingMatches.length > 0) {
                 targetMatch = upcomingMatches[0];
             } else {
                 // If no upcoming matches, show the latest completed match
                 targetMatch = matches[0]; // matches are sorted date desc
-                titleText = '🏆 LATEST RESULT';
+                titleText = 'Ultimo risultato';
             }
 
             // Format date
             let dateDisplay = targetMatch.date;
             try {
                 const options = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
-                dateDisplay = new Date(targetMatch.date).toLocaleDateString('en-US', options);
+                dateDisplay = new Date(targetMatch.date).toLocaleDateString('it-IT', options);
             } catch (e) {}
 
             const isHome = targetMatch.location === 'Home';
-            const locText = isHome ? 'Home Arena' : `Away @ ${targetMatch.opponent}`;
+            const locText = isHome ? 'In casa' : `In trasferta da ${targetMatch.opponent}`;
             const locClass = isHome ? 'loc-home' : 'loc-away';
 
             let statusBadgeClass = 'badge-upcoming';
@@ -132,10 +132,10 @@ const HomeModule = {
                     <div class="match-preview-info">
                         <div class="match-preview-kicker">${titleText}</div>
                         <h4>vs ${this.escapeHtml(targetMatch.opponent)}</h4>
-                        <p>📅 ${dateDisplay} &nbsp;|&nbsp; 📍 ${locText}</p>
-                        ${targetMatch.status !== 'Upcoming' ? `<p style="margin-top: 5px;">Score: <strong>${targetMatch.score}</strong> (${targetMatch.sets})</p>` : ''}
+                        <p>${dateDisplay} &nbsp;|&nbsp; ${locText}</p>
+                        ${targetMatch.status !== 'Upcoming' ? `<p style="margin-top: 5px;">Risultato: <strong>${targetMatch.score}</strong> (${targetMatch.sets})</p>` : ''}
                     </div>
-                    <span class="badge ${statusBadgeClass}">${targetMatch.status}</span>
+                    <span class="badge ${statusBadgeClass}">${MatchService.statusLabel(targetMatch.status)}</span>
                 </div>
             `;
         });

@@ -66,13 +66,13 @@ const FormValidator = {
         
         for (let el of elements) {
             if (el.hasAttribute('required') && !this.isRequired(el.value)) {
-                UIService.showMessage(`Please fill in all required fields in Step ${stepNum}`, 'error');
+                UIService.showMessage(`Compila tutti i campi obbligatori del passaggio ${stepNum}`, 'error');
                 return false;
             }
 
             // Email validation
             if (el.type === 'email' && el.value && !this.isValidEmail(el.value)) {
-                UIService.showMessage('Please enter a valid email address', 'error');
+                UIService.showMessage('Inserisci un indirizzo email valido', 'error');
                 return false;
             }
         }

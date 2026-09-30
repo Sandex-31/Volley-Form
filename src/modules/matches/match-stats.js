@@ -33,9 +33,9 @@ const MatchStats = {
         const opponentEl = document.getElementById('statsMatchOpponent');
         const dateEl = document.getElementById('statsMatchDate');
         if (opponentEl) {
-            opponentEl.textContent = isReadOnly ? `Stats Review vs ${opponentName}` : `Match Stats vs ${opponentName}`;
+            opponentEl.textContent = isReadOnly ? `Statistiche contro ${opponentName}` : `Modifica statistiche contro ${opponentName}`;
         }
-        if (dateEl) dateEl.textContent = `Date: ${matchDate}`;
+        if (dateEl) dateEl.textContent = matchDate;
 
         // Render roster table rows initially with 0 stats
         this.renderRosterTable();
@@ -89,7 +89,7 @@ const MatchStats = {
             tbody.innerHTML = `
                 <tr>
                     <td colspan="9" style="text-align: center; color: var(--text-muted); font-style: italic; padding: 20px;">
-                        No players on team roster. Go to the "Players" tab to register players.
+                        Nessun giocatore in rosa. Aggiungili dalla pagina Giocatori.
                     </td>
                 </tr>
             `;
@@ -107,7 +107,7 @@ const MatchStats = {
                         <span class="player-number" style="display: inline-flex; width: 28px; height: 28px; font-size: 12px; margin-right: 0; margin-bottom: 0; background: linear-gradient(135deg, var(--brand) 0%, var(--brand-strong) 100%); flex-shrink: 0;">#${player.number}</span>
                         <div>
                             <div style="font-weight: 700; color: var(--text); font-size: 13px;">${this.escapeHtml(player.name)}</div>
-                            <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">${player.role}</div>
+                            <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">${PlayerService.roleLabel(player.role)}</div>
                         </div>
                     </div>
                 </td>
@@ -201,10 +201,8 @@ const MatchStats = {
         // If live modal is visible and roster view is active, update it
         const liveModal = document.getElementById('liveStatsModal');
         if (liveModal && liveModal.classList.contains('show')) {
-            const rosterView = document.getElementById('liveRosterView');
-            if (rosterView && rosterView.style.display !== 'none') {
-                this.renderLiveRoster();
-            }
+            this.renderLiveRoster();
+            this.renderLivePad();
         }
     },
 
@@ -274,12 +272,17 @@ const MatchStats = {
      * Derived score of the active set, shown in the live tracker score bar
      */
     updateLiveScore: function() {
-        const el = document.getElementById('liveScoreValue');
-        if (!el) return;
-        if (this.viewSet === 'all') { el.textContent = '—'; return; }
-        const steps = MatchService.scoreProgression(this.matchEvents, this.viewSet);
+        const usEl = document.getElementById('liveScoreUs');
+        const themEl = document.getElementById('liveScoreThem');
+        if (!usEl || !themEl) return;
+        const steps = this.viewSet === 'all' ? [] : MatchService.scoreProgression(this.matchEvents, this.viewSet);
         const last = steps[steps.length - 1];
-        el.textContent = last ? `${last.us} – ${last.them}` : '0 – 0';
+        usEl.textContent = last ? last.us : 0;
+        themEl.textContent = last ? last.them : 0;
+        // Serve goes to whoever won the last rally
+        const board = document.getElementById('liveBoard');
+        if (board) board.dataset.serve = last ? MatchService.eventTeam(last.event.key) : '';
+        this.renderLiveFeed();
     },
 
     /**
@@ -288,10 +291,9 @@ const MatchStats = {
      */
     logOppEvent: async function(key) {
         if (!this.currentMatchId || this.viewSet === 'all') return;
-        this.showSyncStatus('syncing');
-        const ok = await MatchService.addMatchEvent(this.currentMatchId, { set: this.viewSet, playerId: null, key });
+        this.haptic();
+        const ok = await this.track(MatchService.addMatchEvent(this.currentMatchId, { set: this.viewSet, playerId: null, key }));
         if (!ok) UIService.showMessage('Punto non salvato (permessi matchEvents?)', 'error');
-        this.showSyncStatus('saved');
     },
 
     /**
@@ -299,10 +301,19 @@ const MatchStats = {
      */
     undoOppEvent: async function() {
         if (!this.currentMatchId || this.viewSet === 'all') return;
-        this.showSyncStatus('syncing');
-        const ok = await MatchService.removeLastMatchEvent(this.currentMatchId, { set: this.viewSet, playerId: null });
+        const ok = await this.track(MatchService.removeLastMatchEvent(this.currentMatchId, { set: this.viewSet, playerId: null }));
         if (!ok) UIService.showMessage('Nessun punto manuale da annullare in questo set', 'error');
-        this.showSyncStatus('saved');
+    },
+
+    /**
+     * Undo the most recent event of the active set, whoever it belongs to
+     */
+    undoLast: function() {
+        const last = this.matchEvents.filter(e => Number(e.set) === Number(this.viewSet)).pop();
+        if (!last) return;
+        this.haptic();
+        if (last.playerId) this.decrement(last.playerId, last.key);
+        else this.undoOppEvent();
     },
 
     /**
@@ -339,37 +350,18 @@ const MatchStats = {
             if (el) el.textContent = sectionTotals[key];
         });
 
-        const streaksText = this.formatStreaks(stats);
         const streaksEl = document.getElementById(`streaks-${playerId}`);
-        if (streaksEl) streaksEl.textContent = streaksText;
-        const liveStreaksEl = document.getElementById(`live-streaks-${playerId}`);
-        if (liveStreaksEl) liveStreaksEl.textContent = streaksText === '—' ? '' : `Streaks: ${streaksText}`;
+        if (streaksEl) streaksEl.textContent = this.formatStreaks(stats);
 
         Object.keys(stats).forEach(key => {
             if (key === 'serve_streaks') return; // array, rendered above
             const valueEl = document.getElementById(`val-${playerId}-${key}`);
-            if (valueEl) {
-                valueEl.textContent = stats[key];
-            }
-
-            // Also update live tracker element if it exists in the DOM
-            const liveValueEl = document.getElementById(`live-val-${playerId}-${key}`);
-            if (liveValueEl) {
-                liveValueEl.textContent = stats[key];
-            }
-
+            if (!valueEl) return;
+            valueEl.textContent = stats[key];
             // Disable minus button if stat is 0
-            const row = valueEl ? valueEl.closest('.stats-counter-compact') : null;
+            const row = valueEl.closest('.stats-counter-compact');
             const minusBtn = row ? row.querySelector('.btn-counter-compact') : null;
-            if (minusBtn) {
-                minusBtn.disabled = stats[key] <= 0;
-            }
-
-            // Disable live minus button if stat is 0
-            const liveMinusBtn = document.getElementById(`live-btn-minus-${playerId}-${key}`);
-            if (liveMinusBtn) {
-                liveMinusBtn.disabled = stats[key] <= 0;
-            }
+            if (minusBtn) minusBtn.disabled = stats[key] <= 0;
         });
     },
 
@@ -383,45 +375,64 @@ const MatchStats = {
             return;
         }
 
-        this.showSyncStatus('syncing');
-
+        const matchId = this.currentMatchId;
+        const set = this.viewSet;
         const stats = this.setStatsFor(playerId);
         stats[statKey] = (stats[statKey] || 0) + 1;
 
-        // Optimistic UI update
-        this.updatePlayerRowUI(playerId, this.scopedStats(playerId));
+        // All local bookkeeping happens now, at tap time, so rapid taps during a
+        // rally keep their order even on a slow or offline connection.
+        // Serve streak: an ace extends it, a service error closes (records) it.
+        const writes = [MatchService.incrementStat(matchId, playerId, statKey, 1, set)];
+        if (statKey === 'point_serve') {
+            stats.serve_streak = (stats.serve_streak || 0) + 1;
+            writes.push(MatchService.incrementStat(matchId, playerId, 'serve_streak', 1, set));
+        } else if (statKey === 'service_out' || statKey === 'service_net') {
+            const streaks = this.getClosedStreaks(stats);
+            streaks.push(stats.serve_streak || 0);
+            stats.serve_streaks = streaks;
+            stats.serve_streak = 0;
+            writes.push(MatchService.updateStats(matchId, playerId, { serve_streaks: streaks, serve_streak: 0 }, set));
+        }
+        // Timeline event — only while live tracking, so post-match table
+        // corrections don't pollute the event chronology.
+        if (this.eventsSubscriptionRef) {
+            writes.push(MatchService.addMatchEvent(matchId, { set, playerId, key: statKey })
+                .then(ok => { if (!ok) UIService.showMessage('Evento punteggio non salvato (permessi matchEvents?)', 'error'); return true; }));
+        }
 
-        // Atomic server-side increment
-        const success = await MatchService.incrementStat(this.currentMatchId, playerId, statKey, 1, this.viewSet);
-        if (success) {
-            // Timeline event — only while live tracking, so post-match table
-            // corrections don't pollute the event chronology.
-            if (this.eventsSubscriptionRef) {
-                MatchService.addMatchEvent(this.currentMatchId, { set: this.viewSet, playerId, key: statKey })
-                    .then(ok => { if (!ok) UIService.showMessage('Evento punteggio non salvato (permessi matchEvents?)', 'error'); });
-            }
-            // Serve streak bookkeeping: an ace extends the streak,
-            // a service error closes it (records it) and resets to 0.
-            if (statKey === 'point_serve') {
-                stats.serve_streak = (stats.serve_streak || 0) + 1;
-                this.updatePlayerRowUI(playerId, this.scopedStats(playerId));
-                await MatchService.incrementStat(this.currentMatchId, playerId, 'serve_streak', 1, this.viewSet);
-            } else if (statKey === 'service_out' || statKey === 'service_net') {
-                const streaks = this.getClosedStreaks(stats);
-                streaks.push(stats.serve_streak || 0);
-                stats.serve_streaks = streaks;
-                stats.serve_streak = 0;
-                this.updatePlayerRowUI(playerId, this.scopedStats(playerId));
-                await MatchService.updateStats(this.currentMatchId, playerId, { serve_streaks: streaks, serve_streak: 0 }, this.viewSet);
-            }
-            this.showSyncStatus('saved');
-        } else {
-            // Roll back the optimistic update if the write failed.
+        this.updatePlayerRowUI(playerId, this.scopedStats(playerId));
+        this.renderLiveRoster();
+        this.renderLivePad();
+
+        const ok = await this.track(writes[0]);
+        if (!ok && this.currentMatchId === matchId) {
+            // Roll back the optimistic counter if the main write failed.
             stats[statKey] = Math.max(0, (stats[statKey] || 0) - 1);
             this.updatePlayerRowUI(playerId, this.scopedStats(playerId));
-            UIService.showMessage('Failed to save stats', 'error');
-            this.showSyncStatus('saved'); // reset dot
+            this.renderLiveRoster();
+            this.renderLivePad();
+            UIService.showMessage('Statistica non salvata', 'error');
         }
+    },
+
+    /**
+     * Track an in-flight write in the sync indicator (counts concurrent writes)
+     */
+    pendingWrites: 0,
+    track: async function(promise) {
+        this.pendingWrites++;
+        this.showSyncStatus('syncing');
+        try {
+            return await promise;
+        } finally {
+            this.pendingWrites = Math.max(0, this.pendingWrites - 1);
+            if (this.pendingWrites === 0) this.showSyncStatus('saved');
+        }
+    },
+
+    haptic: function() {
+        if (navigator.vibrate) navigator.vibrate(12);
     },
 
     /**
@@ -437,42 +448,39 @@ const MatchStats = {
         const stats = this.setStatsFor(playerId);
         if ((stats[statKey] || 0) <= 0) return;
 
-        this.showSyncStatus('syncing');
-
+        const matchId = this.currentMatchId;
+        const set = this.viewSet;
         stats[statKey] = stats[statKey] - 1;
 
-        // Optimistic UI update
-        this.updatePlayerRowUI(playerId, this.scopedStats(playerId));
+        // Inverse bookkeeping of increment(), applied locally at tap time
+        const writes = [MatchService.incrementStat(matchId, playerId, statKey, -1, set)];
+        if (statKey === 'point_serve' && (stats.serve_streak || 0) > 0) {
+            stats.serve_streak = stats.serve_streak - 1;
+            writes.push(MatchService.incrementStat(matchId, playerId, 'serve_streak', -1, set));
+        } else if (statKey === 'service_out' || statKey === 'service_net') {
+            const streaks = this.getClosedStreaks(stats);
+            if (streaks.length > 0) {
+                stats.serve_streak = (stats.serve_streak || 0) + streaks.pop();
+                stats.serve_streaks = streaks;
+                writes.push(MatchService.updateStats(matchId, playerId, { serve_streaks: streaks, serve_streak: stats.serve_streak }, set));
+            }
+        }
+        // Undo the matching timeline event (only while live tracking)
+        if (this.eventsSubscriptionRef) {
+            writes.push(MatchService.removeLastMatchEvent(matchId, { set, playerId, key: statKey }));
+        }
 
-        // Atomic server-side decrement
-        const success = await MatchService.incrementStat(this.currentMatchId, playerId, statKey, -1, this.viewSet);
-        if (success) {
-            // Undo the matching timeline event (only while live tracking)
-            if (this.eventsSubscriptionRef) {
-                MatchService.removeLastMatchEvent(this.currentMatchId, { set: this.viewSet, playerId, key: statKey });
-            }
-            // Inverse serve streak bookkeeping (undo a mis-tap)
-            if (statKey === 'point_serve' && (stats.serve_streak || 0) > 0) {
-                stats.serve_streak = stats.serve_streak - 1;
-                this.updatePlayerRowUI(playerId, this.scopedStats(playerId));
-                await MatchService.incrementStat(this.currentMatchId, playerId, 'serve_streak', -1, this.viewSet);
-            } else if (statKey === 'service_out' || statKey === 'service_net') {
-                const streaks = this.getClosedStreaks(stats);
-                if (streaks.length > 0) {
-                    const restored = streaks.pop();
-                    stats.serve_streaks = streaks;
-                    stats.serve_streak = (stats.serve_streak || 0) + restored;
-                    this.updatePlayerRowUI(playerId, this.scopedStats(playerId));
-                    await MatchService.updateStats(this.currentMatchId, playerId, { serve_streaks: streaks, serve_streak: stats.serve_streak }, this.viewSet);
-                }
-            }
-            this.showSyncStatus('saved');
-        } else {
-            // Roll back the optimistic update if the write failed.
+        this.updatePlayerRowUI(playerId, this.scopedStats(playerId));
+        this.renderLiveRoster();
+        this.renderLivePad();
+
+        const ok = await this.track(writes[0]);
+        if (!ok && this.currentMatchId === matchId) {
             stats[statKey] = (stats[statKey] || 0) + 1;
             this.updatePlayerRowUI(playerId, this.scopedStats(playerId));
-            UIService.showMessage('Failed to save stats', 'error');
-            this.showSyncStatus('saved'); // reset dot
+            this.renderLiveRoster();
+            this.renderLivePad();
+            UIService.showMessage('Statistica non salvata', 'error');
         }
     },
 
@@ -531,18 +539,46 @@ const MatchStats = {
             if (!container || !textEl) return;
             if (this.isReadOnly && !isLive) {
                 container.className = 'stats-sync-status saved';
-                textEl.textContent = 'View-Only Mode';
+                textEl.textContent = 'Sola lettura';
             } else if (status === 'syncing') {
                 container.className = 'stats-sync-status syncing';
-                textEl.textContent = 'Syncing...';
+                textEl.textContent = this.pendingWrites > 1 ? `Salvataggio… (${this.pendingWrites})` : 'Salvataggio…';
             } else {
                 container.className = 'stats-sync-status saved';
-                textEl.textContent = 'Saved to Database';
+                textEl.textContent = 'Tutto salvato';
             }
         };
 
         updateEl(syncStatusEl, syncTextEl, false);
         updateEl(liveSyncStatusEl, liveSyncTextEl, true);
+    },
+
+    /**
+     * Live tracker action pad: one tap per event once a player is selected
+     */
+    LIVE_ACTIONS: [
+        { group: 'point', title: 'Punto nostro', items: [
+            ['point_spike', 'Attacco'], ['point_serve', 'Ace'], ['point_block', 'Muro'],
+            ['point_lob', 'Pallonetto'], ['point_random', 'Altro']
+        ] },
+        { group: 'error', title: 'Errore nostro', items: [
+            ['service_out', 'Battuta out'], ['service_net', 'Battuta in rete'], ['error_receive', 'Ricezione'],
+            ['error_set', 'Alzata'], ['error_defense', 'Difesa'], ['error_block', 'Muro'],
+            ['foul', 'Fallo / invasione'], ['error_grave', 'Errore grave']
+        ] },
+        { group: 'neutral', title: 'Senza punto', items: [
+            ['serve_streak', 'Battuta dentro']
+        ] }
+    ],
+
+    liveLabel: function(key) {
+        if (key === 'opp_error') return 'Errore avversario';
+        if (key === 'opp_point') return 'Punto avversario';
+        for (const g of this.LIVE_ACTIONS) {
+            const hit = g.items.find(([k]) => k === key);
+            if (hit) return g.group === 'point' ? `Punto: ${hit[1]}` : g.group === 'error' ? `Errore: ${hit[1]}` : hit[1];
+        }
+        return key;
     },
 
     /**
@@ -555,18 +591,20 @@ const MatchStats = {
         this.isReadOnly = false; // Always editable in Live Mode
         this.viewSet = 1;
         this.snapshotSeen = false;
+        this.pendingWrites = 0;
+        this.matchEvents = [];
         this.renderSetTabs();
 
-        // Update header labels in live tracker
         const opponentEl = document.getElementById('liveStatsMatchOpponent');
         const dateEl = document.getElementById('liveStatsMatchDate');
-        if (opponentEl) opponentEl.textContent = `Live Stats vs ${opponentName}`;
-        if (dateEl) dateEl.textContent = `Date: ${matchDate}`;
+        if (opponentEl) opponentEl.textContent = `Wapatanka vs ${opponentName}`;
+        if (dateEl) dateEl.textContent = matchDate;
 
-        // Reset display to show roster view first
-        this.showLiveRoster();
+        this.renderLiveRoster();
+        this.renderLivePad();
+        this.updateLiveScore();
+        this.showSyncStatus('saved');
 
-        // Subscribe to Firebase real-time updates for all player stats in this match
         this.unsubscribeActive();
         const subscriptionMatchId = this.currentMatchId;
         this.activeSubscriptionRef = MatchService.subscribeToAllMatchStats(
@@ -581,201 +619,136 @@ const MatchStats = {
                     const played = this.setsWithData();
                     if (played.length) this.viewSet = played[played.length - 1];
                     this.renderSetTabs();
+                    this.updateLiveScore();
                 }
                 this.updateAllUI();
             }
         );
 
-        // Live score from the event stream
-        this.matchEvents = [];
+        // Live score + feed from the event stream
         this.eventsSubscriptionRef = MatchService.subscribeToMatchEvents(matchId, (events) => {
             if (this.currentMatchId !== subscriptionMatchId) return;
             this.matchEvents = events;
             this.updateLiveScore();
         });
 
-        // Display Live Modal
         const modal = document.getElementById('liveStatsModal');
         if (modal) {
             modal.classList.add('show');
-            document.body.style.overflow = 'hidden'; // Disable background scrolling
+            document.body.style.overflow = 'hidden';
         }
-
-        // Add window close listener when clicking outside
-        window.addEventListener('click', this.handleOutsideClickLive);
         Logger.info(`Opened live stats tracker for match ${matchId}`);
     },
 
     /**
-     * Show the roster list inside live stats modal
-     */
-    showLiveRoster: function() {
-        this.currentLivePlayerId = null;
-        
-        const rosterView = document.getElementById('liveRosterView');
-        const editView = document.getElementById('livePlayerEditView');
-        const activePlayerIndicator = document.getElementById('liveActivePlayerIndicator');
-        const mainHeader = document.getElementById('liveStatsModalHeader');
-        
-        if (rosterView) rosterView.style.display = 'flex';
-        if (editView) editView.style.display = 'none';
-        if (activePlayerIndicator) activePlayerIndicator.textContent = '';
-        if (mainHeader) mainHeader.style.display = 'block';
-
-        this.renderLiveRoster();
-        this.showSyncStatus('saved');
-    },
-
-    /**
-     * Render the roster grid cards
+     * Player picker: jersey tiles with this set's points / errors tally
      */
     renderLiveRoster: function() {
         const grid = document.getElementById('liveRosterGrid');
         if (!grid) return;
 
-        grid.innerHTML = '';
-        const players = PlayerService.getPlayersList();
-
+        const players = PlayerService.getPlayersList().slice()
+            .sort((a, b) => (Number(a.number) || 0) - (Number(b.number) || 0));
         if (players.length === 0) {
-            grid.innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); font-style: italic; padding: 20px;">
-                    No players on roster. Go to the "Players" tab to register players.
-                </div>
-            `;
+            grid.innerHTML = `<p class="lc-empty">Nessun giocatore in rosa. Aggiungili dalla pagina Giocatori.</p>`;
             return;
         }
 
-        players.forEach(player => {
-            const card = document.createElement('div');
-            card.className = 'live-player-card';
-            card.onclick = () => this.selectPlayerForLiveEdit(player.id);
+        const sum = (s, keys) => keys.reduce((t, k) => t + (s[k] || 0), 0);
+        const pointKeys = this.LIVE_ACTIONS[0].items.map(([k]) => k);
+        const errorKeys = this.LIVE_ACTIONS[1].items.map(([k]) => k);
 
-            // Compute total errors & points for this player to show a summary
-            const stats = this.scopedStats(player.id);
-            const totalPoints = (stats.point_serve || 0) + (stats.point_spike || 0) + (stats.point_block || 0) + (stats.point_lob || 0) + (stats.point_random || 0);
-            const totalErrors = (stats.service_out || 0) + (stats.service_net || 0) + (stats.foul || 0) + (stats.error_grave || 0) + (stats.error_block || 0) + (stats.error_receive || 0) + (stats.error_set || 0) + (stats.error_defense || 0);
-
-            // Photo avatar with number badge (like the roster page) for quick identification
-            const initial = (player.name || '?').trim().charAt(0).toUpperCase();
-            const avatar = player.photo_url
-                ? `<div class="live-player-avatar">
-                       <img src="${player.photo_url}" alt="${this.escapeHtml(player.name)}">
-                       <span class="live-avatar-num">#${player.number}</span>
-                   </div>`
-                : `<div class="live-player-avatar live-avatar-placeholder">
-                       <span class="live-avatar-letter">${initial}</span>
-                       <span class="live-avatar-num">#${player.number}</span>
-                   </div>`;
-
-            card.innerHTML = `
-                ${avatar}
-                <span class="player-name">${this.escapeHtml(player.name)}</span>
-                <span class="player-role">${player.role}</span>
-                <div style="display: flex; gap: 8px; margin-top: 4px; font-size: 10px;">
-                    <span style="color: var(--success); font-weight: 700;">🔥 ${totalPoints} Pt</span>
-                    <span style="color: var(--danger); font-weight: 700;">⚠️ ${totalErrors} Er</span>
-                </div>
-            `;
-            grid.appendChild(card);
-        });
+        grid.innerHTML = players.map(player => {
+            const s = this.scopedStats(player.id);
+            const selected = player.id === this.currentLivePlayerId;
+            return `
+                <button type="button" class="lc-player" aria-pressed="${selected}" onclick="MatchStats.selectLivePlayer('${player.id}')">
+                    <span class="lc-player-num">${this.escapeHtml(String(player.number ?? ''))}</span>
+                    <span class="lc-player-name">${this.escapeHtml(player.name || '')}</span>
+                    <span class="lc-player-tally"><span class="pt">${sum(s, pointKeys)}</span><span class="er">${sum(s, errorKeys)}</span></span>
+                </button>`;
+        }).join('');
     },
 
     /**
-     * Switch panel to edit stats for a specific player
+     * Select (or deselect) the player the next actions are credited to.
+     * Selection is sticky, so consecutive serves by the same player are one tap each.
      */
-    selectPlayerForLiveEdit: function(playerId) {
-        const player = PlayerService.getPlayersList().find(p => p.id === playerId);
-        if (!player) return;
-
-        this.currentLivePlayerId = playerId;
-
-        const rosterView = document.getElementById('liveRosterView');
-        const editView = document.getElementById('livePlayerEditView');
-        const activePlayerIndicator = document.getElementById('liveActivePlayerIndicator');
-        const mainHeader = document.getElementById('liveStatsModalHeader');
-        
-        if (rosterView) rosterView.style.display = 'none';
-        if (editView) editView.style.display = 'flex';
-        if (activePlayerIndicator) activePlayerIndicator.textContent = `Active: #${player.number} ${player.name}`;
-        if (mainHeader) mainHeader.style.display = 'none';
-
-        // Set header elements
-        const nameEl = document.getElementById('livePlayerName');
-        const numberEl = document.getElementById('livePlayerNumber');
-        const roleEl = document.getElementById('livePlayerRole');
-        
-        if (nameEl) nameEl.textContent = player.name;
-        if (numberEl) numberEl.textContent = `#${player.number}`;
-        if (roleEl) roleEl.textContent = player.role;
-
-        // Render counters for this player
-        this.renderLiveCounters(playerId);
-        
-        // Update values in the counters
-        this.updatePlayerRowUI(playerId, this.scopedStats(playerId));
-        this.showSyncStatus('saved');
+    selectLivePlayer: function(playerId) {
+        this.currentLivePlayerId = this.currentLivePlayerId === playerId ? null : playerId;
+        this.haptic();
+        this.renderLiveRoster();
+        this.renderLivePad();
     },
 
     /**
-     * Render the counters UI for the active player
+     * Action pad for the selected player, with their counts in the active set
      */
-    renderLiveCounters: function(playerId) {
-        const container = document.getElementById('livePlayerStatsContainer');
-        if (!container) return;
+    renderLivePad: function() {
+        const pad = document.getElementById('liveActionPad');
+        if (!pad) return;
 
-        container.innerHTML = `
-            <!-- Service Section -->
-            <div class="live-stat-group srv-errors">
-                <div class="live-stat-group-title">🏐 Service</div>
-                <div class="live-counter-grid">
-                    ${this.createLiveCounterTileHtml(playerId, 'serve_streak', 'Serve In (streak)')}
-                    ${this.createLiveCounterTileHtml(playerId, 'service_out', 'Service Out')}
-                    ${this.createLiveCounterTileHtml(playerId, 'service_net', 'Service Net')}
-                </div>
-                <div id="live-streaks-${playerId}" style="font-size: 11px; color: var(--text-muted); padding: 4px 2px 0; text-align: center;"></div>
-            </div>
+        const pid = this.currentLivePlayerId;
+        const player = pid ? PlayerService.getPlayersList().find(p => p.id === pid) : null;
+        const s = player ? this.scopedStats(pid) : {};
 
-            <!-- Errors & Fouls Section -->
-            <div class="live-stat-group fouls">
-                <div class="live-stat-group-title">⚠️ Errors & Fouls</div>
-                <div class="live-counter-grid">
-                    ${this.createLiveCounterTileHtml(playerId, 'foul', 'Foul / Net')}
-                    ${this.createLiveCounterTileHtml(playerId, 'error_grave', 'Grave Err')}
-                    ${this.createLiveCounterTileHtml(playerId, 'error_block', 'Block Err')}
-                    ${this.createLiveCounterTileHtml(playerId, 'error_receive', 'Rec Err')}
-                    ${this.createLiveCounterTileHtml(playerId, 'error_set', 'Set Err')}
-                    ${this.createLiveCounterTileHtml(playerId, 'error_defense', 'Def Err')}
-                </div>
-            </div>
+        const head = document.getElementById('livePadHead');
+        if (head) {
+            const streaks = player ? this.formatStreaks(s) : '—';
+            head.innerHTML = player
+                ? `<span class="lc-pad-num">${this.escapeHtml(String(player.number ?? ''))}</span>
+                   <span class="lc-pad-who"><strong>${this.escapeHtml(player.name || '')}</strong><small>${this.escapeHtml(PlayerService.roleLabel(player.role))}${streaks !== '—' ? `, serie battute ${streaks}` : ''}</small></span>`
+                : `<span class="lc-pad-hint">Tocca un giocatore, poi l'azione. Resta selezionato finché non ne scegli un altro.</span>`;
+        }
 
-            <!-- Points Made Section -->
-            <div class="live-stat-group points">
-                <div class="live-stat-group-title">🔥 Points Made</div>
-                <div class="live-counter-grid">
-                    ${this.createLiveCounterTileHtml(playerId, 'point_serve', 'Serve Pt')}
-                    ${this.createLiveCounterTileHtml(playerId, 'point_spike', 'Spike Pt')}
-                    ${this.createLiveCounterTileHtml(playerId, 'point_block', 'Block Pt')}
-                    ${this.createLiveCounterTileHtml(playerId, 'point_lob', 'Lob Pt')}
-                    ${this.createLiveCounterTileHtml(playerId, 'point_random', 'Random Pt')}
+        pad.innerHTML = this.LIVE_ACTIONS.map(g => `
+            <div class="lc-group lc-group-${g.group}">
+                <h3 class="lc-group-title">${g.title}</h3>
+                <div class="lc-actions">
+                    ${g.items.map(([key, label]) => `
+                        <button type="button" class="lc-action" ${player ? '' : 'disabled'} onclick="MatchStats.liveAction('${key}')">
+                            <span>${label}</span>
+                            ${player ? `<span class="lc-count">${s[key] || 0}</span>` : ''}
+                        </button>`).join('')}
                 </div>
-            </div>
-        `;
+            </div>`).join('');
+    },
+
+    liveAction: function(key) {
+        if (!this.currentLivePlayerId) return;
+        this.haptic();
+        this.increment(this.currentLivePlayerId, key);
     },
 
     /**
-     * Helper to render a live tracker counter tile (grid cell)
+     * Last events of the active set, newest first, as saved in the database
      */
-    createLiveCounterTileHtml: function(playerId, statKey, label) {
-        return `
-            <div class="live-counter-tile">
-                <span class="live-counter-tile-label" title="${label}">${label}</span>
-                <div class="live-counter-tile-controls">
-                    <button id="live-btn-minus-${playerId}-${statKey}" class="btn-live-counter-tile btn-live-counter-tile-minus" onclick="MatchStats.decrement('${playerId}', '${statKey}')">-</button>
-                    <span id="live-val-${playerId}-${statKey}" class="live-counter-tile-value">0</span>
-                    <button class="btn-live-counter-tile btn-live-counter-tile-plus" onclick="MatchStats.increment('${playerId}', '${statKey}')">+</button>
-                </div>
-            </div>
-        `;
+    renderLiveFeed: function() {
+        const list = document.getElementById('liveFeed');
+        const undoBtn = document.getElementById('liveUndoBtn');
+        if (!list) return;
+
+        const setEvents = this.matchEvents.filter(e => Number(e.set) === Number(this.viewSet));
+        if (undoBtn) undoBtn.disabled = setEvents.length === 0;
+        if (setEvents.length === 0) {
+            list.innerHTML = `<li class="lc-feed-empty">Nessuna azione in questo set.</li>`;
+            return;
+        }
+
+        const scoreAt = new Map(MatchService.scoreProgression(this.matchEvents, this.viewSet).map(st => [st.event, st]));
+        const players = PlayerService.getPlayersList();
+        list.innerHTML = setEvents.slice(-8).reverse().map(e => {
+            const team = MatchService.eventTeam(e.key) || 'none';
+            const st = scoreAt.get(e);
+            const p = e.playerId ? players.find(x => x.id === e.playerId) : null;
+            const who = p ? `#${this.escapeHtml(String(p.number ?? ''))} ${this.escapeHtml(p.name || '')}` : (e.playerId ? 'Giocatore rimosso' : 'Avversario');
+            return `
+                <li class="lc-feed-item" data-team="${team}">
+                    <span class="lc-feed-score">${st ? `${st.us}–${st.them}` : ''}</span>
+                    <span class="lc-feed-what">${this.liveLabel(e.key)}</span>
+                    <span class="lc-feed-who">${who}</span>
+                </li>`;
+        }).join('');
     },
 
     /**
@@ -789,28 +762,16 @@ const MatchStats = {
         }
         this.matchEvents = [];
 
-        // Hide Modal
         const modal = document.getElementById('liveStatsModal');
         if (modal) {
             modal.classList.remove('show');
-            document.body.style.overflow = ''; // Restore background scrolling
+            document.body.style.overflow = '';
         }
 
-        window.removeEventListener('click', this.handleOutsideClickLive);
         this.currentMatchId = null;
         this.allPlayerStats = {};
         this.currentLivePlayerId = null;
         Logger.info('Closed live stats tracker modal');
-    },
-
-    /**
-     * Handle live modal closing when clicking outside the modal box
-     */
-    handleOutsideClickLive: function(event) {
-        const modal = document.getElementById('liveStatsModal');
-        if (event.target === modal) {
-            MatchStats.closeLiveModal();
-        }
     },
 
     /**

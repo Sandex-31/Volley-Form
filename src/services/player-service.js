@@ -42,6 +42,13 @@ const PlayerService = {
     },
 
     /**
+     * Italian label for a stored role value (display only; stored values stay as they are)
+     */
+    roleLabel: function(role) {
+        return ({ Setter: 'Palleggiatore', Opposite: 'Opposto' })[role] || role || '';
+    },
+
+    /**
      * Add or update player
      */
     savePlayer: async function(player) {

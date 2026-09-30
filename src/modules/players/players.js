@@ -58,7 +58,7 @@ const PlayersModule = {
         grid.innerHTML = '';
 
         if (!players || players.length === 0) {
-            grid.innerHTML = '<p class="no-players">No players registered on the team roster yet.</p>';
+            grid.innerHTML = '<p class="no-players">Nessun giocatore in rosa. Aggiungi il primo.</p>';
             return;
         }
 
@@ -78,8 +78,8 @@ const PlayersModule = {
             if (this.isAdmin) {
                 actionHtml = `
                     <div class="player-actions">
-                        <button class="btn-player-edit" onclick="PlayersModule.openEditModal('${player.id}')">Edit</button>
-                        <button class="btn-player-delete" onclick="PlayersModule.deletePlayer('${player.id}', '${this.escapeQuote(player.name)}')">Delete</button>
+                        <button class="btn-player-edit" onclick="PlayersModule.openEditModal('${player.id}')">Modifica</button>
+                        <button class="btn-player-delete" onclick="PlayersModule.deletePlayer('${player.id}', '${this.escapeQuote(player.name)}')">Elimina</button>
                     </div>
                 `;
             }
@@ -107,7 +107,7 @@ const PlayersModule = {
             card.innerHTML = `
                 ${photoHtml}
                 <div class="player-name">${this.escapeHtml(player.name)}</div>
-                <div class="role-badge ${roleClass}">${role}</div>
+                <div class="role-badge ${roleClass}">${PlayerService.roleLabel(role)}</div>
                 ${heightHtml}
                 ${actionHtml}
             `;
@@ -133,7 +133,7 @@ const PlayersModule = {
 
         // Validation constraints: is image?
         if (!file.type.startsWith('image/')) {
-            UIService.showMessage('✗ Please select a valid image file', 'error');
+            UIService.showMessage('Scegli un file immagine valido', 'error');
             event.target.value = '';
             return;
         }
@@ -320,7 +320,7 @@ const PlayersModule = {
     openAddModal: function() {
         document.getElementById('playerForm').reset();
         document.getElementById('editPlayerId').value = '';
-        document.getElementById('playerModalTitle').textContent = 'Add Player';
+        document.getElementById('playerModalTitle').textContent = 'Aggiungi giocatore';
         
         // Reset photo upload state and preview
         this.removeSelectedPhoto();
@@ -344,7 +344,7 @@ const PlayersModule = {
         document.getElementById('playerNumber').value = player.number;
         document.getElementById('playerHeight').value = player.height || '';
         document.getElementById('playerRole').value = player.role;
-        document.getElementById('playerModalTitle').textContent = 'Edit Player Details';
+        document.getElementById('playerModalTitle').textContent = 'Modifica giocatore';
 
         // Set photo state and preview
         this.selectedPhotoFile = null;
@@ -425,15 +425,15 @@ const PlayersModule = {
         const role = document.getElementById('playerRole').value;
 
         if (!name || !number || !role) {
-            UIService.showMessage('Please fill in all fields', 'error');
+            UIService.showMessage('Compila tutti i campi obbligatori', 'error');
             return;
         }
 
         const saveBtn = document.querySelector('#playerForm button[type="submit"]');
-        const originalBtnText = saveBtn ? saveBtn.textContent : 'Save Player';
+        const originalBtnText = saveBtn ? saveBtn.textContent : 'Salva giocatore';
         if (saveBtn) {
             saveBtn.disabled = true;
-            saveBtn.textContent = 'Saving...';
+            saveBtn.textContent = 'Salvataggio…';
         }
 
         try {
@@ -481,14 +481,14 @@ const PlayersModule = {
 
             const success = await PlayerService.savePlayer(playerData);
             if (success) {
-                UIService.showMessage(`✓ Player "${name}" saved!`, 'success');
+                UIService.showMessage(`${name} salvato`, 'success');
                 this.closeModal();
             } else {
                 throw new Error('Firebase save operation returned false.');
             }
         } catch (error) {
             Logger.error('Error saving player:', error);
-            UIService.showMessage(`✗ Failed to save player: ${error.message}`, 'error');
+            UIService.showMessage(`Giocatore non salvato: ${error.message}`, 'error');
         } finally {
             if (saveBtn) {
                 saveBtn.disabled = false;
@@ -501,20 +501,20 @@ const PlayersModule = {
      * Delete player from database
      */
     deletePlayer: async function(playerId, playerName) {
-        if (!confirm(`Are you sure you want to remove "${playerName}" from the team roster?`)) {
+        if (!confirm(`Togliere ${playerName} dalla rosa?`)) {
             return;
         }
 
         try {
             const success = await PlayerService.deletePlayer(playerId);
             if (success) {
-                UIService.showMessage(`✓ Player "${playerName}" removed`, 'success');
+                UIService.showMessage(`${playerName} tolto dalla rosa`, 'success');
             } else {
-                UIService.showMessage('✗ Failed to remove player', 'error');
+                UIService.showMessage('Giocatore non eliminato', 'error');
             }
         } catch (error) {
             Logger.error('Error deleting player:', error);
-            UIService.showMessage(`✗ Failed to delete player: ${error.message}`, 'error');
+            UIService.showMessage(`Giocatore non eliminato: ${error.message}`, 'error');
         }
     },
 

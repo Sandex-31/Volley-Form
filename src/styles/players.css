@@ -20,7 +20,7 @@
 /* Shared CTA / secondary buttons (also used on match-table.html) */
 .btn-save {
     background: var(--accent);
-    color: #ffffff;
+    color: var(--on-accent);
     border: none;
     border-radius: var(--radius-sm);
     padding: 10px 16px;
@@ -82,7 +82,7 @@
     height: 50px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
-    color: #ffffff;
+    color: var(--on-accent);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -120,15 +120,15 @@
 }
 
 .role-banda, .role-spiker {
-    background: rgba(181, 91, 250, 0.15);
-    color: #9a4fd6;
-    border: 1px solid rgba(181, 91, 250, 0.3);
+    background: rgba(var(--role-spiker-rgb), 0.14);
+    color: rgb(var(--role-spiker-rgb));
+    border: 1px solid rgba(var(--role-spiker-rgb), 0.3);
 }
 
 .role-opposite {
-    background: rgba(250, 144, 91, 0.15);
-    color: #c96a37;
-    border: 1px solid rgba(250, 144, 91, 0.3);
+    background: rgba(var(--role-opposite-rgb), 0.14);
+    color: rgb(var(--role-opposite-rgb));
+    border: 1px solid rgba(var(--role-opposite-rgb), 0.3);
 }
 
 .role-centrale, .role-blocker {
@@ -287,7 +287,7 @@
     height: 32px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--brand) 0%, var(--accent) 100%);
-    color: #ffffff;
+    color: var(--on-accent);
     display: flex;
     align-items: center;
     justify-content: center;

@@ -4,16 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../common/theme-init.js"></script>
-    <title>Match Report - Volley Tool</title>
+    <script src="../common/theme-init.js?v=20260930"></script>
+    <title>Report partita · Wapatanka</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap">
-    <link rel="stylesheet" href="../styles/theme.css">
-    <link rel="stylesheet" href="../styles/styles.css">
-    <link rel="stylesheet" href="../styles/navbar.css">
-    <link rel="stylesheet" href="../styles/match-lineups.css">
-    <link rel="stylesheet" href="../styles/match-report.css">
+    <link rel="stylesheet" href="../styles/theme.css?v=20260930">
+    <link rel="stylesheet" href="../styles/styles.css?v=20260930">
+    <link rel="stylesheet" href="../styles/navbar.css?v=20260930">
+    <link rel="stylesheet" href="../styles/match-lineups.css?v=20260930">
+    <link rel="stylesheet" href="../styles/match-report.css?v=20260930">
+    <link rel="stylesheet" href="../styles/ambience.css?v=20260930">
 </head>
 
 <body>
@@ -24,13 +25,13 @@
         </a>
         <ul class="navbar-menu" id="navMenu">
             <li class="navbar-item"><a href="index.html"><span class="nav-ic" data-icon="home"></span> Home</a></li>
-            <li class="navbar-item"><a href="form.html"><span class="nav-ic" data-icon="form"></span> Rate Form</a></li>
-            <li class="navbar-item"><a href="public-exercises.html"><span class="nav-ic" data-icon="exercises"></span> Exercises</a></li>
-            <li class="navbar-item"><a href="responses.html"><span class="nav-ic" data-icon="responses"></span> Responses</a></li>
-            <li class="navbar-item active"><a href="match-table.html"><span class="nav-ic" data-icon="matches"></span> Matches</a></li>
-            <li class="navbar-item"><a href="players.html"><span class="nav-ic" data-icon="players"></span> Players</a></li>
-            <li class="navbar-item"><a href="ai-analysis.html"><span class="nav-ic" data-icon="ai"></span> AI Analysis</a></li>
-            <li class="navbar-item"><a href="upload-exercises.html"><span class="nav-ic" data-icon="manage"></span> Manage</a></li>
+            <li class="navbar-item"><a href="form.html"><span class="nav-ic" data-icon="form"></span> Valutazione</a></li>
+            <li class="navbar-item"><a href="public-exercises.html"><span class="nav-ic" data-icon="exercises"></span> Esercizi</a></li>
+            <li class="navbar-item"><a href="responses.html"><span class="nav-ic" data-icon="responses"></span> Risposte</a></li>
+            <li class="navbar-item active"><a href="match-table.html"><span class="nav-ic" data-icon="matches"></span> Partite</a></li>
+            <li class="navbar-item"><a href="players.html"><span class="nav-ic" data-icon="players"></span> Giocatori</a></li>
+            <li class="navbar-item"><a href="ai-analysis.html"><span class="nav-ic" data-icon="ai"></span> Analisi video</a></li>
+            <li class="navbar-item"><a href="upload-exercises.html"><span class="nav-ic" data-icon="manage"></span> Gestione</a></li>
         </ul>
         <div class="navbar-actions">
             <button class="theme-toggle-btn" id="themeToggleBtn" onclick="ThemeToggle.toggle()" aria-label="Cambia tema" type="button">
@@ -65,7 +66,7 @@
 
         <!-- Score timeline -->
         <section class="mr-card reveal">
-            <h2>📈 Andamento del set</h2>
+            <h2>Andamento del set</h2>
             <div class="mr-timeline-controls">
                 <div id="timelineSetTabs" class="lineup-set-tabs"></div>
                 <select id="timelinePlayerFilter" class="mr-player-filter" onchange="MatchReport.selectTimelinePlayer(this.value)"></select>
@@ -81,7 +82,7 @@
 
         <!-- Team per-set trend -->
         <section class="mr-card reveal">
-            <h2>🏐 Squadra per set</h2>
+            <h2>Squadra per set</h2>
             <div class="mr-chart-wrap">
                 <canvas id="teamChart"></canvas>
             </div>
@@ -90,7 +91,7 @@
 
         <!-- Players breakdown -->
         <section class="mr-card reveal">
-            <h2>👥 Giocatori</h2>
+            <h2>Giocatori</h2>
             <div id="playersScopeTabs" class="lineup-set-tabs"></div>
             <div class="table-responsive">
                 <table id="playersTable" class="mr-table">
@@ -128,22 +129,22 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
     <!-- Config -->
-    <script src="../config/firebase.config.js"></script>
-    <script src="../config/constants.js"></script>
+    <script src="../config/firebase.config.js?v=20260930"></script>
+    <script src="../config/constants.js?v=20260930"></script>
 
     <!-- Common & services -->
-    <script src="../common/logger.js"></script>
-    <script src="../common/ui-service.js"></script>
-    <script src="../services/firebase-service.js"></script>
-    <script src="../services/player-service.js"></script>
-    <script src="../services/match-service.js"></script>
+    <script src="../common/logger.js?v=20260930"></script>
+    <script src="../common/ui-service.js?v=20260930"></script>
+    <script src="../services/firebase-service.js?v=20260930"></script>
+    <script src="../services/player-service.js?v=20260930"></script>
+    <script src="../services/match-service.js?v=20260930"></script>
 
-    <script src="../common/icons.js"></script>
-    <script src="../common/navbar.js"></script>
-    <script src="../common/scroll-reveal.js"></script>
+    <script src="../common/icons.js?v=20260930"></script>
+    <script src="../common/navbar.js?v=20260930"></script>
+    <script src="../common/scroll-reveal.js?v=20260930"></script>
 
     <!-- Page module -->
-    <script src="../modules/matches/match-report.js"></script>
+    <script src="../modules/matches/match-report.js?v=20260930"></script>
 </body>
 
 </html>

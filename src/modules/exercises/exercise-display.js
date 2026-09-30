@@ -40,10 +40,10 @@ const ExerciseDisplay = {
             container.innerHTML = `
                 <div class="empty-state">
                     <div class="empty-state-icon">📭</div>
-                    <div class="empty-state-text">No exercises scheduled for today</div>
+                    <div class="empty-state-text">Nessun esercizio in programma per oggi</div>
                 </div>
             `;
-            UIService.updateStatusIndicator('✅ Real-time sync active', 'var(--success)');
+            UIService.updateStatusIndicator('Real-time sync active', 'var(--success)');
             return;
         }
 
@@ -71,7 +71,7 @@ const ExerciseDisplay = {
                                     Your browser does not support the video tag.
                                 </video>
                             ` : `
-                                <div class="no-video-message">🎥 No video available yet</div>
+                                <div class="no-video-message">Video non ancora disponibile</div>
                             `}
                         </div>
                     </div>
@@ -82,7 +82,7 @@ const ExerciseDisplay = {
             container.appendChild(exerciseItem);
         });
 
-        UIService.updateStatusIndicator('✅ Real-time sync active', 'var(--success)');
+        UIService.updateStatusIndicator('Real-time sync active', 'var(--success)');
     },
 
     /**

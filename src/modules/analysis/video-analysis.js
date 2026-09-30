@@ -100,16 +100,16 @@ const VideoAnalysis = {
                         document.getElementById('analysisResultsContainer').style.display = 'block';
                         this.renderResults(jobData.result, jobData.video_url, jobId);
                     } else {
-                        alert('Could not retrieve results for this job.');
+                        alert('Impossibile recuperare i risultati di questa analisi.');
                         btn.disabled = false;
                         btn.textContent = originalBtnText;
                     }
                 } catch (error) {
                     Logger.error('Error loading past job:', error);
-                    alert('Error loading past job.');
+                    alert('Errore nel caricamento dell’analisi.');
                     const btn = document.getElementById('startAnalysisBtn');
                     btn.disabled = false;
-                    btn.textContent = '🚀 Start AI Analysis';
+                    btn.textContent = 'Start AI Analysis';
                 }
             });
         }
@@ -152,7 +152,7 @@ const VideoAnalysis = {
         const customName = document.getElementById('customName') ? document.getElementById('customName').value : '';
         
         if (!videoUrl) {
-            alert('Please provide a video URL.');
+            alert('Inserisci il link del video.');
             return;
         }
 
@@ -188,9 +188,9 @@ const VideoAnalysis = {
 
         } catch (error) {
             Logger.error('Error submitting analysis job', error);
-            alert('Failed to connect to the AI Backend. Is the server running?');
+            alert('Server di analisi non raggiungibile. È avviato?');
             btn.disabled = false;
-            btn.textContent = '🚀 Start AI Analysis';
+            btn.textContent = 'Start AI Analysis';
             this.updateProgressUI(0, 'Failed to connect.', true);
         }
     },
@@ -212,7 +212,7 @@ const VideoAnalysis = {
 
                 if (data.status === 'completed') {
                     clearInterval(this.pollingInterval);
-                    btn.textContent = '✅ Analysis Complete';
+                    btn.textContent = 'Analysis Complete';
                     this.updateProgressUI(100, displayDetails, false);
                     
                     // Hide progress and form card
@@ -225,7 +225,7 @@ const VideoAnalysis = {
                 } else if (data.status === 'failed') {
                     clearInterval(this.pollingInterval);
                     btn.disabled = false;
-                    btn.textContent = '🚀 Retry Analysis';
+                    btn.textContent = 'Retry Analysis';
                     this.updateProgressUI(0, displayDetails, true);
                 } else {
                     this.updateProgressUI(data.progress || 0, displayDetails, false);
@@ -408,7 +408,7 @@ const VideoAnalysis = {
                 card.className = 'player-stat-card';
                 card.innerHTML = `
                     <div class="player-card-header">
-                        <div class="player-card-name">👤 ${p.player_name}</div>
+                        <div class="player-card-name">${p.player_name}</div>
                         <div class="player-card-meta">#${p.jersey_number} • ${p.position || 'Giocatore'}</div>
                     </div>
                     <div class="stat-item-row">
@@ -492,7 +492,7 @@ const VideoAnalysis = {
         addBtn.style.cssText = "background: rgba(var(--accent-rgb), 0.15); border: 1px dashed var(--accent); color: var(--accent); padding: 10px; margin: 10px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; text-align: center; transition: background 0.2s;";
         addBtn.onmouseover = () => addBtn.style.background = 'rgba(var(--accent-rgb), 0.25)';
         addBtn.onmouseout = () => addBtn.style.background = 'rgba(var(--accent-rgb), 0.15)';
-        addBtn.innerHTML = '➕ Aggiungi Nuova Azione';
+        addBtn.innerHTML = 'Aggiungi Nuova Azione';
         listContainer.appendChild(addBtn);
         
         const filtered = this.getFilteredSegments();
@@ -520,13 +520,13 @@ const VideoAnalysis = {
             
             // Resolve action label/translation
             const actionLabels = {
-                serve: '🏐 Battuta',
-                attack: '💥 Attacco',
-                defense: '🛡️ Difesa',
-                block: '🧱 Muro',
-                other: '🎬 Altro'
+                serve: 'Battuta',
+                attack: 'Attacco',
+                defense: 'Difesa',
+                block: 'Muro',
+                other: 'Altro'
             };
-            const label = actionLabels[seg.action_type] || '🎬 Azione';
+            const label = actionLabels[seg.action_type] || 'Azione';
             
             // Resolve status indicator
             const statusLabels = {
@@ -614,7 +614,7 @@ const VideoAnalysis = {
                     <button onclick="VideoAnalysis.analyzeSegment('${this.currentJobId}', '${seg.segment_id}', '${this.currentVideoUrl}', ${seg.start_time}, ${seg.end_time}, '${seg.action_type}', this)" 
                             class="btn-ai-analysis" 
                             style="font-size: 14px; padding: 10px 20px; border-radius: 6px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; width: auto; background: linear-gradient(135deg, var(--brand), var(--accent));">
-                        🔍 Avvia Analisi Statistica
+                        Avvia Analisi Statistica
                     </button>
                     <p style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">Usa l'IA per riconoscere i giocatori (altezza, ruolo, volto) ed estrarre i punti/errori.</p>
                 </div>
@@ -640,7 +640,7 @@ const VideoAnalysis = {
             if (isCorrected) {
                 correctedBadge = `
                     <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); color: var(--success); font-size: 11px; padding: 4px 8px; border-radius: 4px; display: inline-flex; align-items: center; gap: 5px; font-weight: 600; margin-bottom: 10px; width: fit-content;">
-                        ✅ Corretto da Utente
+                        Corretto da Utente
                     </div>
                 `;
                 if (correctionNotes) {
@@ -655,7 +655,7 @@ const VideoAnalysis = {
                     originalDetailsHtml = `
                         <details style="margin-top: 10px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; padding: 10px;">
                             <summary style="font-size: 12px; color: var(--text-muted); cursor: pointer; font-weight: 600; outline: none; user-select: none;">
-                                📋 Vedi Risultato Originale dell'IA
+                                Vedi Risultato Originale dell'IA
                             </summary>
                             <div style="font-size: 12px; color: var(--text-muted); margin-top: 8px; border-top: 1px dashed var(--border); padding-top: 8px; line-height: 1.4;">
                                 <div>Giocatore IA: <strong>${originalDetails.player_name || 'Sconosciuto'}</strong> (#${originalDetails.jersey_number || 'N/D'})</div>
@@ -671,7 +671,7 @@ const VideoAnalysis = {
                 <div style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px; display: flex; flex-direction: column; gap: 10px; background: var(--surface-2); padding: 15px; border-radius: 6px; border: 1px solid var(--border);">
                     ${correctedBadge}
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-weight: 700; color: var(--text); font-size: 15px;">👤 Giocatore: ${d.player_name || 'Sconosciuto'}</span>
+                        <span style="font-weight: 700; color: var(--text); font-size: 15px;">Giocatore: ${d.player_name || 'Sconosciuto'}</span>
                         <span class="highlight-badge badge-${badgeClass}" style="font-size: 10px; padding: 2px 6px;">${badgeText}</span>
                     </div>
                     <div style="font-size: 12px; color: var(--text-muted); display: flex; gap: 15px; flex-wrap: wrap;">
@@ -687,7 +687,7 @@ const VideoAnalysis = {
 
                     <div style="margin-top: 12px; display: flex; justify-content: flex-end; border-top: 1px solid var(--border); padding-top: 12px;">
                         <button onclick="VideoAnalysis.showEditSegmentForm('${seg.segment_id}')" class="btn-edit-segment" style="background: rgba(245, 158, 11, 0.1); border: 1px solid var(--warning); color: var(--warning); border-radius: 6px; padding: 6px 14px; cursor: pointer; font-size: 13px; transition: all 0.2s; font-weight: 600;" onmouseover="this.style.background='rgba(245, 158, 11, 0.2)'" onmouseout="this.style.background='rgba(245, 158, 11, 0.1)'">
-                            ✏️ Correggi Errore IA
+                            Correggi Errore IA
                         </button>
                     </div>
                 </div>
@@ -695,11 +695,11 @@ const VideoAnalysis = {
         } else if (seg.analysis_status === 'failed') {
             detailsHtml = `
                 <div style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px; color: var(--danger); font-size: 13px; text-align: center; display: flex; flex-direction: column; gap: 8px; align-items: center; padding: 15px 0;">
-                    <span>❌ Analisi del segmento fallita.</span>
+                    <span>Analisi del segmento fallita.</span>
                     <button onclick="VideoAnalysis.analyzeSegment('${this.currentJobId}', '${seg.segment_id}', '${this.currentVideoUrl}', ${seg.start_time}, ${seg.end_time}, '${seg.action_type}', this)" 
                             class="btn-ai-analysis" 
                             style="font-size: 13px; padding: 8px 16px; border-radius: 4px; display: inline-flex; align-items: center; width: auto; background: var(--danger); cursor: pointer;">
-                        🔄 Riprova Analisi
+                        Riprova Analisi
                     </button>
                 </div>
             `;
@@ -709,7 +709,7 @@ const VideoAnalysis = {
         if (seg.analysis_reasoning) {
             reasoningHtml = `
                 <div style="margin-top: 15px; background: var(--surface-2); padding: 12px; border-radius: 6px; border: 1px solid var(--surface); text-align: left;">
-                    <div style="font-size: 11px; color: var(--brand); font-weight: 700; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;">🔍 Log di Riconoscimento Azione (AI Reasoning)</div>
+                    <div style="font-size: 11px; color: var(--brand); font-weight: 700; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;">Log di Riconoscimento Azione (AI Reasoning)</div>
                     <div style="font-size: 12px; color: var(--text-muted); line-height: 1.45; white-space: pre-wrap;">${seg.analysis_reasoning}</div>
                 </div>
             `;
@@ -721,7 +721,7 @@ const VideoAnalysis = {
             </div>
             <div class="highlight-info" style="display: flex; flex-direction: column; gap: 8px; text-align: left;">
                 <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
-                    <span style="font-size: 18px; font-weight: 700; color: var(--text);">🎬 Dettaglio Azione</span>
+                    <span style="font-size: 18px; font-weight: 700; color: var(--text);">Dettaglio Azione</span>
                     <span class="highlight-badge ${actionClass}" style="font-size: 11px; padding: 4px 8px;">${seg.action_type || 'Altro'}</span>
                 </div>
                 <div style="font-size: 14px; color: var(--text-2); line-height: 1.4;">
@@ -835,7 +835,7 @@ const VideoAnalysis = {
         
         const editFormHtml = `
             <div style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px; text-align: left; background: var(--surface-2); padding: 20px; border-radius: 8px; border: 1px solid var(--accent); display: flex; flex-direction: column; gap: 15px;">
-                <h3 style="color: var(--accent); font-size: 16px; margin: 0 0 5px 0; display: flex; align-items: center; gap: 8px;">✏️ Correggi Rilevazione & Risultati (Azione #${this.currentSegments.indexOf(seg) + 1})</h3>
+                <h3 style="color: var(--accent); font-size: 16px; margin: 0 0 5px 0; display: flex; align-items: center; gap: 8px;">Correggi Rilevazione & Risultati (Azione #${this.currentSegments.indexOf(seg) + 1})</h3>
                 
                 <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                     <div style="flex: 1; min-width: 140px; display: flex; flex-direction: column; gap: 5px;">
@@ -851,19 +851,19 @@ const VideoAnalysis = {
 
                 <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                     <div style="flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 5px;">
-                        <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">👤 Giocatore Effettivo</label>
+                        <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Giocatore Effettivo</label>
                         <select id="editPlayerId" style="width: 100%; padding: 8px 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 13px; outline: none;">
                             ${playerOptions}
                         </select>
                     </div>
                     
                     <div style="flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 5px;">
-                        <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">🏐 Categoria Azione</label>
+                        <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Categoria Azione</label>
                         <select id="editActionType" style="width: 100%; padding: 8px 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 13px; outline: none;">
-                            <option value="serve" ${d.action_type === 'serve' ? 'selected' : ''}>🏐 Battuta</option>
-                            <option value="attack" ${d.action_type === 'attack' ? 'selected' : ''}>💥 Attacco</option>
-                            <option value="defense" ${d.action_type === 'defense' ? 'selected' : ''}>🛡️ Difesa</option>
-                            <option value="block" ${d.action_type === 'block' ? 'selected' : ''}>🧱 Muro</option>
+                            <option value="serve" ${d.action_type === 'serve' ? 'selected' : ''}>Battuta</option>
+                            <option value="attack" ${d.action_type === 'attack' ? 'selected' : ''}>Attacco</option>
+                            <option value="defense" ${d.action_type === 'defense' ? 'selected' : ''}>Difesa</option>
+                            <option value="block" ${d.action_type === 'block' ? 'selected' : ''}>Muro</option>
                             <option value="other" ${d.action_type === 'other' ? 'selected' : ''}>Altro</option>
                         </select>
                     </div>
@@ -871,7 +871,7 @@ const VideoAnalysis = {
 
                 <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                     <div style="flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 5px;">
-                        <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">📊 Esito Giocata</label>
+                        <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Esito Giocata</label>
                         <select id="editOutcome" style="width: 100%; padding: 8px 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 13px; outline: none;">
                             <option value="neutral" ${outcomeVal === 'neutral' ? 'selected' : ''}>Giocata Neutra / Altro</option>
                             <option value="point" ${outcomeVal === 'point' ? 'selected' : ''}>Punto per Noi</option>
@@ -880,7 +880,7 @@ const VideoAnalysis = {
                     </div>
 
                     <div style="flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 5px;">
-                        <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">📈 Statistica Specifica</label>
+                        <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Statistica Specifica</label>
                         <select id="editStat" style="width: 100%; padding: 8px 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 13px; outline: none;">
                             <option value="none" ${activeStat === 'none' ? 'selected' : ''}>Nessuna statistica</option>
                             <optgroup label="Punti">
@@ -905,20 +905,20 @@ const VideoAnalysis = {
                 </div>
 
                 <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">📝 Descrizione Azione (Italiano)</label>
+                    <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Descrizione Azione (Italiano)</label>
                     <textarea id="editEventDescription" rows="2" style="width: 100%; padding: 8px 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 13px; outline: none; resize: vertical; font-family: inherit;">${d.event_description || ''}</textarea>
                 </div>
 
                 <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <label style="font-size: 12px; color: var(--success); font-weight: 600; display: flex; align-items: center; gap: 5px;">💡 Segnala Errore / Nota Correzione <small style="color: var(--text-muted); font-weight: normal;">(Es. confuso n. 4 col n. 9)</small></label>
+                    <label style="font-size: 12px; color: var(--success); font-weight: 600; display: flex; align-items: center; gap: 5px;">Segnala Errore / Nota Correzione <small style="color: var(--text-muted); font-weight: normal;">(Es. confuso n. 4 col n. 9)</small></label>
                     <textarea id="editCorrectionNotes" rows="2" style="width: 100%; padding: 8px 12px; background: var(--surface-2); border: 1px solid var(--success); border-radius: 6px; color: var(--text); font-size: 13px; outline: none; resize: vertical; font-family: inherit;" placeholder="Spiega brevemente cosa ha sbagliato l'IA (es: 'ha confuso Luca con Marco a causa del capello simile' o 'ha ignorato il tocco del muro'). Questo aiuterà a calibrare i futuri modelli.">${seg.correction_notes || ''}</textarea>
                 </div>
 
                 <div style="display: flex; justify-content: space-between; gap: 10px; margin-top: 5px; flex-wrap: wrap;">
-                    <button onclick="VideoAnalysis.deleteSegment('${segmentId}')" style="background: rgba(239, 68, 68, 0.15); border: 1px solid var(--danger); color: var(--danger); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s;" onmouseover="this.style.background='rgba(239, 68, 68, 0.3)';" onmouseout="this.style.background='rgba(239, 68, 68, 0.15)';">🗑️ Elimina Azione</button>
+                    <button onclick="VideoAnalysis.deleteSegment('${segmentId}')" style="background: rgba(239, 68, 68, 0.15); border: 1px solid var(--danger); color: var(--danger); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s;" onmouseover="this.style.background='rgba(239, 68, 68, 0.3)';" onmouseout="this.style.background='rgba(239, 68, 68, 0.15)';">Elimina Azione</button>
                     <div style="display: flex; gap: 10px;">
                         <button onclick="VideoAnalysis.selectSegment('${segmentId}')" style="background: none; border: 1px solid var(--border); color: var(--text-muted); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s;" onmouseover="this.style.color='var(--text)'; this.style.borderColor='var(--text-muted)';" onmouseout="this.style.color='var(--text-muted)'; this.style.borderColor='var(--border)';">Annulla</button>
-                        <button onclick="VideoAnalysis.saveSegmentCorrection('${segmentId}')" style="background: linear-gradient(135deg, var(--success), var(--success)); border: none; color: #ffffff; padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: all 0.2s;" onmouseover="this.style.opacity='0.9';" onmouseout="this.style.opacity='1';">Salva Modifiche</button>
+                        <button onclick="VideoAnalysis.saveSegmentCorrection('${segmentId}')" style="background: linear-gradient(135deg, var(--success), var(--success)); border: none; color: var(--on-accent); padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: all 0.2s;" onmouseover="this.style.opacity='0.9';" onmouseout="this.style.opacity='1';">Salva Modifiche</button>
                     </div>
                 </div>
             </div>
@@ -958,7 +958,7 @@ const VideoAnalysis = {
                 </div>
                 <div class="highlight-info" style="display: flex; flex-direction: column; gap: 8px; text-align: left;">
                     <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
-                        <span style="font-size: 18px; font-weight: 700; color: var(--text);">🎬 Dettaglio Azione</span>
+                        <span style="font-size: 18px; font-weight: 700; color: var(--text);">Dettaglio Azione</span>
                         <span class="highlight-badge ${actionClass}" style="font-size: 11px; padding: 4px 8px;">${seg.action_type || 'Altro'}</span>
                     </div>
                     <div style="font-size: 14px; color: var(--text-2); line-height: 1.4;">
@@ -1099,7 +1099,7 @@ const VideoAnalysis = {
         
         const addFormHtml = `
             <div style="background: var(--surface-2); padding: 20px; border-radius: 8px; border: 1px solid var(--accent); display: flex; flex-direction: column; gap: 15px; text-align: left;">
-                <h3 style="color: var(--accent); font-size: 16px; margin: 0; display: flex; align-items: center; gap: 8px;">➕ Aggiungi Nuova Azione Manualmente</h3>
+                <h3 style="color: var(--accent); font-size: 16px; margin: 0; display: flex; align-items: center; gap: 8px;">Aggiungi Nuova Azione Manualmente</h3>
                 
                 <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                     <div style="flex: 1; min-width: 140px; display: flex; flex-direction: column; gap: 5px;">
@@ -1113,35 +1113,35 @@ const VideoAnalysis = {
                     </div>
 
                     <div style="flex: 1; min-width: 140px; display: flex; flex-direction: column; gap: 5px;">
-                        <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">🏐 Categoria Azione</label>
+                        <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Categoria Azione</label>
                         <select id="addActionType" style="width: 100%; padding: 8px 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 13px; outline: none;">
-                            <option value="serve">🏐 Battuta</option>
-                            <option value="attack">💥 Attacco</option>
-                            <option value="defense">🛡️ Difesa</option>
-                            <option value="block">🧱 Muro</option>
+                            <option value="serve">Battuta</option>
+                            <option value="attack">Attacco</option>
+                            <option value="defense">Difesa</option>
+                            <option value="block">Muro</option>
                             <option value="other">Altro</option>
                         </select>
                     </div>
                 </div>
 
                 <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">📝 Descrizione Rilevamento Segmentazione (es: 'Servizio fuori')</label>
+                    <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Descrizione Rilevamento Segmentazione (es: 'Servizio fuori')</label>
                     <textarea id="addDescription" rows="2" style="width: 100%; padding: 8px 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 13px; outline: none; resize: vertical; font-family: inherit;"></textarea>
                 </div>
 
                 <div style="border-top: 1px dashed var(--border); padding-top: 10px; margin-top: 5px; display: flex; flex-direction: column; gap: 15px;">
-                    <h4 style="color: var(--text-2); font-size: 14px; margin: 0;">📊 Dettagli Statistici (Opzionale)</h4>
+                    <h4 style="color: var(--text-2); font-size: 14px; margin: 0;">Dettagli Statistici (Opzionale)</h4>
                     
                     <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                         <div style="flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 5px;">
-                            <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">👤 Giocatore Effettivo</label>
+                            <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Giocatore Effettivo</label>
                             <select id="addPlayerId" style="width: 100%; padding: 8px 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 13px; outline: none;">
                                 ${playerOptions}
                             </select>
                         </div>
                         
                         <div style="flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 5px;">
-                            <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">📊 Esito Giocata</label>
+                            <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Esito Giocata</label>
                             <select id="addOutcome" style="width: 100%; padding: 8px 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 13px; outline: none;">
                                 <option value="neutral">Giocata Neutra / Altro</option>
                                 <option value="point">Punto per Noi</option>
@@ -1152,7 +1152,7 @@ const VideoAnalysis = {
 
                     <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                         <div style="flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 5px;">
-                            <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">📈 Statistica Specifica</label>
+                            <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Statistica Specifica</label>
                             <select id="addStat" style="width: 100%; padding: 8px 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 13px; outline: none;">
                                 <option value="none">Nessuna statistica</option>
                                 <optgroup label="Punti">
@@ -1176,20 +1176,20 @@ const VideoAnalysis = {
                         </div>
 
                         <div style="flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 5px;">
-                            <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">📝 Descrizione Alzata/Attacco (Dettaglio)</label>
+                            <label style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Descrizione Alzata/Attacco (Dettaglio)</label>
                             <textarea id="addEventDescription" rows="1" style="width: 100%; padding: 8px 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 13px; outline: none; resize: vertical; font-family: inherit;"></textarea>
                         </div>
                     </div>
                 </div>
 
                 <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <label style="font-size: 12px; color: var(--success); font-weight: 600;">💡 Nota Aggiunta Manuale / Errore IA</label>
+                    <label style="font-size: 12px; color: var(--success); font-weight: 600;">Nota Aggiunta Manuale / Errore IA</label>
                     <textarea id="addCorrectionNotes" rows="2" style="width: 100%; padding: 8px 12px; background: var(--surface-2); border: 1px solid var(--success); border-radius: 6px; color: var(--text); font-size: 13px; outline: none; resize: vertical; font-family: inherit;" placeholder="Spiega perché stai aggiungendo questa azione manualmente (es: 'l'IA ha mancato questa battuta' o 'la segmentazione automatica l'ha esclusa')."></textarea>
                 </div>
 
                 <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 5px;">
                     <button onclick="window.location.reload()" style="background: none; border: 1px solid var(--border); color: var(--text-muted); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s;" onmouseover="this.style.color='var(--text)'; this.style.borderColor='var(--text-muted)';" onmouseout="this.style.color='var(--text-muted)'; this.style.borderColor='var(--border)';">Annulla</button>
-                    <button onclick="VideoAnalysis.saveNewSegment()" style="background: linear-gradient(135deg, var(--brand), var(--accent)); border: none; color: #ffffff; padding: 8px 20px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: all 0.2s;" onmouseover="this.style.opacity='0.9';" onmouseout="this.style.opacity='1';">Salva Nuova Azione</button>
+                    <button onclick="VideoAnalysis.saveNewSegment()" style="background: linear-gradient(135deg, var(--brand), var(--accent)); border: none; color: var(--on-accent); padding: 8px 20px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: all 0.2s;" onmouseover="this.style.opacity='0.9';" onmouseout="this.style.opacity='1';">Salva Nuova Azione</button>
                 </div>
             </div>
         `;

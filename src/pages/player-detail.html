@@ -1,18 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../common/theme-init.js"></script>
-    <title>Player Details - Volley Tool</title>
+    <script src="../common/theme-init.js?v=20260930"></script>
+    <title>Scheda giocatore · Wapatanka</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap">
-    <link rel="stylesheet" href="../styles/theme.css">
-    <link rel="stylesheet" href="../styles/styles.css">
-    <link rel="stylesheet" href="../styles/navbar.css">
+    <link rel="stylesheet" href="../styles/theme.css?v=20260930">
+    <link rel="stylesheet" href="../styles/styles.css?v=20260930">
+    <link rel="stylesheet" href="../styles/navbar.css?v=20260930">
     <link rel="stylesheet" href="../styles/player-detail.css?v=20260624_mobile_v4">
+    <link rel="stylesheet" href="../styles/ambience.css?v=20260930">
 </head>
 
 <body>
@@ -23,13 +24,13 @@
         </a>
         <ul class="navbar-menu" id="navMenu">
             <li class="navbar-item"><a href="index.html"><span class="nav-ic" data-icon="home"></span> Home</a></li>
-            <li class="navbar-item"><a href="form.html"><span class="nav-ic" data-icon="form"></span> Rate Form</a></li>
-            <li class="navbar-item"><a href="public-exercises.html"><span class="nav-ic" data-icon="exercises"></span> Exercises</a></li>
-            <li class="navbar-item"><a href="responses.html"><span class="nav-ic" data-icon="responses"></span> Responses</a></li>
-            <li class="navbar-item"><a href="match-table.html"><span class="nav-ic" data-icon="matches"></span> Matches</a></li>
-            <li class="navbar-item active"><a href="players.html"><span class="nav-ic" data-icon="players"></span> Players</a></li>
-            <li class="navbar-item"><a href="ai-analysis.html"><span class="nav-ic" data-icon="ai"></span> AI Analysis</a></li>
-            <li class="navbar-item"><a href="upload-exercises.html"><span class="nav-ic" data-icon="manage"></span> Manage</a></li>
+            <li class="navbar-item"><a href="form.html"><span class="nav-ic" data-icon="form"></span> Valutazione</a></li>
+            <li class="navbar-item"><a href="public-exercises.html"><span class="nav-ic" data-icon="exercises"></span> Esercizi</a></li>
+            <li class="navbar-item"><a href="responses.html"><span class="nav-ic" data-icon="responses"></span> Risposte</a></li>
+            <li class="navbar-item"><a href="match-table.html"><span class="nav-ic" data-icon="matches"></span> Partite</a></li>
+            <li class="navbar-item active"><a href="players.html"><span class="nav-ic" data-icon="players"></span> Giocatori</a></li>
+            <li class="navbar-item"><a href="ai-analysis.html"><span class="nav-ic" data-icon="ai"></span> Analisi video</a></li>
+            <li class="navbar-item"><a href="upload-exercises.html"><span class="nav-ic" data-icon="manage"></span> Gestione</a></li>
         </ul>
         <div class="navbar-actions">
             <button class="theme-toggle-btn" id="themeToggleBtn" onclick="ThemeToggle.toggle()" aria-label="Cambia tema" type="button">
@@ -52,13 +53,13 @@
             </div>
             <div class="pd-id">
                 <div class="pd-id-row">
-                    <h1 id="detailPlayerName">Loading…</h1>
+                    <h1 id="detailPlayerName">Caricamento…</h1>
                     <span id="detailPlayerNumber" class="pd-number">#?</span>
                 </div>
                 <div class="pd-tags">
-                    <span id="detailPlayerRole" class="pd-role">Role</span>
+                    <span id="detailPlayerRole" class="pd-role">Ruolo</span>
                     <span class="pd-dot"></span>
-                    <span id="detailPlayerHeight" class="pd-height">Height: ? cm</span>
+                    <span id="detailPlayerHeight" class="pd-height">Altezza: ? cm</span>
                 </div>
             </div>
         </header>
@@ -102,7 +103,7 @@
 
             <div class="setoptics-dashboard">
                 <div id="setoptics3dContainer" class="setoptics-court-container">
-                    <div id="loading3d" class="pd-loading3d">Loading 3D Court…</div>
+                    <div id="loading3d" class="pd-loading3d">Caricamento campo 3D…</div>
                 </div>
                 <div class="setoptics-metrics-panel">
                     <h3>Dettagli alzata</h3>
@@ -205,20 +206,20 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
     <!-- ===== CONFIGURATION & CONSTANTS ===== -->
-    <script src="../config/firebase.config.js"></script>
-    <script src="../config/constants.js"></script>
+    <script src="../config/firebase.config.js?v=20260930"></script>
+    <script src="../config/constants.js?v=20260930"></script>
 
     <!-- ===== COMMON SERVICES ===== -->
-    <script src="../common/logger.js"></script>
-    <script src="../common/ui-service.js"></script>
-    <script src="../services/firebase-service.js"></script>
-    <script src="../services/player-service.js"></script>
-    <script src="../services/match-service.js"></script>
+    <script src="../common/logger.js?v=20260930"></script>
+    <script src="../common/ui-service.js?v=20260930"></script>
+    <script src="../services/firebase-service.js?v=20260930"></script>
+    <script src="../services/player-service.js?v=20260930"></script>
+    <script src="../services/match-service.js?v=20260930"></script>
 
     <!-- ===== UI COMMON ===== -->
-    <script src="../common/icons.js"></script>
-    <script src="../common/navbar.js"></script>
-    <script src="../common/scroll-reveal.js"></script>
+    <script src="../common/icons.js?v=20260930"></script>
+    <script src="../common/navbar.js?v=20260930"></script>
+    <script src="../common/scroll-reveal.js?v=20260930"></script>
 
     <!-- ===== PLAYER DETAIL MODULE ===== -->
     <script src="../modules/players/player-detail.js?v=20260624_mobile_v4"></script>

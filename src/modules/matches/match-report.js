@@ -144,12 +144,12 @@ const MatchReport = {
             dateDisplay = new Date(this.match.date).toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
         } catch (e) { /* keep raw */ }
         set('mrDate', dateDisplay);
-        set('mrLocation', this.match.location === 'Home' ? '🏠 Casa' : '🚌 Trasferta');
+        set('mrLocation', this.match.location === 'Home' ? 'Casa' : 'Trasferta');
         set('mrScore', this.match.score);
         set('mrSets', this.match.sets);
         const badge = document.getElementById('mrStatus');
         if (badge) {
-            badge.textContent = this.match.status;
+            badge.textContent = MatchService.statusLabel(this.match.status);
             badge.className = 'badge ' + (this.match.status === 'Won' ? 'badge-won' : this.match.status === 'Lost' ? 'badge-lost' : 'badge-upcoming');
         }
     },

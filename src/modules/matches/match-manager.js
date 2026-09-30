@@ -70,7 +70,7 @@ const MatchManager = {
             tbody.innerHTML = `
                 <tr>
                     <td colspan="6" style="text-align: center; color: var(--text-muted); font-style: italic; padding: 30px;">
-                        No matches scheduled or recorded yet.
+                        Nessuna partita in calendario. Aggiungi la prima.
                     </td>
                 </tr>
             `;
@@ -84,13 +84,13 @@ const MatchManager = {
             let dateDisplay = match.date;
             try {
                 const options = { month: 'short', day: 'numeric', year: 'numeric' };
-                dateDisplay = new Date(match.date).toLocaleDateString('en-US', options);
+                dateDisplay = new Date(match.date).toLocaleDateString('it-IT', options);
             } catch (e) {
                 // Keep original
             }
 
             const isHome = match.location === 'Home';
-            const locIcon = isHome ? '🏠 Home' : '🚌 Away';
+            const locIcon = isHome ? 'Casa' : 'Trasferta';
             const locClass = isHome ? 'loc-home' : 'loc-away';
 
             // Resolve status badge class
@@ -101,29 +101,29 @@ const MatchManager = {
             let adminButtons = '';
             if (this.isAdmin) {
                 adminButtons = `
-                    <button class="btn-player-edit" onclick="MatchManager.openEditModal('${match.id}')" style="padding: 4px 8px; font-size: 11px; margin-left: 5px;">Edit</button>
-                    <button class="btn-player-delete" onclick="MatchManager.deleteMatch('${match.id}', '${this.escapeQuote(match.opponent)}')" style="padding: 4px 8px; font-size: 11px; margin-left: 5px;">Delete</button>
+                    <button class="btn-player-edit" onclick="MatchManager.openEditModal('${match.id}')" style="padding: 4px 8px; font-size: 11px; margin-left: 5px;">Modifica</button>
+                    <button class="btn-player-delete" onclick="MatchManager.deleteMatch('${match.id}', '${this.escapeQuote(match.opponent)}')" style="padding: 4px 8px; font-size: 11px; margin-left: 5px;">Elimina</button>
                 `;
             }
 
             let statsButtons = '';
             if (match.status === 'Upcoming') {
                 statsButtons = `
-                    <button class="btn-stats-trigger btn-live-tracker" onclick="MatchStats.openLiveModal('${match.id}', '${this.escapeQuote(match.opponent)}', '${this.escapeQuote(dateDisplay)}')">⏱️ Live Tracker</button>
+                    <button class="btn-stats-trigger btn-live-tracker" onclick="MatchStats.openLiveModal('${match.id}', '${this.escapeQuote(match.opponent)}', '${this.escapeQuote(dateDisplay)}')">Segna live</button>
                 `;
             } else {
                 // Stats table editor is admin-only; everyone else just gets the report
                 const tableButton = this.isAdmin
-                    ? `<button class="btn-stats-trigger" onclick="MatchStats.openModal('${match.id}', '${this.escapeQuote(match.opponent)}', '${this.escapeQuote(dateDisplay)}', false)" style="margin-left: 5px;">✏️ Tabella</button>`
+                    ? `<button class="btn-stats-trigger" onclick="MatchStats.openModal('${match.id}', '${this.escapeQuote(match.opponent)}', '${this.escapeQuote(dateDisplay)}', false)" style="margin-left: 5px;">Tabella</button>`
                     : '';
                 statsButtons = `
-                    <button class="btn-stats-trigger btn-review-stats" onclick="window.location.href='match-report.html?id=${match.id}'">📈 Report</button>
+                    <button class="btn-stats-trigger btn-review-stats" onclick="window.location.href='match-report.html?id=${match.id}'">Report</button>
                     ${tableButton}
                 `;
             }
 
             const lineupButton = `
-                <button class="btn-stats-trigger" onclick="MatchLineups.openModal('${match.id}', '${this.escapeQuote(match.opponent)}', '${this.escapeQuote(dateDisplay)}')" style="margin-left: 5px;">🔄 Lineup</button>
+                <button class="btn-stats-trigger" onclick="MatchLineups.openModal('${match.id}', '${this.escapeQuote(match.opponent)}', '${this.escapeQuote(dateDisplay)}')" style="margin-left: 5px;">Formazione</button>
             `;
 
             tr.innerHTML = `
@@ -134,7 +134,7 @@ const MatchManager = {
                     <span class="score-main">${this.escapeHtml(match.score)}</span>
                     <span class="score-details">${this.escapeHtml(match.sets)}</span>
                 </td>
-                <td><span class="badge ${statusBadge}">${match.status}</span></td>
+                <td><span class="badge ${statusBadge}">${MatchService.statusLabel(match.status)}</span></td>
                 <td style="white-space: nowrap;">
                     ${statsButtons}
                     ${lineupButton}
@@ -173,7 +173,7 @@ const MatchManager = {
         document.getElementById('matchScore').value = match.score;
         document.getElementById('matchStatus').value = match.status;
         document.getElementById('matchSets').value = match.sets;
-        document.getElementById('matchModalTitle').textContent = 'Edit Match Details';
+        document.getElementById('matchModalTitle').textContent = 'Modifica partita';
 
         const modal = document.getElementById('matchAdminModal');
         if (modal) {
@@ -208,7 +208,7 @@ const MatchManager = {
         const sets = document.getElementById('matchSets').value.trim();
 
         if (!opponent || !date || !location || !score || !status || !sets) {
-            UIService.showMessage('Please fill in all fields', 'error');
+            UIService.showMessage('Compila tutti i campi obbligatori', 'error');
             return;
         }
 
@@ -227,10 +227,10 @@ const MatchManager = {
 
         const success = await MatchService.saveMatch(matchData);
         if (success) {
-            UIService.showMessage(`✓ Match vs "${opponent}" saved!`, 'success');
+            UIService.showMessage(`Partita contro ${opponent} salvata`, 'success');
             this.closeModal();
         } else {
-            UIService.showMessage('✗ Failed to save match details', 'error');
+            UIService.showMessage('Partita non salvata', 'error');
         }
     },
 
@@ -244,9 +244,9 @@ const MatchManager = {
 
         const success = await MatchService.deleteMatch(matchId);
         if (success) {
-            UIService.showMessage(`✓ Match vs "${opponentName}" removed`, 'success');
+            UIService.showMessage(`Partita contro ${opponentName} eliminata`, 'success');
         } else {
-            UIService.showMessage('✗ Failed to remove match', 'error');
+            UIService.showMessage('Partita non eliminata', 'error');
         }
     },
 

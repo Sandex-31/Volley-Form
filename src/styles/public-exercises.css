@@ -201,7 +201,7 @@ button {
 .exercise-video-container {
     position: relative;
     width: 100%;
-    background: #000;
+    background: var(--board-bg);
     border-radius: 6px;
     overflow: hidden;
     margin-bottom: 10px;
@@ -328,37 +328,9 @@ select option {
 }
 
 /* ===== MESSAGES ===== */
-.error-message {
-    display: none;
-    background: var(--danger);
-    color: white;
-    padding: 12px 15px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    text-align: center;
-    font-size: 14px;
-    border: 1px solid var(--danger);
-}
 
-.error-message.show {
-    display: block;
-}
 
-.success-message {
-    display: none;
-    background: var(--success);
-    color: white;
-    padding: 12px 15px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    text-align: center;
-    font-size: 14px;
-    border: 1px solid var(--success);
-}
 
-.success-message.show {
-    display: block;
-}
 
 .modal-buttons {
     display: flex;

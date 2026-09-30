@@ -294,21 +294,7 @@ button {
     cursor: not-allowed;
 }
 
-.error-message {
-    display: none;
-    background: var(--danger);
-    color: white;
-    padding: 12px 15px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    text-align: center;
-    font-size: 14px;
-    border: 1px solid var(--danger);
-}
 
-.error-message.show {
-    display: block;
-}
 
 /* Summary Section */
 .summary-section {
@@ -344,20 +330,7 @@ button {
     font-size: 15px;
 }
 
-.success-message {
-    display: none;
-    background: var(--success);
-    color: white;
-    padding: 20px;
-    border-radius: 5px;
-    text-align: center;
-    margin-bottom: 20px;
-    border: 1px solid var(--success);
-}
 
-.success-message.show {
-    display: block;
-}
 
 /* Exercise List Styles */
 .exercise-item {
@@ -453,7 +426,7 @@ button {
     flex: 1;
     height: 6px;
     border-radius: 5px;
-    background: linear-gradient(to right, #ff6b6b, #ffd93d, #6bcf7f);
+    background: linear-gradient(to right, var(--danger), var(--warning), var(--success));
     outline: none;
     -webkit-appearance: none;
     appearance: none;

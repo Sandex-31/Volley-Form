@@ -1,0 +1,182 @@
+/* ===== AMBIENCE + PAGE SHELL + MOTION =====
+   "Palazzetto di sera": court lines seen from above, two slow floodlight
+   glows and a light grain behind every page. Loaded last so it can restyle
+   the shared .container/.header shell of the inner pages. */
+
+:root {
+  --amb-glow-a:  rgba(var(--brand-rgb), .16);
+  --amb-glow-b:  rgba(var(--accent-rgb), .10);
+  --amb-court:   rgba(var(--brand-rgb), .05);
+  --amb-grain:   .05;
+  --glass:       color-mix(in srgb, var(--surface) 84%, transparent);
+  --hairline:    rgba(255, 255, 255, .55);
+}
+:root[data-theme="dark"] {
+  --amb-glow-a:  rgba(var(--brand-rgb), .26);
+  --amb-glow-b:  rgba(var(--accent-rgb), .20);
+  --amb-court:   rgba(var(--brand-rgb), .06);
+  --amb-grain:   .07;
+  --glass:       color-mix(in srgb, var(--surface) 78%, transparent);
+  --hairline:    rgba(255, 255, 255, .10);
+}
+
+/* Floodlights */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -25vmax;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(38vmax 30vmax at 22% 18%, var(--amb-glow-a), transparent 70%),
+    radial-gradient(34vmax 28vmax at 82% 78%, var(--amb-glow-b), transparent 70%);
+  animation: ambDrift 38s var(--ease) infinite alternate;
+}
+
+/* Court seen from above: 18 x 9 m, centre line + 3 m attack lines */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--amb-court);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1800 900' fill='none' stroke='black' stroke-width='3'%3E%3Crect x='3' y='3' width='1794' height='894' rx='2'/%3E%3Cpath d='M900 0v900M600 0v900M1200 0v900'/%3E%3C/svg%3E") center / min(1500px, 150vw) auto no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1800 900' fill='none' stroke='black' stroke-width='3'%3E%3Crect x='3' y='3' width='1794' height='894' rx='2'/%3E%3Cpath d='M900 0v900M600 0v900M1200 0v900'/%3E%3C/svg%3E") center / min(1500px, 150vw) auto no-repeat;
+}
+
+/* Grain on the html element so it never competes with body pseudos */
+html::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+  opacity: var(--amb-grain);
+  mix-blend-mode: overlay;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@keyframes ambDrift {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  50%  { transform: translate3d(4vmax, -3vmax, 0) scale(1.06); }
+  100% { transform: translate3d(-3vmax, 3vmax, 0) scale(1); }
+}
+
+/* ===== Inner page shell (.container + .header) ===== */
+.container {
+  position: relative;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(16px) saturate(1.15);
+          backdrop-filter: blur(16px) saturate(1.15);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  padding: clamp(24px, 4vw, 44px);
+}
+/* Light catching the top edge */
+.container::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--hairline), transparent);
+  pointer-events: none;
+}
+
+.header {
+  text-align: left;
+  margin-bottom: 32px;
+}
+.header h1 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-head);
+  font-size: clamp(28px, 4.2vw, 40px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.header h1 [data-icon] {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 1.3em;
+  height: 1.3em;
+  border-radius: 12px;
+  background: rgba(var(--accent-rgb), .12);
+  color: var(--accent);
+  font-size: .75em;
+}
+.header p {
+  max-width: 60ch;
+  color: var(--text-2);
+  font-size: 15px;
+  line-height: 1.55;
+}
+/* Red service line under the title */
+.header::after {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 3px;
+  margin-top: 18px;
+  border-radius: 3px;
+  background: var(--accent);
+  transform-origin: left;
+}
+
+/* ===== Motion ===== */
+@media (prefers-reduced-motion: no-preference) {
+  /* One orchestrated entrance per page: title, subtitle, then the line */
+  .header h1 { animation: shellRise .7s var(--ease) both; }
+  .header p  { animation: shellRise .7s var(--ease) .08s both; }
+  .header::after { animation: shellLine .8s var(--ease) .25s both; }
+
+  /* Cross-page transitions (supporting browsers; others just navigate) */
+  @view-transition { navigation: auto; }
+  ::view-transition-old(root) { animation: vtOut .22s var(--ease) both; }
+  ::view-transition-new(root) { animation: vtIn .38s var(--ease) both; }
+
+  /* Tactile press */
+  button:not(:disabled):active { transform: scale(.97); }
+}
+.navbar { view-transition-name: site-nav; }
+
+@keyframes shellRise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes shellLine {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+@keyframes vtOut { to { opacity: 0; transform: translateY(-6px); } }
+@keyframes vtIn  { from { opacity: 0; transform: translateY(10px); } }
+
+/* Staggered list items (tagged by scroll-reveal.js as they render) */
+.stagger-item {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity .55s var(--ease), transform .55s var(--ease);
+  transition-delay: calc(var(--i, 0) * 45ms);
+}
+.stagger-item.is-visible { opacity: 1; transform: none; }
+tr.stagger-item { transform: none; }
+
+/* Pointer spotlight on cards (coordinates set by scroll-reveal.js) */
+.spot {
+  background-image: radial-gradient(260px circle at var(--mx, -300px) var(--my, -300px), rgba(var(--accent-rgb), .09), transparent 60%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before { animation: none; }
+  .stagger-item { opacity: 1; transform: none; transition: none; }
+}
+
+/* Status badges never wrap (e.g. "In programma") */
+.badge { white-space: nowrap; }
