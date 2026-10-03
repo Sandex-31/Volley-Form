@@ -155,7 +155,7 @@
     </main>
 
     <!-- ===== FIREBASE SDK ===== -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <!-- ===== CONFIGURATION & CONSTANTS ===== -->
@@ -182,8 +182,13 @@
     <script src="../modules/home/home-stats.js?v=20260930"></script>
     <script src="../modules/home/home-scrollfx.js?v=20260930"></script>
 
-    <!-- ===== 3D VOLLEYBALL (Three.js pinned CDN + SRI, with robust fallback) ===== -->
-    <script defer src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js" integrity="sha384-qOkzR5Ke/XkQxuGVJ9hpFEpDlcoLtWwVYhnJf06cLIZa2vaIptSqaubivErzmD5O" crossorigin="anonymous"></script>
+    <!-- ===== 3D VOLLEYBALL (Three.js pinned CDN, with robust fallback) ===== -->
+    <!-- Load Three.js as an ES module (the old build/three.min.js is deprecated) and expose it as window.THREE.
+         Module scripts run in order with the defer script below; if the import fails, the static logo fallback is shown. -->
+    <script type="module">
+        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js';
+        window.THREE = THREE;
+    </script>
     <script defer src="../modules/home/volleyball-3d.js?v=20260930"></script>
 </body>
 
