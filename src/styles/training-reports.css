@@ -1,0 +1,602 @@
+/* ===== TRAINING REPORTS ("Diario tecnico") ===== */
+
+.tr-container {
+    max-width: 800px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Koi accent in the page header (subtle, drawn with tokens) */
+.tr-header {
+    position: relative;
+}
+
+.tr-header-koi {
+    position: absolute;
+    width: 120px;
+    top: -6px;
+    right: -10px;
+    fill: var(--accent);
+    opacity: .12;
+    transform: rotate(-8deg);
+    pointer-events: none;
+}
+
+/* Tabs: Report / Area SIG */
+.tr-tabs {
+    display: flex;
+    gap: 6px;
+    padding: 4px;
+    margin: 0 auto 24px;
+    max-width: 360px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+}
+
+.tr-tab {
+    flex: 1;
+    border: 0;
+    background: none;
+    padding: 9px 12px;
+    border-radius: 999px;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: background .2s var(--ease), color .2s var(--ease);
+}
+
+.tr-tab.active {
+    background: var(--brand);
+    color: var(--on-accent);
+}
+
+/* Cards */
+.tr-card {
+    position: relative;
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius-sm);
+    padding: 16px 18px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow-sm);
+    color: var(--text);
+    font: inherit;
+    overflow: hidden;
+}
+
+.tr-card-click {
+    cursor: pointer;
+    transition: transform .15s var(--ease), box-shadow .2s var(--ease);
+}
+
+.tr-card-click:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.tr-card-click:active {
+    transform: scale(.985);
+}
+
+.tr-card h2 {
+    margin: 0 0 8px;
+    font-family: var(--font-head);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.tr-card h2.tr-sub {
+    margin-top: 14px;
+}
+
+.tr-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.tr-row h2 {
+    margin: 0;
+}
+
+.tr-date {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 16px;
+    text-transform: capitalize;
+}
+
+.tr-info {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.tr-stars {
+    color: var(--accent);
+    letter-spacing: 2px;
+    white-space: nowrap;
+}
+
+.tr-big-stars {
+    font-size: 26px;
+    color: var(--accent);
+    letter-spacing: 3px;
+}
+
+.tr-empty {
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+    padding: 30px 0;
+}
+
+.tr-text {
+    white-space: pre-wrap;
+    line-height: 1.55;
+    font-size: 15px;
+    color: var(--text-2);
+}
+
+.tr-back {
+    background: none;
+    border: 0;
+    padding: 0 0 12px;
+    font: inherit;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text);
+    cursor: pointer;
+}
+
+.tr-back:hover {
+    color: var(--accent);
+}
+
+/* Athlete pills */
+.tr-pills {
+    margin-bottom: 4px;
+}
+
+.tr-pill {
+    display: inline-block;
+    padding: 6px 12px;
+    margin: 3px 4px 3px 0;
+    border-radius: 999px;
+    background: rgba(var(--brand-rgb), .12);
+    border: 1.5px solid transparent;
+    color: var(--text);
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.tr-pill-absent {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--text-muted);
+    text-decoration: line-through;
+}
+
+.tr-pill-toggle {
+    cursor: pointer;
+    border-color: var(--border);
+    background: var(--surface-2);
+    transition: background .15s var(--ease), color .15s var(--ease);
+}
+
+.tr-pill-toggle.on {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--on-accent);
+}
+
+/* Observations */
+.tr-obs {
+    border-top: 1px solid var(--border);
+    padding: 12px 0;
+}
+
+.tr-obs:first-of-type {
+    border-top: 0;
+    padding-top: 0;
+}
+
+.tr-obs > b {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 15px;
+    color: var(--text);
+}
+
+.tr-future {
+    margin-top: 8px;
+    padding: 10px 12px;
+    background: rgba(var(--accent-rgb), .10);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    font-size: 14px;
+    color: var(--text-2);
+}
+
+/* Form */
+.tr-card label {
+    margin: 16px 0 6px;
+}
+
+.tr-card label.tr-first,
+.tr-obs label:first-child {
+    margin-top: 0;
+}
+
+.tr-card label small {
+    font-weight: 400;
+    color: var(--text-muted);
+}
+
+.tr-card input[type="password"],
+.tr-card input[type="date"],
+.tr-card select,
+.tr-card textarea {
+    width: 100%;
+    min-width: 0;
+    padding: 11px 13px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 16px;
+}
+
+.tr-card textarea {
+    min-height: 90px;
+}
+
+/* iOS Safari gives date inputs an intrinsic width wider than the screen */
+.tr-card input[type="date"] {
+    -webkit-appearance: none;
+    appearance: none;
+    display: block;
+    max-width: 100%;
+    height: 48px;
+    line-height: 1.2;
+    text-align: left;
+}
+
+.tr-card input[type="date"]::-webkit-date-and-time-value {
+    text-align: left;
+}
+
+.tr-card input:focus,
+.tr-card select:focus,
+.tr-card textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(var(--accent-rgb), .15);
+}
+
+.tr-rating {
+    display: flex;
+    gap: 2px;
+}
+
+.tr-star {
+    flex: none;
+    background: none;
+    border: 0;
+    padding: 0 2px;
+    font-size: 36px;
+    line-height: 1;
+    color: var(--border-strong);
+    cursor: pointer;
+}
+
+.tr-star.on {
+    color: var(--accent);
+}
+
+/* Buttons */
+.tr-btn {
+    display: inline-block;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 15px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .2s var(--ease), border-color .2s var(--ease), color .2s var(--ease);
+}
+
+.tr-btn:disabled {
+    opacity: .6;
+    cursor: default;
+}
+
+.tr-btn-primary {
+    background: var(--accent);
+    color: var(--on-accent);
+}
+
+.tr-btn-primary:hover:not(:disabled) {
+    background: var(--accent-hover);
+}
+
+.tr-btn-secondary {
+    background: var(--surface-2);
+    border-color: var(--border);
+    color: var(--text-2);
+}
+
+.tr-btn-secondary:hover:not(:disabled) {
+    border-color: var(--border-strong);
+}
+
+.tr-btn-danger {
+    background: transparent;
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.tr-btn-danger:hover:not(:disabled) {
+    background: rgba(var(--danger-rgb), .08);
+}
+
+.tr-btn-block {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+}
+
+.tr-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.tr-actions .tr-btn {
+    flex: 1;
+}
+
+.tr-link {
+    flex: none;
+    background: none;
+    border: 0;
+    padding: 4px 0;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.tr-link:hover {
+    color: var(--text);
+}
+
+.tr-link-danger {
+    color: var(--danger);
+}
+
+/* Videos: compact buttons, no embedded previews */
+.tr-videos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 10px;
+}
+
+.tr-video-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    color: var(--text);
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: none;
+    transition: border-color .2s var(--ease), background .2s var(--ease);
+}
+
+.tr-video-link:hover {
+    border-color: var(--accent);
+    background: rgba(var(--accent-rgb), .06);
+}
+
+.tr-video-text {
+    min-width: 0;
+}
+
+.tr-video-title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    font-size: 14px;
+    line-height: 1.3;
+}
+
+.tr-video-link small {
+    display: block;
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.tr-video-play {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-size: 12px;
+    padding-left: 2px;
+}
+
+/* Comments: light "paper" card with koi texture (same in both themes) */
+.tr-card.tr-comments {
+    background: var(--comments-bg);
+    border: 1px solid var(--comments-bg);
+    border-left: 4px solid var(--accent);
+    color: var(--comments-text);
+}
+
+.tr-comments > *:not(.tr-koi) {
+    position: relative;
+    z-index: 1;
+}
+
+.tr-card.tr-comments h2 {
+    color: var(--comments-heading);
+}
+
+.tr-comments .tr-comment-who,
+.tr-comments .tr-text,
+.tr-comments label {
+    color: var(--comments-text);
+}
+
+.tr-comments .tr-comment-when,
+.tr-comments .tr-info {
+    color: var(--comments-muted);
+}
+
+.tr-comments .tr-comment,
+.tr-comments .tr-new-comment {
+    border-top-color: var(--comments-line);
+}
+
+.tr-comments .tr-comment:first-of-type {
+    border-top: 0;
+}
+
+.tr-card.tr-comments select,
+.tr-card.tr-comments textarea {
+    background: var(--comments-input-bg);
+    color: var(--comments-text);
+    border-color: var(--comments-input-border);
+    color-scheme: light;
+}
+
+.tr-comments textarea::placeholder {
+    color: var(--comments-placeholder);
+}
+
+.tr-comments .tr-link {
+    color: var(--comments-heading);
+}
+
+.tr-comments .tr-link-danger {
+    color: var(--comments-danger);
+}
+
+.tr-comments .tr-btn-secondary {
+    background: var(--comments-heading);
+    border-color: var(--comments-heading);
+    color: var(--comments-input-bg);
+}
+
+.tr-koi {
+    position: absolute;
+    z-index: 0;
+    height: auto;
+    fill: var(--comments-heading);
+    opacity: .10;
+    pointer-events: none;
+}
+
+.tr-koi-1 { width: 170px; top: 2%;    right: -30px; transform: rotate(12deg); }
+.tr-koi-2 { width: 130px; top: 14%;   left: -20px;  transform: scaleX(-1) rotate(-10deg); }
+.tr-koi-3 { width: 110px; top: 28%;   right: 8%;    transform: rotate(-6deg); }
+.tr-koi-4 { width: 140px; top: 40%;   left: 28%;    transform: scaleX(-1) rotate(8deg); }
+.tr-koi-5 { width: 120px; top: 54%;   right: -25px; transform: rotate(15deg); }
+.tr-koi-6 { width: 100px; top: 68%;   left: 6%;     transform: rotate(-12deg); }
+.tr-koi-7 { width: 130px; top: 80%;   left: -20px;  transform: scaleX(-1) rotate(10deg); }
+.tr-koi-8 { width: 150px; bottom: 2%; right: 10px;  transform: rotate(-8deg); }
+
+.tr-comment {
+    border-top: 1px solid var(--border);
+    padding: 12px 0;
+}
+
+.tr-comment:first-of-type {
+    border-top: 0;
+    padding-top: 0;
+}
+
+.tr-comment-who {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text);
+}
+
+.tr-comment-when {
+    margin-left: 6px;
+    font-weight: 400;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.tr-comment .tr-text {
+    margin-top: 4px;
+}
+
+.tr-comment textarea {
+    margin-top: 6px;
+}
+
+.tr-comment-actions {
+    display: flex;
+    gap: 18px;
+    margin-top: 2px;
+}
+
+.tr-new-comment {
+    margin-top: 12px;
+    padding-top: 4px;
+    border-top: 1px solid var(--border);
+}
+
+.tr-new-comment textarea {
+    min-height: 70px;
+}
+
+.tr-new-comment .tr-btn {
+    width: 100%;
+    margin-top: 12px;
+}
+
+/* Phone width */
+@media (max-width: 600px) {
+    .tr-container {
+        padding: 24px 16px;
+    }
+
+    .tr-card {
+        padding: 14px 14px 14px 16px;
+    }
+
+    .tr-header-koi {
+        display: none;
+    }
+}

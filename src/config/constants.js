@@ -21,7 +21,9 @@ const APP_CONSTANTS = {
     STORAGE_KEYS: {
         ADMIN_LOGGED_IN: 'adminLoggedIn',
         EXERCISES_LIST: 'exercisesList',
-        SELECTED_EXERCISES: 'selectedExercises'
+        SELECTED_EXERCISES: 'selectedExercises',
+        REPORT_DEVICE_TOKEN: 'trainingReportsDeviceToken',
+        REPORT_AUTHOR_NAME: 'trainingReportsAuthorName'
     },
 
     // Firebase References
@@ -35,7 +37,9 @@ const APP_CONSTANTS = {
         MATCH_LINEUPS: 'matchLineups',
         MATCH_EVENTS: 'matchEvents',
         PLAYERS: 'players',
-        MATCHES: 'matches'
+        MATCHES: 'matches',
+        TRAINING_REPORTS: 'trainingReports',
+        TRAINING_REPORT_COMMENTS: 'trainingReportComments'
     },
 
     // Rating Labels

@@ -54,6 +54,17 @@
   --role-spiker-rgb:   130, 70, 200;
   --role-opposite-rgb: 201, 106, 55;
   --logo-chip: #F2F5FB;
+
+  /* Commenti del diario allenamenti (sempre chiari, anche nel tema scuro) */
+  --comments-bg:           #D6E2FF;
+  --comments-text:         #14246A;
+  --comments-muted:        #4A5A9A;
+  --comments-heading:      #233577;
+  --comments-input-bg:     #FFFFFF;
+  --comments-input-border: #9AA6D1;
+  --comments-placeholder:  #7A86B8;
+  --comments-danger:       #C0121F;
+  --comments-line:         rgba(20, 36, 106, .25);
 }
 
 :root[data-theme="dark"] {
