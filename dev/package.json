@@ -1,0 +1,12 @@
+{
+  "name": "volley-form-dev",
+  "private": true,
+  "description": "Local development tools: Firebase Realtime Database emulator + seed script. The site never loads these files.",
+  "scripts": {
+    "db": "firebase emulators:start --only database --project demo-wapatanka --import ./data --export-on-exit ./data",
+    "seed": "node seed.mjs"
+  },
+  "devDependencies": {
+    "firebase-tools": "^15.34.0"
+  }
+}

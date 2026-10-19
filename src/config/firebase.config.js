@@ -13,6 +13,9 @@ const FIREBASE_CONFIG = {
     appId: "1:155905070449:web:fd23b00f8e45fca439d2d0"
 };
 
+// Local development: on localhost use the Firebase emulator, never production (see docs/DEVELOPING.md)
+const IS_LOCAL_DEV = ['localhost', '127.0.0.1'].includes(location.hostname);
+
 // Module namespace for Firebase operations
 const FirebaseModule = {
     db: null,
@@ -24,9 +27,15 @@ const FirebaseModule = {
     init: function() {
         try {
             if (!firebase.apps.length) {
-                firebase.initializeApp(FIREBASE_CONFIG);
+                firebase.initializeApp(IS_LOCAL_DEV
+                    ? { ...FIREBASE_CONFIG, projectId: 'demo-wapatanka', databaseURL: 'https://demo-wapatanka-default-rtdb.firebaseio.com' }
+                    : FIREBASE_CONFIG);
             }
             this.db = firebase.database();
+            if (IS_LOCAL_DEV) {
+                this.db.useEmulator('127.0.0.1', 9000);
+                console.log('🧪 LOCAL DEV: using Firebase emulator (127.0.0.1:9000)');
+            }
             this.isReady = true;
             if (typeof Logger !== 'undefined') {
                 Logger.log('✅ Firebase initialized successfully', 'success');

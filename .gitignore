@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# Local Firebase emulator data (see docs/DEVELOPING.md)
+dev/data/
+
+# Logs
+*-debug.log
+
+# Secrets
+.env
+serviceAccountKey*.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor (keep shared extension recommendations)
+.vscode/*
+!.vscode/extensions.json
